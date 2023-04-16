@@ -1,0 +1,86 @@
+.main {
+  width: 220px;
+
+  a {
+    color: #222222;
+    text-decoration: none;
+
+    &:hover {
+      color: #f13a3a;
+    }
+  }
+}
+
+.personalTitle {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.avatar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+  }
+}
+
+.username {
+  display: flex;
+  justify-content: center;
+  height: 120px;
+  margin-top: 5px;
+  font-size: 18px;
+
+  a {
+    height: 30px;
+  }
+}
+
+.unLoginBottom {
+  display: flex;
+  flex-direction: row;
+  font-size: 13px;
+}
+
+.forgePassword {
+  width: 50%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.toRegister {
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.isLoginBottom {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+
+  div {
+    width: 50%;
+    padding: 0;
+
+    button {
+      width: 100%;
+      border-radius: 0 !important;
+
+      &:first-child {
+        border-right: white solid 2px;
+      }
+    }
+  }
+}
+
+.shopCarItemList {
+  height: 100%;
+  overflow-y: scroll;
+  overscroll-behavior: none;
+}

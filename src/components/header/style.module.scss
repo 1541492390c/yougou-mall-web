@@ -1,0 +1,32 @@
+.pageHeader {
+  height: 85px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background-color: white;
+}
+
+.headerContent {
+  width: 1200px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.logo {
+  width: 30%;
+  img {
+    display: block;
+    width: 100px;
+    height: 65px;
+  }
+}
+
+.backHome {
+  width: 70%;
+  display: flex;
+  justify-content: flex-end;
+  button {
+    height: 40px;
+  }
+}

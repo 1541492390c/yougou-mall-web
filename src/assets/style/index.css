@@ -1,0 +1,9 @@
+body, html #root {
+    width: 100%;
+    min-width: 1400px;
+    height: 100%;
+}
+
+.ant-menu.ant-menu-dark .ant-menu-item-selected {
+    background: #cc0303 !important;
+}

@@ -1,0 +1,61 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  right: 0;
+  width: 32px;
+  padding: 0;
+  height: 100%;
+  background-color: #202020;
+}
+
+.iconContent {
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.icon {
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.bottomIcon {
+  display: flex;
+  flex-direction: column;
+
+  span {
+    margin-top: 22px;
+  }
+}
+
+.shopCarText {
+  padding-top: 10px;
+  display: flex;
+  justify-content: center;
+  color: white;
+  writing-mode: vertical-lr;
+  letter-spacing: 12px;
+  cursor: pointer;
+}
+
+.shopCar {
+  min-height: 160px;
+  max-height: 200px;
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  padding-top: 20px;
+  cursor: pointer;
+  background-color: #f13a3a;
+}
+
+.shopCarCount {
+  border-radius: 50%;
+  color: #f13a3a;
+  background-color: white;
+  text-align: center;
+  font-weight: bold;
+}

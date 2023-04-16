@@ -1,0 +1,57 @@
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  bottom: 0;
+  width: 100%;
+  background-color: #222;
+  border-top: #f13a3a solid 4px;
+  color: rgb(77, 77, 77);
+  z-index: -1;
+}
+
+.footerContent {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.help {
+  width: 620px;
+  height: 90%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.helpItem {
+  width: 33.3%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 25px;
+  font-family: -apple-system, system-ui, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, Helvetica Neue, Arial, PingFang SC, Hiragino Sans GB, Microsoft YaHei;
+}
+
+.helpItemTitle {
+  font-size: 20px;
+}
+
+.helpItemText {
+  font-size: 13px;
+
+  span {
+    display: block;
+    margin-top: 5px;
+  }
+}
+
+.copyright {
+  @extend .footerContent;
+  align-items: center;
+  height: 38px;
+  background-color: #1b1b1b;
+}

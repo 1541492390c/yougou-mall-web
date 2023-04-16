@@ -1,0 +1,101 @@
+import React, { useEffect } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
+import style from './style.module.scss'
+import { Button, Form, Input, message } from 'antd'
+import { LockOutlined, UserOutlined } from '@ant-design/icons'
+import { loginApi } from '@/api/auth'
+import Header from '@/components/header/Header'
+import Footer from '@/components/footer/Footer'
+
+const LoginHooks: any = (): any => {
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        document.title = '优购商城,登录'
+        if (!!localStorage.getItem('token')) {
+            navigate('/')
+        }
+        return () => {
+            document.title = '优购商城'
+        }
+    }, [navigate])
+
+    const validateUsername = (_: any, value: string): Promise<any> => {
+        if (!value) {
+            return Promise.reject(new Error('请输入账号'))
+        }
+        return Promise.resolve()
+    }
+
+    const validatePassword = (_: any, value: string): Promise<any> => {
+        if (!value) {
+            return Promise.reject(new Error('请输入密码'))
+        }
+        if (value.length < 6) {
+            return Promise.reject(new Error('密码长度不能小于6个字符'))
+        }
+        return Promise.resolve()
+    }
+
+    const login = (values: { username: string, password: string, code: string }): void => {
+        loginApi(values.username, values.password)
+            .then((res => {
+                localStorage.setItem('token', res.data.accessToken)
+                message.success('登录成功').then()
+            }))
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
+    return {validateUsername, validatePassword, login}
+}
+
+const LoginPage: React.FC = () => {
+    const {validateUsername, validatePassword, login} = LoginHooks()
+
+    const loginForm = (
+        <Form onFinish={login}>
+            <Form.Item name='username' rules={[{validator: validateUsername}]}>
+                <Input placeholder='请输入账号' prefix={<UserOutlined />} className={style.loginInput} />
+            </Form.Item>
+            <Form.Item name='password' rules={[{validator: validatePassword}]}>
+                <Input.Password placeholder='请输入密码' prefix={<LockOutlined />} className={style.loginInput} />
+            </Form.Item>
+            <Form.Item>
+                <Button type='primary' htmlType='submit' className={style.loginButton}>登录</Button>
+            </Form.Item>
+        </Form>
+    )
+
+    return (
+        <>
+            <Header />
+            <div className={style.main}>
+                <div className={style.loginBackground}>
+                    <div className={style.login}>
+                        <div className={style.loginCard}>
+                            <div>
+                                <h1>欢迎登录优购商城</h1>
+                            </div>
+                            <div className={style.loginForm}>
+                                <div style={{width: '300px'}}>{loginForm}</div>
+                            </div>
+                            <div className={style.toRegisterAndChangePassword}>
+                                <div className={style.toRegister}>
+                                    <NavLink to='/register'>免费注册</NavLink>
+                                </div>
+                                <div className={style.toChangePassword}>
+                                    <NavLink to='/'>修改密码</NavLink>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <Footer />
+        </>
+    )
+}
+
+export default LoginPage
