@@ -15,7 +15,7 @@ const RightBarPersonalHooks: any = (): any => {
     return {navigate, userinfo, avatarUrl}
 }
 
-const RightBarPersonalComponent: React.FC = () => {
+const RightBarPersonalComponent: React.FC = (): JSX.Element => {
     const {navigate, userinfo, avatarUrl} = RightBarPersonalHooks()
 
     return (
