@@ -4,7 +4,7 @@ import { Button, Form, Input, message, Result, Select, Steps } from 'antd'
 import { CheckOutlined, FormOutlined, LockOutlined, MailOutlined, MobileOutlined, UserOutlined } from '@ant-design/icons'
 import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
-import { registerApi } from '@/api/user'
+import { registerApi } from '@/api/user-api'
 import { StepProps } from 'antd/es/steps'
 import { useNavigate } from 'react-router-dom'
 
@@ -57,10 +57,11 @@ const RegisterHooks: any = (): any => {
     }
 
     const register = (values: { username: string, password: string, email: string }): void => {
-        values.email =  values.email + emailSuffix
+        if (!!values.email) {
+            values.email =  values.email + emailSuffix
+        }
         registerApi(values)
             .then(() => {
-                message.success('注册成功').then()
                 setCurrentStep(pre => ++pre)
             })
             .catch((err) => {
@@ -106,7 +107,7 @@ const RegisterPage: React.FC = () => {
 
     const step2 = (
         <Form form={registerForm} onFinish={register}>
-            <Form.Item name='nickname' rules={[{validator: validateUsername}]}>
+            <Form.Item name='username' rules={[{validator: validateUsername}]}>
                 <Input placeholder='请输入昵称' prefix={<UserOutlined />} />
             </Form.Item>
             <Form.Item name='password' rules={[{validator: validatePassword}]}>

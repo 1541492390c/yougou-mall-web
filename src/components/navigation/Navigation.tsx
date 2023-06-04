@@ -3,8 +3,8 @@ import style from './style.module.scss'
 import { Dropdown, Menu, MenuProps } from 'antd'
 import { RightOutlined, UnorderedListOutlined } from '@ant-design/icons'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { getCategoryListApi } from '@/api/product'
-import { Category } from '@/interface/product'
+import { getCategoryListApi } from '@/api/product-api'
+import { Category } from '@/interface'
 
 const NavigationHooks: any = (): any => {
     const location = useLocation()
@@ -29,8 +29,8 @@ const NavigationHooks: any = (): any => {
     useEffect(() => {
         getCategoryListApi().then((res) => {
             setCategoryList((pre) => {
-                pre = res.data.data
-                setCurrentChildren(res.data.data[0].children)
+                pre = res.data
+                setCurrentChildren(res.data[0].children)
                 return pre
             })
         }).catch((err) => {
@@ -45,8 +45,10 @@ const NavigationHooks: any = (): any => {
 
     const handleCategoryMenuOpen = (): void => {
         setCategoryMenuOpen((pre) => !pre)
-        setCurrentChildren(() => !categoryList[0].children ? [] : categoryList[0].children)
-        setSelectCategoryId(categoryList[0].categoryId)
+        if (categoryList.length !== 0) {
+            setCurrentChildren(() => !categoryList[0].children ? [] : categoryList[0].children)
+            setSelectCategoryId(categoryList[0].categoryId)
+        }
     }
 
     return {
@@ -100,7 +102,7 @@ const NavigationComponent: React.FC = () => {
                     {categoryList.map((item: Category, index: number) => {
                         return (
                             <li key={index}
-                                onMouseEnter={() => setCurrentChildren(item.children)}
+                                onMouseEnter={() => setCurrentChildren(item?.children)}
                                 className={currentChildren.parentId === item.categoryId ? style.categoryMenuItemSelect : style.categoryMenuItem}
                             >
                                 <div className={style.categoryMenuItemTitle}>{item.name}</div>
@@ -116,12 +118,10 @@ const NavigationComponent: React.FC = () => {
     return (
         <div className={style.main}>
             <div className={style.menu}>
-                <Dropdown dropdownRender={() => categoryMenu} open={categoryMenuOpen}>
+                <Dropdown dropdownRender={() => categoryMenu} open={categoryMenuOpen} onOpenChange={handleCategoryMenuOpen}>
                     <div onMouseEnter={handleCategoryMenuOpen}
                          className={style.categoryHeader}>
-                        <div className={style.categoryTitle}>
-                            <span>分类</span>
-                        </div>
+                        <span>分类</span>
                         <div className={style.categoryIcon}><UnorderedListOutlined /></div>
                     </div>
                 </Dropdown>

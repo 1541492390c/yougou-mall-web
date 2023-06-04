@@ -7,3 +7,8 @@ body, html #root {
 .ant-menu.ant-menu-dark .ant-menu-item-selected {
     background: #cc0303 !important;
 }
+
+@font-face {
+    font-family: huxiaobonanshen;
+    src: url('../../assets/font/huxiaobonanshen.otf');
+}

@@ -125,7 +125,7 @@ const RightBarComponent: React.FC<Props> = ({pathname}) => {
                             <HomeOutlined onClick={backHome} className={style.icon} />
                         </Tooltip>}
                     <Tooltip placement='left' title='意见反馈'>
-                        <FormOutlined onClick={() => navigate('/feedbacks')} className={style.icon} />
+                        <FormOutlined onClick={() => navigate('/feedback')} className={style.icon} />
                     </Tooltip>
                     <Tooltip placement='left' title='返回顶部'>
                         <UpOutlined onClick={backTop} className={style.icon} />

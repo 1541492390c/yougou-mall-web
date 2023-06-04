@@ -13,7 +13,7 @@ const getUserinfoApi = (): Promise<AxiosResponse> => {
     return request({
         url: '/user/info',
         method: 'GET'
-    })
+    }, true)
 }
 
-export { registerApi }
+export { registerApi, getUserinfoApi }

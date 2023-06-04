@@ -1,14 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import style from './style.module.scss'
 import { Button, Form, Input, message } from 'antd'
-import { LockOutlined, UserOutlined } from '@ant-design/icons'
-import { loginApi } from '@/api/auth'
+import { LockOutlined, UserOutlined, VerifiedOutlined } from '@ant-design/icons'
+import { loginApi } from '@/api/auth-api'
 import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
+import { baseUrl } from '@/request'
 
 const LoginHooks: any = (): any => {
     const navigate = useNavigate()
+    const captchaUrl = baseUrl + '/biz/captcha/image'
+    const [random, setRandom] = useState(Math.random())
 
     useEffect(() => {
         document.title = '优购商城,登录'
@@ -37,22 +40,36 @@ const LoginHooks: any = (): any => {
         return Promise.resolve()
     }
 
+    const validateCode = (_: any, value: string) => {
+        if (!value) {
+            return Promise.reject(new Error('请输入验证码'))
+        }
+        if (value.length !== 4) {
+            return Promise.reject(new Error('请输入正确的验证码'))
+        }
+        return Promise.resolve()
+    }
+
     const login = (values: { username: string, password: string, code: string }): void => {
-        loginApi(values.username, values.password)
+        loginApi(values.username, values.password, values.code)
             .then((res => {
                 localStorage.setItem('token', res.data.accessToken)
-                message.success('登录成功').then()
+                message.success({
+                    content: '登录成功',
+                    duration: 0.5,
+                    onClose: () => navigate('/')
+                }).then()
             }))
             .catch((err) => {
                 console.log(err)
             })
     }
 
-    return {validateUsername, validatePassword, login}
+    return {captchaUrl, random, setRandom, validateUsername, validatePassword, validateCode, login}
 }
 
 const LoginPage: React.FC = () => {
-    const {validateUsername, validatePassword, login} = LoginHooks()
+    const {captchaUrl, random, setRandom, validateUsername, validatePassword, validateCode, login} = LoginHooks()
 
     const loginForm = (
         <Form onFinish={login}>
@@ -61,6 +78,13 @@ const LoginPage: React.FC = () => {
             </Form.Item>
             <Form.Item name='password' rules={[{validator: validatePassword}]}>
                 <Input.Password placeholder='请输入密码' prefix={<LockOutlined />} className={style.loginInput} />
+            </Form.Item>
+            <Form.Item name='code' rules={[{validator: validateCode}]}>
+                <Input placeholder='请输入验证码'
+                       prefix={<VerifiedOutlined style={{marginLeft: '11px'}} />}
+                       addonAfter={<img src={captchaUrl + '?random=' + random} onClick={() => setRandom(Math.random())}
+                                        style={{height: '35px'}} alt='' />}
+                       className={style.codeInput} />
             </Form.Item>
             <Form.Item>
                 <Button type='primary' htmlType='submit' className={style.loginButton}>登录</Button>

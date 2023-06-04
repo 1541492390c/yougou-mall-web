@@ -1,8 +1,8 @@
-import { AxiosResponse } from 'axios'
 import request from '@/request'
+import { AxiosInstance, AxiosResponse } from 'axios'
 
 const getCategoryListApi = (): Promise<AxiosResponse> => {
-    return request({
+    return  request({
         url: '/product/category/list',
         method: 'GET'
     })
