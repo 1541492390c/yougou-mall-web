@@ -11,7 +11,6 @@ const request = (config: AxiosRequestConfig, auth: boolean = false): Promise<Axi
     })
 
     instance.interceptors.request.use((config: InternalAxiosRequestConfig): any => {
-        console.log(localStorage.getItem('token'))
         if (auth && !!localStorage.getItem('token')) {
             config.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`
         }

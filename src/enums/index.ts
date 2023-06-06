@@ -3,4 +3,8 @@ enum ResponseCode {
     UN_VALID_ERROR = 'A00003'
 }
 
-export { ResponseCode }
+enum BannerType {
+    PC = 1
+}
+
+export { ResponseCode, BannerType }

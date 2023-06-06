@@ -1,0 +1,472 @@
+.main {
+  display: flex;
+  flex-direction: row;
+}
+
+.detail {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.navigation {
+  width: 100%;
+  background-color: #f13a3a;
+  margin-top: 22px;
+  display: flex;
+  justify-content: center;
+}
+
+.flex {
+  padding-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.content {
+  width: 1200px;
+  display: flex;
+  flex-direction: row;
+}
+
+.productImg {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  img {
+    width: 412px;
+    height: 385px;
+    border: #e2e1e3 solid 1px;
+  }
+}
+
+.productImgList {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+.list {
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+}
+
+.listImg {
+  img {
+    width: 68px;
+    height: 62px;
+    cursor: pointer;
+    border: #d9d9d9 solid 1px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+.listImgSelect {
+  @extend .listImg;
+
+  img {
+    border: #f13a3a solid 1px;
+  }
+}
+
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 62px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.arrowDisable {
+  @extend .arrow;
+  cursor: not-allowed;
+
+  svg {
+    color: silver;
+  }
+}
+
+.productInfo {
+  width: 100%;
+  margin-left: 50px;
+}
+
+.productNameAndRate {
+  display: flex;
+  flex-direction: row;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.rate {
+  width: 10%;
+  display: flex;
+  justify-content: flex-end;
+  color: #f13a3a;
+
+  span {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.productDescAndPrise {
+  display: flex;
+  flex-direction: row;
+  font-size: 13px;
+  color: gray;
+}
+
+.prise {
+  width: 10%;
+  display: flex;
+  justify-content: flex-end;
+
+  span {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.productPrice {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  margin-top: 20px;
+  background: #f4f4f4;
+  background-size: 100%;
+}
+
+.text {
+  width: 10%;
+  text-align: center;
+  font-size: 13px;
+  color: gray;
+}
+
+.price {
+  width: 90%;
+  font-size: 25px;
+  font-weight: bold;
+  color: #f13a3a;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.costPrice {
+  font-size: 13px;
+  font-weight: lighter;
+  margin-left: 10px;
+  margin-top: 5px;
+  text-decoration: line-through solid 1px;
+  color: gray;
+}
+
+.attrList {
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 25px;
+}
+
+.attrValueList {
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.attrBox {
+  min-width: 50px;
+  padding: 10px;
+  margin-right: 10px;
+  font-size: 12px;
+  background-color: #f9f9f9;
+  border: #e2e1e3 solid 1px;
+  text-align: center;
+  cursor: pointer;
+
+  &:hover {
+    border: #f13a3a solid 1px;
+    color: #f13a3a;
+    transition: all 0.3s;
+  }
+}
+
+.attrBoxSelect {
+  @extend .attrBox;
+  border: #f13a3a solid 1px;
+  color: #f13a3a;
+}
+
+.attrBoxDisable {
+  @extend .attrBox;
+  color: silver;
+  cursor: not-allowed;
+
+  &:hover {
+    color: silver;
+    border: #e2e1e3 solid 1px;
+  }
+}
+
+.number {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.numberInput {
+  height: 35px;
+  width: 90px;
+  border-radius: 0 0;
+
+  input {
+    height: 40px;
+  }
+
+  &:hover {
+    border: #d9d9d9 solid 1px;
+    box-shadow: 0 0;
+  }
+}
+
+.stockText {
+  @extend .text;
+  width: 15%;
+}
+
+.stockNumber {
+  color: #f13a3a;
+  margin-left: 5px;
+}
+
+.buttonList {
+  margin-top: 50px;
+  margin-left: 22px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+
+  button {
+    width: 180px;
+    height: 45px;
+    border-radius: 0 0;
+    margin-right: 20px;
+    font-size: 16px;
+  }
+}
+
+.collectionButton {
+  &:hover, &:focus, &:active {
+    border: #d9d9d9 solid 1px;
+  }
+}
+
+.detailDown {
+  width: 1200px;
+  margin-top: 50px;
+  margin-bottom: 100px;
+  display: flex;
+  flex-direction: row;
+}
+
+.comment {
+  width: 80%;
+}
+
+.commentTitle {
+  width: 100%;
+  background-color: #f8f8f8;
+  border: #eaeaea solid 1px;
+  margin-bottom: 10px;
+}
+
+.commentBox {
+  height: 100%;
+  width: 120px;
+  line-height: 38px;
+  text-align: center;
+  background-color: white;
+  border-right: #eaeaea solid 1px;
+  color: #f13a3a;
+  box-shadow: #f13a3a inset 0 5px;
+  cursor: pointer;
+}
+
+.productRate {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  border: #eaeaea solid 1px;
+}
+
+.rateBox {
+  width: 30%;
+  height: 120px;
+  color: #f13a3a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: #eaeaea solid 1px;
+}
+
+.rateText {
+  height: 60%;
+  font-size: 38px;
+  padding-top: 20px;
+  margin-bottom: 8px;
+}
+
+.rateStar {
+  height: 30%;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #f13a3a;
+
+  li {
+    margin-left: -5px;
+  }
+}
+
+.rateCount {
+  margin-left: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+
+.rateCountStar {
+  margin-left: 8px;
+  margin-right: 15px;
+  font-size: 13px;
+  color: #f13a3a;
+
+  li {
+    margin-left: -2px;
+  }
+}
+
+.commentItem {
+  width: 100%;
+  border: #eaeaea solid 1px;
+  border-top: none;
+}
+
+.noComment {
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: gray;
+  font-size: 14px;
+
+  img {
+    height: 150px;
+    width: 150px;
+  }
+}
+
+.guessLike {
+  width: 20%;
+  padding-left: 10px;
+}
+
+.guessLikeTitle {
+  height: 40px;
+  line-height: 40px;
+  padding-left: 10px;
+  margin-bottom: 10px;
+  background-color: #f8f8f8;
+  border: #eaeaea solid 1px;
+}
+
+.guessLikeList {
+  min-height: 120px;
+  background-color: white;
+  border: #eaeaea solid 1px;
+}
+
+.noGuessLike {
+  height: 122px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: #eaeaea solid 1px;
+  color: gray;
+}
+
+.commentArea {
+  padding: 20px;
+}
+
+.commentValue {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  border-bottom: #f0f0f0 solid 1px;
+}
+
+.avatarAndNickname {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.commentDetails {
+  margin-left: 20px;
+}
+
+.creatTimeAndRate {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.creatTime {
+  color: gray;
+  font-size: 13px;
+}
+
+.commentRate {
+  font-size: 12px;
+  margin-left: 15px;
+  color: #f13a3a;
+
+  li {
+    margin-left: -7px;
+    margin-bottom: 5px;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.noSku {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: gray;
+  font-size: 14px;
+}

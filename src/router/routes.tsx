@@ -8,6 +8,9 @@ import Discount from '@/pages/discount/Discount'
 import SecKills from '@/pages/sec-kills/SecKills'
 import Brands from '@/pages/brands/Brands'
 import Feedback from '@/pages/feedback/Feedback'
+import UpdatePassword from '@/pages/update-password/UpdatePassword'
+import Personal from '@/pages/personal/Personal'
+import ProductDetail from '@/pages/product-detail/ProductDetail'
 
 const routes: Array<RouteObject> = [
     {
@@ -18,7 +21,8 @@ const routes: Array<RouteObject> = [
             {path: 'discount', element: <Discount />},
             {path: 'sec_kills', element: <SecKills />},
             {path: 'brands', element: <Brands />},
-            {path: 'coupons', element: <Coupons />}
+            {path: 'coupons', element: <Coupons />},
+            {path: 'detail/:id', element: <ProductDetail />}
         ]
     },
     {
@@ -32,6 +36,14 @@ const routes: Array<RouteObject> = [
     {
         path: '/feedback',
         element: <Feedback />
+    },
+    {
+        path: '/update_password',
+        element: <UpdatePassword />
+    },
+    {
+        path: '/personal',
+        element: <Personal />
     }
 ]
 

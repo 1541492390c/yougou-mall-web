@@ -1,12 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
 import { useNavigate } from 'react-router-dom'
 import { RightCircleOutlined, ThunderboltFilled } from '@ant-design/icons'
-import { Product } from '@/interface'
+import { Banner, Product } from '@/interface'
 import NoSecKill from '@/assets/img/common/no-sec-kill.png'
 import NoProduct from '@/assets/img/common/no-product.png'
+import NoCoupons from '@/assets/img/common/no-coupons.png'
 import TitleBlockRight from '@/assets/img/common/title-block-right.png'
 import TitleBlockLeft from '@/assets/img/common/title-block-left.png'
+import IndexBanner from '@/components/index-banner/IndexBanner'
+import { getBannerListApi } from '@/api/platform-api'
+import { BannerType } from '@/enums'
+import { getRecommendedProductListApi } from '@/api/product-api'
+import ProductCard from '@/components/product-card/ProductCard'
 
 const HomeHooks: any = (): any => {
     const navigate = useNavigate()
@@ -14,12 +20,30 @@ const HomeHooks: any = (): any => {
     const [secKillTimeout, setSecKillTimeout] = useState<number>(0)
     const [hotProductList, setHotProductList] = useState<Array<Product>>([])
     const [recommendProductList, setRecommendProductList] = useState<Array<Product>>([])
+    const [couponList, setCouponList] = useState<Array<Product>>([])
+    const [bannerList, setBannerList] = useState<Array<Banner>>([])
 
-    return {navigate, secKillTime, secKillTimeout, hotProductList, recommendProductList}
+    useEffect(() => {
+        getBannerListApi(BannerType.PC, 'home').then((res) => {
+            setBannerList(res.data)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }, [])
+
+    useEffect(() => {
+        getRecommendedProductListApi().then((res) => {
+            setRecommendProductList(res.data)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }, [])
+
+    return {navigate, secKillTime, secKillTimeout, hotProductList, recommendProductList, couponList, bannerList}
 }
 
 const HomePage: React.FC = () => {
-    const {navigate, secKillTimeout, hotProductList, recommendProductList} = HomeHooks()
+    const {navigate, secKillTimeout, hotProductList, recommendProductList, couponList, bannerList} = HomeHooks()
 
     // 秒杀活动
     const secKill = (
@@ -96,9 +120,49 @@ const HomePage: React.FC = () => {
         </div>
     )
 
+    const coupons = (
+        <div className={style.coupon}>
+            <div className={style.card}>
+                <div className={style.cardTitle}>
+                    <div onClick={() => navigate('coupons')} className={style.couponCardTitle}>
+                        <span>领券中心</span>
+                        <span><RightCircleOutlined style={{marginLeft: '5px', color: '#f13a3a'}} /></span>
+                    </div>
+                </div>
+                <div>
+                    {(() => {
+                        if (!couponList || couponList.length === 0) {
+                            return (
+                                <div className={style.notCoupons}>
+                                    <div>
+                                        <img src={NoCoupons} alt='' />
+                                        <div><span>暂无优惠券</span></div>
+                                    </div>
+                                </div>
+                            )
+                        } else {
+                            return (
+                                <div className={style.notCoupons}>
+                                    {/*{couponList.map((item, index) => {*/}
+                                    {/*    return (*/}
+                                    {/*        <div key={index} className={style.couponItem}>*/}
+                                    {/*            <CouponCard coupon={item} />*/}
+                                    {/*        </div>*/}
+                                    {/*    )*/}
+                                    {/*})}*/}
+                                </div>
+                            )
+                        }
+                    })()}
+                </div>
+            </div>
+        </div>
+    )
+
     const hotProductAndCoupons = (
         <div className={style.hotProductAndCoupons}>
             {hotProduct}
+            {coupons}
         </div>
     )
 
@@ -106,7 +170,7 @@ const HomePage: React.FC = () => {
         <>
             <div className={style.banner}>
                 <div style={{width: '100%'}}>
-                    {/*<PageBanner bannerList={bannerList} />*/}
+                    <IndexBanner bannerList={bannerList} />
                 </div>
             </div>
             <div className={style.main}>
@@ -119,7 +183,7 @@ const HomePage: React.FC = () => {
                         <div style={{marginLeft: '10px'}}><img src={TitleBlockRight} alt='' /></div>
                     </div>
                     {(() => {
-                        if (!hotProductList || hotProductList.length <= 0) {
+                        if (!recommendProductList || recommendProductList.length <= 0) {
                             return (
                                 <div className={style.noRecommendProduct}>
                                     <div className={style.notProduct}>
@@ -134,7 +198,7 @@ const HomePage: React.FC = () => {
                                     {recommendProductList.map((item: Product, index: number) => {
                                         return (
                                             <div key={index} className={style.recommendItem}>
-                                                {/*<ProductCard product={item} />*/}
+                                                <ProductCard product={item} />
                                             </div>
                                         )
                                     })}

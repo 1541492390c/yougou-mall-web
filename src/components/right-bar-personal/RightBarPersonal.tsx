@@ -22,16 +22,20 @@ const RightBarPersonalHooks: any = (): any => {
             okText: '确定',
             cancelText: '取消',
             onOk: () => {
-                logoutApi().then((res) => {
-                    if (res) {
-                        message.success('退出登录成功').then()
-                        localStorage.removeItem('token')
-                        dispatch(setIsLogin(false))
-                        dispatch(setUserinfo({}))
-                    }
-                }).catch((err) => {
-                    console.log(err)
-                })
+                // logoutApi().then((res) => {
+                //     if (res) {
+                //         message.success('退出登录成功').then()
+                //         localStorage.removeItem('token')
+                //         dispatch(setIsLogin(false))
+                //         dispatch(setUserinfo({}))
+                //     }
+                // }).catch((err) => {
+                //     console.log(err)
+                // })
+                message.success('退出登录成功').then()
+                localStorage.removeItem('token')
+                dispatch(setIsLogin(false))
+                dispatch(setUserinfo({}))
             }
         })
     }

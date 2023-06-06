@@ -16,13 +16,12 @@ const AppHooks = (): any => {
     useEffect(() => {
         if (isLogin) {
             getUserinfoApi().then((res) => {
-                console.log(res.data)
                 dispatch(setUserinfo(res.data))
             }).catch((err) => {
                 console.log(err)
             })
         }
-    }, [])
+    }, [isLogin, dispatch])
 
     return {transformRoutes}
 }

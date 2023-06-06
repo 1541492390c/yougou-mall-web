@@ -289,4 +289,10 @@
 .noRecommendProduct {
   display: flex;
   justify-content: center;
+  margin-bottom: 80px;
+
+  img {
+    height: 220px;
+    width: 220px;
+  }
 }

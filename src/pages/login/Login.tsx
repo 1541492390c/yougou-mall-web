@@ -7,9 +7,12 @@ import { loginApi } from '@/api/auth-api'
 import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
 import { baseUrl } from '@/request'
+import { useDispatch } from 'react-redux'
+import { setIsLogin } from '@/store'
 
 const LoginHooks: any = (): any => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const captchaUrl = baseUrl + '/biz/captcha/image'
     const [random, setRandom] = useState(Math.random())
 
@@ -57,7 +60,10 @@ const LoginHooks: any = (): any => {
                 message.success({
                     content: '登录成功',
                     duration: 0.5,
-                    onClose: () => navigate('/')
+                    onClose: () => {
+                        dispatch(setIsLogin(true))
+                        navigate('/')
+                    }
                 }).then()
             }))
             .catch((err) => {
