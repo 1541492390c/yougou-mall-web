@@ -1,0 +1,60 @@
+.shopCarItem {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 12px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  a {
+    color: #1b1b1b;
+
+    &:hover {
+      color: #f13a3a;
+    }
+  }
+}
+
+.shopCarItemImg {
+  width: 45px;
+  height: 40px;
+  border: silver solid 1px;
+  margin-right: 10px;
+}
+
+.shopCarItemName {
+  width: 190px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+.specsAndPrice {
+  width: 200px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.specs {
+  color: gray;
+
+}
+
+.price {
+  margin-left: 10px;
+  color: #f13a3a;
+}
+
+.delete {
+  color: #f13a3a;
+  margin-left: 20px;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: #f13a3a solid underline;
+  }
+}
