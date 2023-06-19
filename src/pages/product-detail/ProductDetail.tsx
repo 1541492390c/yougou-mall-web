@@ -1,24 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react'
 import style from './style.module.scss'
+import Cookies from 'js-cookie'
 import { useParams } from 'react-router-dom'
-import { getAttrListApi, getProductByProductIdApi, getSkuListApi } from '@/api/product-api'
-import { Attr, AttrValue, Product, Sku, SkuSpecs } from '@/interface'
+import { useSelector } from 'react-redux'
+import {
+    getAttrListApi,
+    getProductByProductIdApi,
+    getSkuListApi,
+    isFavoriteApi,
+    saveFavoriteApi
+} from '@/api/product-api'
+import event from '@/event/index'
+import { Attr, AttrValue, Product, ShopCarItem, Sku, SkuSpecs } from '@/interface'
 import { HeartOutlined, LeftOutlined, RightOutlined, ShoppingCartOutlined } from '@ant-design/icons'
-import { Button, InputNumber } from 'antd'
+import { Button, InputNumber, message } from 'antd'
+import { isEmpty } from '@/utils'
 
 const ProductDetailHooks: any = (): any => {
     const params = useParams()
+    const isLogin = useSelector((state: any) => state.isLogin)
     const imgPageSize = useRef<number>(4)
-    const [number, setNumber] = useState<number>(1)
+    const [quantity, setQuantity] = useState<number>(1)
     const [product, setProduct] = useState<Product>()
     const [currentSku, setCurrentSku] = useState<Sku>()
-    const [currentSkuSpecs, setCurrentSkuSpecs] = useState<Array<SkuSpecs>>([])
     const [skuList, setSkuList] = useState<Array<Sku>>([])
     const [attrList, setAttrList] = useState<Array<Attr>>([])
     const [imgList, setImgList] = useState<Array<string>>([])
     const [attrValueMap, setAttrValueMap] = useState<Map<string, string>>(new Map())
     const [imgPage, setImgPage] = useState<number>(1)
     const [currentImg, setCurrentImg] = useState<string>('')
+    const [isFavorite, setIsFavorite] = useState<boolean>()
 
     useEffect(() => {
         // 获取商品信息
@@ -38,7 +49,6 @@ const ProductDetailHooks: any = (): any => {
             if (!!res.data) {
                 setSkuList(res.data)
                 setCurrentSku(res.data[0])
-                setCurrentSkuSpecs(res.data[0].skuSpecs)
             }
         }).catch((err) => {
             console.log(err)
@@ -58,16 +68,29 @@ const ProductDetailHooks: any = (): any => {
             console.log(err)
         })
 
+        // 如果已登录,则判断用户是否已收藏该商品
+        if (isLogin) {
+            isFavoriteApi(params.id).then((res) => {
+                if (res) {
+                    setIsFavorite(res.data)
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+        }
+
         return () => {
             document.title = '优购商城'
         }
     }, [params.id])
 
-    const isCurrentAttrValue = (attrName: string, attrValue: string) => {
+    // 判断是否当前选中属性值
+    const isCurrentAttrValue = (attrName: string, attrValue: string): boolean => {
         return attrValueMap.get(attrName) === attrValue
     }
 
-    const selectAttrValue = (attrName: string, attrValue: string) => {
+    // 选择属性值
+    const selectAttrValue = (attrName: string, attrValue: string): void => {
         let specs: Array<SkuSpecs> = []
         Object.assign(specs, currentSku?.skuSpecs)
 
@@ -88,7 +111,83 @@ const ProductDetailHooks: any = (): any => {
         })
     }
 
-    const imgPageChange = (value: number) => {
+    // 将当前SKU的规格转为购物车的格式
+    const currentSkuSpecsStringify = (): string => {
+        let specs: Array<Object> = new Array<Object>()
+        // 拼接规格
+        if (!!currentSku?.skuSpecs) {
+            for (let index in currentSku?.skuSpecs) {
+                let object = Object.create({})
+                object[currentSku.skuSpecs[index].attrName] = currentSku.skuSpecs[index].attrValueName
+                specs.push(object)
+            }
+        }
+        return JSON.stringify(specs)
+    }
+
+    // 添加购物车
+    const addShopCar = (): void => {
+        let specs: string = currentSkuSpecsStringify()
+        //获取购物车cookie
+        let shopCarStr: string | undefined = Cookies.get('shop_car')
+        let shopCar: Array<ShopCarItem> = new Array<ShopCarItem>()
+        if (!!currentSku) {
+            // 没有购物车cookie则创建一个,有效期24小时
+            if (!shopCarStr) {
+                let shopCarItem: ShopCarItem = {
+                    productId: product?.productId,
+                    skuId: currentSku?.skuId,
+                    quantity: quantity,
+                    totalAmount: quantity * currentSku?.price,
+                    productName: product?.name,
+                    specs: specs,
+                    img: product?.cover
+                }
+                shopCar.push(shopCarItem)
+            } else {
+                shopCar = JSON.parse(shopCarStr)
+                let skuIdList: Array<number> = shopCar.map((item: ShopCarItem) => {
+                    return item.skuId
+                })
+                // 如果已将该规格商品加入购物车,则在此基础上修改
+                if (skuIdList.includes(currentSku.skuId)) {
+                    shopCar.forEach((item: ShopCarItem) => {
+                        if (item.skuId === currentSku.skuId) {
+                            item.quantity = item.quantity + quantity
+                            item.totalAmount = item.totalAmount + quantity * currentSku.price
+                        }
+                    })
+                } else {
+                    let shopCarItem: ShopCarItem = {
+                        productId: product?.productId,
+                        skuId: currentSku?.skuId,
+                        quantity: quantity,
+                        totalAmount: quantity * currentSku?.price,
+                        productName: product?.name,
+                        specs: specs,
+                        img: product?.cover
+                    }
+                    shopCar.push(shopCarItem)
+                }
+            }
+            Cookies.set('shop_car', JSON.stringify(shopCar), {expires: 24 * 60 * 60})
+            event.emit('shopCarUpdate')
+        }
+    }
+
+    // 收藏当前商品
+    const saveFavorite = (): void => {
+        saveFavoriteApi(product?.productId).then((res) => {
+            if (res) {
+                message.success('收藏成功').then()
+                setIsFavorite(true)
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
+    const imgPageChange = (value: number): void => {
         if ((value - 1) >= 0 && ((value - 1) * imgPageSize.current) < imgList.length) {
             setImgPage(value)
             setCurrentImg(imgList[(value - 1) * imgPageSize.current])
@@ -104,7 +203,7 @@ const ProductDetailHooks: any = (): any => {
     }
 
     return {
-        number,
+        quantity,
         product,
         currentSku,
         skuList,
@@ -113,9 +212,13 @@ const ProductDetailHooks: any = (): any => {
         imgPage,
         imgPageSize,
         currentImg,
+        isFavorite,
+        setQuantity,
+        setCurrentImg,
         isCurrentAttrValue,
         selectAttrValue,
-        setCurrentImg,
+        addShopCar,
+        saveFavorite,
         imgPageChange,
         startPage,
         endPage
@@ -124,7 +227,7 @@ const ProductDetailHooks: any = (): any => {
 
 const ProductDetailPages: React.FC = () => {
     const {
-        number,
+        quantity,
         product,
         currentSku,
         skuList,
@@ -133,9 +236,13 @@ const ProductDetailPages: React.FC = () => {
         imgPage,
         imgPageSize,
         currentImg,
+        isFavorite,
+        setQuantity,
+        setCurrentImg,
         isCurrentAttrValue,
         selectAttrValue,
-        setCurrentImg,
+        addShopCar,
+        saveFavorite,
         imgPageChange,
         startPage,
         endPage
@@ -223,7 +330,7 @@ const ProductDetailPages: React.FC = () => {
             </div>
             <div className={style.productDescAndPrise}>
                 <div style={{width: '90%'}}>
-                    <span>{currentSku?.skuDesc}</span>
+                    <span>{currentSku?.description}</span>
                 </div>
                 <div className={style.prise}>
                     <span>好评率</span>
@@ -256,9 +363,10 @@ const ProductDetailPages: React.FC = () => {
                                 <div className={style.number}>
                                     <div className={style.text}><span>数量</span></div>
                                     <div>
-                                        <InputNumber value={number}
+                                        <InputNumber value={quantity}
                                                      min={1}
                                                      max={currentSku?.skuStock >= 1 ? currentSku?.skuStock : 1}
+                                                     onStep={(value: number) => setQuantity(value)}
                                                      className={style.numberInput} />
                                     </div>
                                     <div className={style.stockText}>
@@ -268,10 +376,14 @@ const ProductDetailPages: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className={style.buttonList}>
-                                    <Button icon={<ShoppingCartOutlined />} disabled={currentSku?.skuStock === 0}
+                                    <Button icon={<ShoppingCartOutlined />}
+                                            disabled={isEmpty(currentSku) || currentSku?.skuStock === 0}
+                                            onClick={addShopCar}
                                             type='primary'>加入购物车</Button>
                                     <Button icon={<HeartOutlined />}
-                                            className={style.collectionButton}>{'收藏商品'}</Button>
+                                            disabled={isFavorite}
+                                            onClick={saveFavorite}
+                                            className={style.favoriteButton}>{isFavorite ? '您已收藏该商品' : '收藏商品'}</Button>
                                 </div>
                             </>
                         )
@@ -305,7 +417,6 @@ const ProductDetailPages: React.FC = () => {
                                 </div>
                             </div>
                             <div className={style.commentItem}>
-
                             </div>
                         </div>
                     </div>

@@ -42,7 +42,7 @@ interface Sku {
     productId: number,
     skuStock: number,
     price: number,
-    skuDesc: string,
+    description: string,
     skuSpecs: Array<SkuSpecs>
 }
 
@@ -69,4 +69,21 @@ interface Banner {
     img: string
 }
 
-export type { User, Category, Product, SkuSpecs, Sku, Attr, AttrValue, Banner }
+// 购物车
+interface ShopCarItem {
+    productId?: number,
+    skuId: number,
+    quantity: number,
+    totalAmount: number,
+    productName?: string,
+    img?: string,
+    specs: string
+}
+
+// 用户收藏
+interface Favorite {
+    favoriteId: number,
+    productId: number
+}
+
+export type { User, Category, Product, SkuSpecs, Sku, Attr, AttrValue, Banner, ShopCarItem, Favorite }

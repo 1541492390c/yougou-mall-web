@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import { ResponseCode } from '@/enums'
+import { ResponseCodeEnum } from '@/enums'
 import { message } from 'antd'
 
 export const baseUrl: string = 'http://127.0.0.1:8000'
@@ -18,9 +18,9 @@ const request = (config: AxiosRequestConfig, auth: boolean = false): Promise<Axi
     })
 
     instance.interceptors.response.use((res: AxiosResponse): any => {
-        if (res.data.code === ResponseCode.OK) {
+        if (res.data.code === ResponseCodeEnum.OK) {
             return res.data
-        } else if (res.data.code === ResponseCode.UN_VALID_ERROR) {
+        } else if (res.data.code === ResponseCodeEnum.UN_VALID_ERROR) {
             localStorage.removeItem('token')
             message.error(res.data.message).then()
         } else {

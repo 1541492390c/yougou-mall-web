@@ -11,6 +11,7 @@ import Feedback from '@/pages/feedback/Feedback'
 import UpdatePassword from '@/pages/update-password/UpdatePassword'
 import Personal from '@/pages/personal/Personal'
 import ProductDetail from '@/pages/product-detail/ProductDetail'
+import AuthRoute from '@/router/AuthRoute'
 
 const routes: Array<RouteObject> = [
     {
@@ -43,7 +44,7 @@ const routes: Array<RouteObject> = [
     },
     {
         path: '/personal',
-        element: <Personal />
+        element: <AuthRoute><Personal /></AuthRoute>
     }
 ]
 

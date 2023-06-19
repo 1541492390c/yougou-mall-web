@@ -5,6 +5,7 @@ import { Popover, Tooltip } from 'antd'
 import { FormOutlined, HomeOutlined, ShoppingCartOutlined, UpOutlined, UserOutlined } from '@ant-design/icons'
 import RightBarPersonal from '@/components/right-bar-personal/RightBarPersonal'
 import RightBarShopCar from '@/components/right-bar-shop-car/RightBarShopCar'
+import event from '@/event'
 
 interface Props {
     pathname: string
@@ -16,6 +17,10 @@ const RightBarHooks: any = (): any => {
     const [personalHover, setPersonalHover] = useState<boolean>(false)
     const [shopCarClick, setShopCarClick] = useState<boolean>(false)
     const [shopCarHover, setShopCarHover] = useState<boolean>(false)
+
+    event.on('closeShopCarTooltip', () => {
+        setShopCarClick(false)
+    })
 
     const handleClickChange = (type: number) => (visible: boolean): void => {
         if (type === 1) {

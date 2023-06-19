@@ -4,7 +4,8 @@ import { Button, message, Modal } from 'antd'
 import { ExportOutlined, LockOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import style from './style.module.scss'
-import { objectIsEmpty } from '@/utils'
+import { isEmpty } from '@/utils'
+import AvatarEmpty from '@/assets/img/empty/avatar-empty.png'
 import { logoutApi } from '@/api/auth-api'
 import { setIsLogin, setUserinfo } from '@/store'
 
@@ -12,7 +13,6 @@ const RightBarPersonalHooks: any = (): any => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const userinfo = useSelector((state: any) => state.userinfo)
-    const defaultAvatarUrl = 'http://127.0.0.1:9000/yougou-mall-resource/avatar/default.png'
 
     const logout = () => {
         Modal.confirm({
@@ -22,39 +22,35 @@ const RightBarPersonalHooks: any = (): any => {
             okText: '确定',
             cancelText: '取消',
             onOk: () => {
-                // logoutApi().then((res) => {
-                //     if (res) {
-                //         message.success('退出登录成功').then()
-                //         localStorage.removeItem('token')
-                //         dispatch(setIsLogin(false))
-                //         dispatch(setUserinfo({}))
-                //     }
-                // }).catch((err) => {
-                //     console.log(err)
-                // })
-                message.success('退出登录成功').then()
-                localStorage.removeItem('token')
-                dispatch(setIsLogin(false))
-                dispatch(setUserinfo({}))
+                logoutApi().then((res) => {
+                    if (res) {
+                        message.success('退出登录成功').then()
+                        localStorage.removeItem('token')
+                        dispatch(setIsLogin(false))
+                        dispatch(setUserinfo({}))
+                    }
+                }).catch((err) => {
+                    console.log(err)
+                })
             }
         })
     }
 
-    return {navigate, userinfo, defaultAvatarUrl, logout}
+    return {navigate, userinfo, logout}
 }
 
 const RightBarPersonalComponent: React.FC = (): JSX.Element => {
-    const {navigate, userinfo, defaultAvatarUrl, logout} = RightBarPersonalHooks()
+    const {navigate, userinfo, logout} = RightBarPersonalHooks()
 
     return (
         <div className={style.main}>
             <div className={style.personalTitle}><span>个人中心</span></div>
             <div className={style.avatar}>
-                {objectIsEmpty(userinfo) ? <img src={defaultAvatarUrl} alt='' /> : <img src={userinfo.avatar} alt='' />}
+                {isEmpty(userinfo) && !userinfo.avatar ? <img src={AvatarEmpty} alt='' /> : <img src={userinfo.avatar} alt='' />}
             </div>
             <div className={style.username}>
                 {(() => {
-                    if (objectIsEmpty(userinfo)) {
+                    if (isEmpty(userinfo)) {
                         return <NavLink to='/login'>立即登录</NavLink>
                     }
                     return (
@@ -66,10 +62,10 @@ const RightBarPersonalComponent: React.FC = (): JSX.Element => {
             </div>
             <div>
                 {(() => {
-                    if (objectIsEmpty(userinfo)) {
+                    if (isEmpty(userinfo)) {
                         return (
                             <div className={style.unLoginBottom}>
-                                <div className={style.forgePassword}><NavLink to='/change_password'>忘记密码?</NavLink></div>
+                                <div className={style.forgePassword}><NavLink to='/update_password'>忘记密码?</NavLink></div>
                                 <div className={style.toRegister}><NavLink to='/register'>免费注册</NavLink></div>
                             </div>
                         )

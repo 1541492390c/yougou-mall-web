@@ -15,6 +15,7 @@ const LoginHooks: any = (): any => {
     const dispatch = useDispatch()
     const captchaUrl = baseUrl + '/biz/captcha/image'
     const [random, setRandom] = useState(Math.random())
+    const [buttonDisabled, setButtonDisabled] = useState<boolean>(false)
 
     useEffect(() => {
         document.title = '优购商城,登录'
@@ -54,6 +55,7 @@ const LoginHooks: any = (): any => {
     }
 
     const login = (values: { username: string, password: string, code: string }): void => {
+        setButtonDisabled(true)
         loginApi(values.username, values.password, values.code)
             .then((res => {
                 localStorage.setItem('token', res.data.accessToken)
@@ -67,15 +69,16 @@ const LoginHooks: any = (): any => {
                 }).then()
             }))
             .catch((err) => {
+                setButtonDisabled(false)
                 console.log(err)
             })
     }
 
-    return {captchaUrl, random, setRandom, validateUsername, validatePassword, validateCode, login}
+    return {captchaUrl, random, buttonDisabled, setRandom, validateUsername, validatePassword, validateCode, login}
 }
 
 const LoginPage: React.FC = () => {
-    const {captchaUrl, random, setRandom, validateUsername, validatePassword, validateCode, login} = LoginHooks()
+    const {captchaUrl, random, buttonDisabled, setRandom, validateUsername, validatePassword, validateCode, login} = LoginHooks()
 
     const loginForm = (
         <Form onFinish={login}>
@@ -93,7 +96,7 @@ const LoginPage: React.FC = () => {
                        className={style.codeInput} />
             </Form.Item>
             <Form.Item>
-                <Button type='primary' htmlType='submit' className={style.loginButton}>登录</Button>
+                <Button type='primary' htmlType='submit' disabled={buttonDisabled} className={style.loginButton}>登录</Button>
             </Form.Item>
         </Form>
     )
@@ -116,7 +119,7 @@ const LoginPage: React.FC = () => {
                                     <NavLink to='/register'>免费注册</NavLink>
                                 </div>
                                 <div className={style.toChangePassword}>
-                                    <NavLink to='/'>修改密码</NavLink>
+                                    <NavLink to='/update_password'>修改密码</NavLink>
                                 </div>
                             </div>
                         </div>

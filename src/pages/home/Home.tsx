@@ -3,14 +3,14 @@ import style from './style.module.scss'
 import { useNavigate } from 'react-router-dom'
 import { RightCircleOutlined, ThunderboltFilled } from '@ant-design/icons'
 import { Banner, Product } from '@/interface'
-import NoSecKill from '@/assets/img/common/no-sec-kill.png'
-import NoProduct from '@/assets/img/common/no-product.png'
-import NoCoupons from '@/assets/img/common/no-coupons.png'
+import SecKillEmpty from '@/assets/img/empty/sec-kill-empty.png'
+import ProductEmpty from '@/assets/img/empty/product-empty.png'
+import CouponsEmpty from '@/assets/img/empty/coupons-empty.png'
 import TitleBlockRight from '@/assets/img/common/title-block-right.png'
 import TitleBlockLeft from '@/assets/img/common/title-block-left.png'
 import IndexBanner from '@/components/index-banner/IndexBanner'
 import { getBannerListApi } from '@/api/platform-api'
-import { BannerType } from '@/enums'
+import { BannerTypeEnum } from '@/enums'
 import { getRecommendedProductListApi } from '@/api/product-api'
 import ProductCard from '@/components/product-card/ProductCard'
 
@@ -24,14 +24,14 @@ const HomeHooks: any = (): any => {
     const [bannerList, setBannerList] = useState<Array<Banner>>([])
 
     useEffect(() => {
-        getBannerListApi(BannerType.PC, 'home').then((res) => {
+        // 获取轮播图列表
+        getBannerListApi(BannerTypeEnum.PC, 'home').then((res) => {
             setBannerList(res.data)
         }).catch((err) => {
             console.log(err)
         })
-    }, [])
 
-    useEffect(() => {
+        // 获取推荐商品
         getRecommendedProductListApi().then((res) => {
             setRecommendProductList(res.data)
         }).catch((err) => {
@@ -75,7 +75,7 @@ const HomePage: React.FC = () => {
             </div>
             <div>
                 <div className={style.notProduct}>
-                    <img src={NoSecKill} alt='' />
+                    <img src={SecKillEmpty} alt='' />
                     <div><span>暂无秒杀活动</span></div>
                 </div>
             </div>
@@ -102,7 +102,7 @@ const HomePage: React.FC = () => {
                         if (!hotProductList || hotProductList.length <= 0) {
                             return (
                                 <div className={style.notHotProduct}>
-                                    <img src={NoProduct} alt='' />
+                                    <img src={ProductEmpty} alt='' />
                                     <div><span>暂无商品</span></div>
                                 </div>
                             )
@@ -135,7 +135,7 @@ const HomePage: React.FC = () => {
                             return (
                                 <div className={style.notCoupons}>
                                     <div>
-                                        <img src={NoCoupons} alt='' />
+                                        <img src={CouponsEmpty} alt='' />
                                         <div><span>暂无优惠券</span></div>
                                     </div>
                                 </div>
@@ -187,7 +187,7 @@ const HomePage: React.FC = () => {
                             return (
                                 <div className={style.noRecommendProduct}>
                                     <div className={style.notProduct}>
-                                        <img src={NoProduct} alt='' />
+                                        <img src={ProductEmpty} alt='' />
                                         <div><span>暂无推荐商品</span></div>
                                     </div>
                                 </div>

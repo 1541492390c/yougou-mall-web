@@ -3,12 +3,11 @@ import AppScrollTop from './AppScrollTop'
 import { useRoutes } from 'react-router-dom'
 import routes from '@/router/routes'
 import { ConfigProvider } from 'antd'
-import { useDispatch, useSelector, useStore } from 'react-redux'
-import store, { setUserinfo } from '@/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { setUserinfo } from '@/store'
 import { getUserinfoApi } from '@/api/user-api'
 
 const AppHooks = (): any => {
-    const store = useStore()
     const dispatch = useDispatch()
     const transformRoutes = useRoutes(routes)
     const isLogin = useSelector((state: any) => state.isLogin)
@@ -32,7 +31,7 @@ const App: React.FC = () => {
     return (
         <ConfigProvider theme={{token: {colorPrimary: '#f13a3a'}}}>
             <AppScrollTop>
-                <>{transformRoutes}</>
+                {transformRoutes}
             </AppScrollTop>
         </ConfigProvider>
     )

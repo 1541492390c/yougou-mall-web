@@ -1,49 +1,62 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-import noShopCarItem from '@/assets/img/right-bar/no-shop-car-item.png'
+import ShopCarItemEmpty from '@/assets/img/empty/shop-car-item-empty.png'
 import style from './style.module.scss'
+import { ShopCarItem } from '@/interface'
+import Cookies from 'js-cookie'
+import ShopCarItems from '@/components/shop-car-items/ShopCarItems'
+import event from '@/event'
 
 const RightShopCarHooks: any = (): any => {
     const navigate = useNavigate()
-    const shopCarItemList = useState<Array<any>>([])
-    const [shopCarAmount, setShopCarAmount] = useState<number>(0)
+    const [shopCar, setShopCar] = useState<Array<ShopCarItem>>([])
+    const [shopCarAmount, setShopCarAmount] = useState<number>(1)
 
-    return {navigate, shopCarItemList, shopCarAmount}
+    useEffect(() => {
+        let shopCarStr: string | undefined = Cookies.get('shop_car')
+        if (!!shopCarStr) {
+            let shopCar: Array<ShopCarItem> = JSON.parse(shopCarStr)
+            setShopCar(shopCar)
+        }
+    }, [])
+
+    event.on('shopCarUpdate', () => {
+        let shopCarStr: string | undefined = Cookies.get('shop_car')
+        if (!!shopCarStr) {
+            setShopCar(JSON.parse(shopCarStr))
+        }
+    })
+
+    return {navigate, shopCar, shopCarAmount}
 }
 
 const RightBarShopCarComponent: React.FC = () => {
-    const {navigate, shopCarItemList, shopCarAmount} = RightShopCarHooks()
+    const {navigate, shopCar, shopCarAmount} = RightShopCarHooks()
 
     return (
         <div className={style.main}>
             <div className={style.shopCarTitle}><span>购物车</span></div>
             <div style={{height: '75%'}}>
                 {(() => {
-                    // if (shopCarItemList.length === 0) {
-                    //     return (
-                    //         <div className={style.shopCarIsEmpty}>
-                    //             <img src={noShopCarItem} alt='' />
-                    //             <div><span>购物车为空</span></div>
-                    //         </div>
-                    //     )
-                    // }
-                    // return (
-                    //     <div className={style.shopCarItemList}>
-                    //         {shopCarItemList.map((item: ShopCarItem, index: number) => {
-                    //             return (
-                    //                 <div key={index}>
-                    //                     <ShopCarItems shopCarItem={item} />
-                    //                 </div>
-                    //             )
-                    //         })}
-                    //     </div>
-                    // )
+                    if (shopCar.length === 0) {
+                        return (
+                            <div className={style.shopCarIsEmpty}>
+                                <img src={ShopCarItemEmpty} alt='' />
+                                <div><span>购物车为空</span></div>
+                            </div>
+                        )
+                    }
                     return (
-                        <div className={style.shopCarIsEmpty}>
-                            <img src={noShopCarItem} alt='' />
-                            <div><span>购物车为空</span></div>
+                        <div className={style.shopCarItemList}>
+                            {shopCar.map((item: ShopCarItem, index: number) => {
+                                return (
+                                    <div key={index}>
+                                        <ShopCarItems shopCarItem={item} />
+                                    </div>
+                                )
+                            })}
                         </div>
                     )
                 })()}

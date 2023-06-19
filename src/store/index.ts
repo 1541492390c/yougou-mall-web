@@ -1,13 +1,15 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit'
-import { User } from '@/interface'
+import { ShopCarItem, User } from '@/interface'
 
 const userinfo: User = {}
+const shopCar: Array<ShopCarItem> = []
 const isLogin: boolean = !!localStorage.getItem('token')
 
 const reducer = createSlice({
     name: 'reducer',
     initialState: {
         userinfo,
+        shopCar,
         isLogin
     },
     reducers: {
