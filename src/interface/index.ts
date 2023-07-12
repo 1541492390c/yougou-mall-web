@@ -9,6 +9,19 @@ interface User {
     birthday?: Date
 }
 
+// 收获地址
+interface Addr {
+    addrId?: number,
+    userId?: number,
+    consignee: string,
+    telephone: string,
+    province?: string,
+    city?: string,
+    district?: string,
+    detailedAddr?: string,
+    isDefault: boolean
+}
+
 // 商品分类
 interface Category {
     categoryId: number,
@@ -42,7 +55,10 @@ interface Sku {
     productId: number,
     skuStock: number,
     price: number,
+    discount: number,
+    discountPrice: number,
     description: string,
+    isDiscount: boolean,
     skuSpecs: Array<SkuSpecs>
 }
 
@@ -69,21 +85,93 @@ interface Banner {
     img: string
 }
 
-// 购物车
-interface ShopCarItem {
-    productId?: number,
-    skuId: number,
-    quantity: number,
-    totalAmount: number,
-    productName?: string,
-    img?: string,
-    specs: string
-}
-
 // 用户收藏
 interface Favorite {
     favoriteId: number,
     productId: number
 }
 
-export type { User, Category, Product, SkuSpecs, Sku, Attr, AttrValue, Banner, ShopCarItem, Favorite }
+// 订单
+interface Order {
+    orderId?: number,
+    userId?: number,
+    state?: number,
+    remark?: string,
+    cancelTime?: Date,
+    payTime?: Date,
+    deliveryTime?: Date,
+    finishTime?: Date,
+    orderAddr?: OrderAddr,
+    orderItemList?: Array<OrderItem>
+}
+
+// 订单收货地址
+interface OrderAddr {
+    orderId: number,
+    addrId: number,
+    consignee: string,
+    telephone: string,
+    province: string,
+    city: string,
+    district: string,
+    detailedAddr: string
+}
+
+// 订单项
+interface OrderItem {
+    orderId?: number,
+    productId?: number,
+    skuId: number,
+    quantity: number,
+    totalAmount?: number,
+    productName?: string,
+    img?: string,
+    specs?: string
+}
+
+// 购物车
+interface ShopCarItem {
+    productId?: number,
+    skuId: number,
+    quantity: number,
+    totalAmount: number,
+    price: number,
+    productName?: string,
+    img?: string,
+    specs: string
+}
+
+// 评分统计
+interface RateStatistics {
+    average: number,
+    oneCount: number,
+    twoCount: number,
+    threeCount: number,
+    fourCount: number,
+    fiveCount: number
+}
+
+// 行政区域选项
+interface District {
+    name: string,
+    districts: District[]
+}
+
+export type {
+    User,
+    Addr,
+    Category,
+    Product,
+    SkuSpecs,
+    Sku,
+    Attr,
+    AttrValue,
+    Banner,
+    ShopCarItem,
+    Favorite,
+    Order,
+    OrderAddr,
+    OrderItem,
+    RateStatistics,
+    District
+}

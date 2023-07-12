@@ -10,11 +10,13 @@ const reducer = createSlice({
     initialState: {
         userinfo,
         shopCar,
-        isLogin
+        isLogin,
+        amapKey: '7bba558979c7e30aceceb8ff471d93a1'
     },
     reducers: {
-        setUserinfo: (state, {payload}) => void(state.userinfo = payload),
-        setIsLogin: (state, {payload}) => void(state.isLogin = payload)
+        setUserinfo: (state, {payload}) => void (state.userinfo = payload),
+        setShopCar: (state, {payload}) => void (state.shopCar = payload),
+        setIsLogin: (state, {payload}) => void (state.isLogin = payload)
     }
 })
 
@@ -24,7 +26,8 @@ const store = configureStore({
 
 export const {
     setUserinfo,
-    setIsLogin
+    setShopCar,
+    setIsLogin,
 } = reducer.actions
 
 export default store

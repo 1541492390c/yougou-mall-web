@@ -12,10 +12,11 @@ import { setIsLogin, setUserinfo } from '@/store'
 const RightBarPersonalHooks: any = (): any => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const [modal, contextHolder] = Modal.useModal()
     const userinfo = useSelector((state: any) => state.userinfo)
 
     const logout = () => {
-        Modal.confirm({
+        modal.confirm({
             title: '退出登录',
             content: '此操作将退出登录,是否继续?',
             okType: 'danger',
@@ -36,11 +37,11 @@ const RightBarPersonalHooks: any = (): any => {
         })
     }
 
-    return {navigate, userinfo, logout}
+    return {navigate, userinfo, contextHolder, logout}
 }
 
 const RightBarPersonalComponent: React.FC = (): JSX.Element => {
-    const {navigate, userinfo, logout} = RightBarPersonalHooks()
+    const {navigate, userinfo, contextHolder, logout} = RightBarPersonalHooks()
 
     return (
         <div className={style.main}>
@@ -80,6 +81,7 @@ const RightBarPersonalComponent: React.FC = (): JSX.Element => {
                     )
                 })()}
             </div>
+            {contextHolder}
         </div>
     )
 }

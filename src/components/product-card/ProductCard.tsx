@@ -7,7 +7,7 @@ interface Props {
     product: Product
 }
 
-const ProductCardComponent: React.FC<Props> = ({product}) => {
+const ProductCardComponent: React.FC<Props> = ({product}): JSX.Element => {
     const navigate = useNavigate()
 
     return (

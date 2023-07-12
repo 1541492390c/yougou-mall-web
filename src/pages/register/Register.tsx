@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import style from './style.module.scss'
-import { Button, Form, Input, message, Result, Select, Steps } from 'antd'
+import { Button, Form, Input, Result, Select, Steps } from 'antd'
 import { CheckOutlined, FormOutlined, LockOutlined, MailOutlined, MobileOutlined, UserOutlined } from '@ant-design/icons'
 import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
 import { registerApi } from '@/api/user-api'
 import { StepProps } from 'antd/es/steps'
-import { useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 
 const RegisterHooks: any = (): any => {
-    const navigate = useNavigate()
+    const navigate: NavigateFunction = useNavigate()
     const [currentStep, setCurrentStep] = useState<number>(1)
     const [emailSuffix, setEmailSuffix] = useState<string>('@qq.com')
     const [registerForm] = Form.useForm()
@@ -97,7 +97,7 @@ const RegisterPage: React.FC = () => {
         register,
     } = RegisterHooks()
 
-    const emailInputSuffix = (
+    const emailInputSuffix: JSX.Element = (
         <Select defaultValue='@qq.com' onChange={(value) => setEmailSuffix(value)}>
             <Select.Option value='@qq.com'>@qq.com</Select.Option>
             <Select.Option value='@gmail.com'>@gmail.com</Select.Option>
@@ -105,7 +105,7 @@ const RegisterPage: React.FC = () => {
         </Select>
     )
 
-    const step2 = (
+    const step2: JSX.Element = (
         <Form form={registerForm} onFinish={register}>
             <Form.Item name='username' rules={[{validator: validateUsername}]}>
                 <Input placeholder='请输入昵称' prefix={<UserOutlined />} />
@@ -126,7 +126,7 @@ const RegisterPage: React.FC = () => {
         </Form>
     )
 
-    const step3 = (
+    const step3: JSX.Element = (
         <Result status='success' title='注册成功,请前往登录或返回首页' extra={[
             <Button type='primary' onClick={() => navigate('/login')}>前往登录</Button>,
             <Button type='default' onClick={() => navigate('/')}>返回首页</Button>

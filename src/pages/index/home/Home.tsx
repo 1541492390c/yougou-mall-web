@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
-import { useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { RightCircleOutlined, ThunderboltFilled } from '@ant-design/icons'
 import { Banner, Product } from '@/interface'
 import SecKillEmpty from '@/assets/img/empty/sec-kill-empty.png'
@@ -8,14 +8,14 @@ import ProductEmpty from '@/assets/img/empty/product-empty.png'
 import CouponsEmpty from '@/assets/img/empty/coupons-empty.png'
 import TitleBlockRight from '@/assets/img/common/title-block-right.png'
 import TitleBlockLeft from '@/assets/img/common/title-block-left.png'
-import IndexBanner from '@/components/index-banner/IndexBanner'
+import IndexBanner from '@/components/page-banner/PageBanner'
 import { getBannerListApi } from '@/api/platform-api'
 import { BannerTypeEnum } from '@/enums'
 import { getRecommendedProductListApi } from '@/api/product-api'
 import ProductCard from '@/components/product-card/ProductCard'
 
 const HomeHooks: any = (): any => {
-    const navigate = useNavigate()
+    const navigate: NavigateFunction = useNavigate()
     const [secKillTime, setSecKillTime] = useState<number>(0)
     const [secKillTimeout, setSecKillTimeout] = useState<number>(0)
     const [hotProductList, setHotProductList] = useState<Array<Product>>([])
@@ -42,11 +42,11 @@ const HomeHooks: any = (): any => {
     return {navigate, secKillTime, secKillTimeout, hotProductList, recommendProductList, couponList, bannerList}
 }
 
-const HomePage: React.FC = () => {
+const HomePage: React.FC = (): JSX.Element => {
     const {navigate, secKillTimeout, hotProductList, recommendProductList, couponList, bannerList} = HomeHooks()
 
     // 秒杀活动
-    const secKill = (
+    const secKill: JSX.Element = (
         <div className={style.card}>
             <div className={style.cardTitle}>
                 <div className={style.secKillTitleText}>
@@ -76,14 +76,14 @@ const HomePage: React.FC = () => {
             <div>
                 <div className={style.notProduct}>
                     <img src={SecKillEmpty} alt='' />
-                    <div><span>暂无秒杀活动</span></div>
+                    <div><span>该功能尚未开发</span></div>
                 </div>
             </div>
         </div>
     )
 
     // 热门商品
-    const hotProduct = (
+    const hotProduct: JSX.Element = (
         <div className={style.hotProduct}>
             <div className={style.card}>
                 <div className={style.cardTitle}>
@@ -120,7 +120,7 @@ const HomePage: React.FC = () => {
         </div>
     )
 
-    const coupons = (
+    const coupons: JSX.Element = (
         <div className={style.coupon}>
             <div className={style.card}>
                 <div className={style.cardTitle}>
@@ -159,7 +159,7 @@ const HomePage: React.FC = () => {
         </div>
     )
 
-    const hotProductAndCoupons = (
+    const hotProductAndCoupons: JSX.Element = (
         <div className={style.hotProductAndCoupons}>
             {hotProduct}
             {coupons}

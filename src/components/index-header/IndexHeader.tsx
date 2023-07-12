@@ -22,10 +22,10 @@ const IndexHeaderHooks: any = (): any => {
     return {keyword, setKeyword, serviceList, search}
 }
 
-const IndexHeaderComponent: React.FC = () => {
+const IndexHeaderComponent: React.FC = (): JSX.Element => {
     const {keyword, setKeyword, serviceList, search} = IndexHeaderHooks()
 
-    const transformServiceList = (
+    const transformServiceList: JSX.Element = (
         <div className={style.service}>
             {serviceList.map((item: any, index: number) => {
                 return (

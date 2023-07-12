@@ -4,7 +4,7 @@ const BrandsHooks: any = (): any => {
 
 }
 
-const BrandsPage: React.FC = () => {
+const BrandsPage: React.FC = (): JSX.Element => {
     return <div>brands</div>
 }
 

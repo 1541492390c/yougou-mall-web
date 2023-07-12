@@ -4,7 +4,7 @@ const UpdatePasswordHooks: any = (): any => {
 
 }
 
-const UpdatePasswordPage: React.FC = () => {
+const UpdatePasswordPage: React.FC = (): JSX.Element => {
     return <div>updatePassword</div>
 }
 

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
 import { Dropdown, Menu, MenuProps } from 'antd'
 import { RightOutlined, UnorderedListOutlined } from '@ant-design/icons'
-import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { Location, NavigateFunction, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { getCategoryListApi } from '@/api/product-api'
 import { Category } from '@/interface'
 
 const NavigationHooks: any = (): any => {
-    const location = useLocation()
-    const navigate = useNavigate()
+    const location: Location = useLocation()
+    const navigate: NavigateFunction = useNavigate()
     const [categoryMenuOpen, setCategoryMenuOpen] = useState<boolean>(false)
     const [selectKey, setSelectKey] = useState<string>('/')
     const [selectCategoryId, setSelectCategoryId] = useState<number>()

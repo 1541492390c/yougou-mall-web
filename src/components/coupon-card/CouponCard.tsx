@@ -8,7 +8,7 @@ const CouponCardHooks: any = (): any => {
 
 }
 
-const CouponCardComponent: React.FC<Props> = () => {
+const CouponCardComponent: React.FC<Props> = (): JSX.Element => {
     return <div></div>
 }
 

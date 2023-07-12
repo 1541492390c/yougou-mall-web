@@ -7,11 +7,7 @@ interface Props {
     bannerList: Array<Banner>
 }
 
-const IndexBannerHooks: any = (): any => {
-
-}
-
-const IndexBannerComponent: React.FC<Props> = ({bannerList}) => {
+const PageBannerComponent: React.FC<Props> = ({bannerList}): JSX.Element => {
     const transformBanner = bannerList.map((item, index) => {
         return (
             <div key={index}>
@@ -24,4 +20,4 @@ const IndexBannerComponent: React.FC<Props> = ({bannerList}) => {
     return <Carousel autoplay dots dotPosition='bottom' className={style.banner}>{transformBanner}</Carousel>
 }
 
-export default IndexBannerComponent
+export default PageBannerComponent

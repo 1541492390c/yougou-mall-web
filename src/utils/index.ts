@@ -12,7 +12,7 @@ const isEmpty = (value: any): boolean => {
                 return true
             }
         }
-        if ((value + '').replace(/(^\s*)|(\s*$)/g, '').length === 0) { //已修正bug[当strings为数字时，会报strings.replace is not a function]
+        if ((value + '').replace(/(^\s*)|(\s*$)/g, '').length === 0) {
             return true
         }
     } else {

@@ -1,0 +1,39 @@
+.flex {
+  display: flex;
+  justify-content: center;
+}
+
+.main {
+  width: 100%;
+  border: #f5f5f5 solid 2px;
+  background-color: #f9f9f9;
+}
+
+.personalTitle {
+  font-size: 30px;
+  text-align: center;
+  margin: 10px 10px 10px 15px;
+}
+
+.personalBody {
+  display: flex;
+  flex-direction: row;
+}
+
+.menu {
+  background-color: white;
+
+  li {
+    border: none;
+  }
+
+  ul {
+    width: 180px;
+    border: none;
+  }
+}
+
+.outlet {
+  width: 100%;
+  min-height: 650px;
+}

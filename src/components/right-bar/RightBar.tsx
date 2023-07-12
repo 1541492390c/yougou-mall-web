@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import style from './style.module.scss'
 import { Popover, Tooltip } from 'antd'
@@ -6,6 +6,8 @@ import { FormOutlined, HomeOutlined, ShoppingCartOutlined, UpOutlined, UserOutli
 import RightBarPersonal from '@/components/right-bar-personal/RightBarPersonal'
 import RightBarShopCar from '@/components/right-bar-shop-car/RightBarShopCar'
 import event from '@/event'
+import { useSelector } from 'react-redux'
+import { isEmpty } from '@/utils'
 
 interface Props {
     pathname: string
@@ -13,10 +15,20 @@ interface Props {
 
 const RightBarHooks: any = (): any => {
     const navigate = useNavigate()
+    const shopCar = useSelector((state: any) => state.shopCar)
+    const [shopCarTotal, setShopCarTotal] = useState<number>(0)
     const [personalClick, setPersonalClick] = useState<boolean>(false)
     const [personalHover, setPersonalHover] = useState<boolean>(false)
     const [shopCarClick, setShopCarClick] = useState<boolean>(false)
     const [shopCarHover, setShopCarHover] = useState<boolean>(false)
+
+    useEffect(() => {
+        if (!isEmpty(shopCar)) {
+            setShopCarTotal(shopCar.length)
+        } else {
+            setShopCarTotal(0)
+        }
+    }, [shopCar])
 
     event.on('closeShopCarTooltip', () => {
         setShopCarClick(false)
@@ -62,6 +74,7 @@ const RightBarHooks: any = (): any => {
 
     return {
         navigate,
+        shopCarTotal,
         personalClick,
         personalHover,
         shopCarClick,
@@ -73,9 +86,10 @@ const RightBarHooks: any = (): any => {
     }
 }
 
-const RightBarComponent: React.FC<Props> = ({pathname}) => {
+const RightBarComponent: React.FC<Props> = ({pathname}): JSX.Element => {
     const {
         navigate,
+        shopCarTotal,
         personalClick,
         personalHover,
         shopCarClick,
@@ -86,7 +100,7 @@ const RightBarComponent: React.FC<Props> = ({pathname}) => {
         backHome
     } = RightBarHooks()
 
-    const personalTooltip = (
+    const personalTooltip: JSX.Element = (
         <div style={{height: '30%'}}>
             <div className={style.iconContent}>
                 <Tooltip open={personalHover}
@@ -102,7 +116,7 @@ const RightBarComponent: React.FC<Props> = ({pathname}) => {
         </div>
     )
 
-    const shopCarTooltip = (
+    const shopCarTooltip: JSX.Element = (
         <div style={{height: '25%'}} className={style.shopCar}>
             <Tooltip open={shopCarHover}
                      onOpenChange={handleHoverChange(2)}
@@ -113,15 +127,14 @@ const RightBarComponent: React.FC<Props> = ({pathname}) => {
                     <div>
                         <ShoppingCartOutlined className={style.icon} />
                         <div className={style.shopCarText}>购物车</div>
-                        {/*<div className={style.shopCarCount}>{number}</div>*/}
-                        <div className={style.shopCarCount}>0</div>
+                        <div className={style.shopCarCount}>{shopCarTotal}</div>
                     </div>
                 </Popover>
             </Tooltip>
         </div>
     )
 
-    const rightBarBottom = (
+    const rightBarBottom: JSX.Element = (
         <div style={{height: '45%'}}>
             <div className={style.iconContent}>
                 <div className={style.bottomIcon}>

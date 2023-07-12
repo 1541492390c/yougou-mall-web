@@ -4,15 +4,18 @@ import { useRoutes } from 'react-router-dom'
 import routes from '@/router/routes'
 import { ConfigProvider } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
-import { setUserinfo } from '@/store'
+import { setShopCar, setUserinfo } from '@/store'
 import { getUserinfoApi } from '@/api/user-api'
+import Cookies from 'js-cookie'
+import { Dispatch } from '@reduxjs/toolkit'
 
-const AppHooks = (): any => {
-    const dispatch = useDispatch()
+const AppHooks: any = (): any => {
+    const dispatch: Dispatch = useDispatch()
     const transformRoutes = useRoutes(routes)
     const isLogin = useSelector((state: any) => state.isLogin)
 
     useEffect(() => {
+        // 如果已登录则获取用户信息
         if (isLogin) {
             getUserinfoApi().then((res) => {
                 dispatch(setUserinfo(res.data))
@@ -20,12 +23,17 @@ const AppHooks = (): any => {
                 console.log(err)
             })
         }
+
+        // 如果购物车不为空
+        if (!!Cookies.get('shop_car')) {
+            dispatch(setShopCar(JSON.parse(Cookies.get('shop_car') as string)))
+        }
     }, [isLogin, dispatch])
 
     return {transformRoutes}
 }
 
-const App: React.FC = () => {
+const App: React.FC = (): JSX.Element => {
     const {transformRoutes} = AppHooks()
 
     return (

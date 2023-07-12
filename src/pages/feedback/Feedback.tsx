@@ -4,7 +4,7 @@ const FeedbackHooks: any = (): any => {
 
 }
 
-const FeedbackPage: React.FC = () => {
+const FeedbackPage: React.FC = (): JSX.Element => {
     return <div>feedback</div>
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavigateFunction, NavLink, useNavigate } from 'react-router-dom'
 import style from './style.module.scss'
 import { Button, Form, Input, message } from 'antd'
 import { LockOutlined, UserOutlined, VerifiedOutlined } from '@ant-design/icons'
@@ -9,11 +9,12 @@ import Footer from '@/components/footer/Footer'
 import { baseUrl } from '@/request'
 import { useDispatch } from 'react-redux'
 import { setIsLogin } from '@/store'
+import { Dispatch } from '@reduxjs/toolkit'
 
 const LoginHooks: any = (): any => {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const captchaUrl = baseUrl + '/biz/captcha/image'
+    const navigate: NavigateFunction = useNavigate()
+    const dispatch: Dispatch = useDispatch()
+    const captchaUrl: string = baseUrl + '/biz/captcha/image'
     const [random, setRandom] = useState(Math.random())
     const [buttonDisabled, setButtonDisabled] = useState<boolean>(false)
 
@@ -77,7 +78,7 @@ const LoginHooks: any = (): any => {
     return {captchaUrl, random, buttonDisabled, setRandom, validateUsername, validatePassword, validateCode, login}
 }
 
-const LoginPage: React.FC = () => {
+const LoginPage: React.FC = (): JSX.Element => {
     const {captchaUrl, random, buttonDisabled, setRandom, validateUsername, validatePassword, validateCode, login} = LoginHooks()
 
     const loginForm = (

@@ -1,7 +1,7 @@
 import React from 'react'
 import style from './style.module.scss'
 
-const IndexFooterComponent: React.FC = () => {
+const IndexFooterComponent: React.FC = (): JSX.Element => {
     return (
         <div className={style.footer}>
             <div className={style.footerContent}>

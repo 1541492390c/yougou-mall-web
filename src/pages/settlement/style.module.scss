@@ -1,0 +1,232 @@
+.main {
+  display: flex;
+  justify-content: center;
+  background-color: #f9f9f9;
+}
+
+.settlement {
+  width: 1200px;
+  margin-top: 50px;
+  margin-bottom: 75px;
+}
+
+.step {
+  margin-bottom: 50px;
+}
+
+.plusIcon {
+  margin-left: 5px;
+  font-size: 16px;
+  color: #f13a3a;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.consigneeIsEmpty {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  color: gray;
+}
+
+.consigneeInfo {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: gray;
+  font-size: 12px;
+  padding: 8px;
+
+  div {
+    display: flex;
+    flex-direction: row;
+  }
+
+  span {
+    margin-right: 10px;
+  }
+}
+
+.edit {
+  color: #f13a3a;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline solid 1px;
+  }
+}
+
+.shopCarItemImg {
+  width: 80px;
+  height: 80px;
+  border: silver solid 1px;
+  margin-right: 10px;
+}
+
+.shopCarIsEmpty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: gray;
+  font-size: 14px;
+  padding-bottom: 60px;
+
+  img {
+    width: 200px;
+    height: 220px;
+  }
+}
+
+.specs {
+  font-size: 12px;
+  color: gray;
+}
+
+.addOrder {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.amountText {
+  margin-right: 10px;
+}
+
+.amount {
+  color: #f13a3a;
+  font-size: 18px;
+  margin-left: 5px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border: #f5f5f5 solid 1px;
+  margin-bottom: 35px;
+}
+
+.cardTitle {
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+  align-items: center;
+  border-bottom: #f0f0f0 solid 1px;
+}
+
+.cardTitleText {
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.plusIcon {
+  margin-left: 5px;
+  font-size: 16px;
+  color: #f13a3a;
+}
+
+.addrListIsEmpty {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  color: gray;
+}
+
+.addrInfo {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: gray;
+  font-size: 12px;
+  padding: 10px;
+
+  div {
+    display: flex;
+    flex-direction: row;
+  }
+
+  span {
+    margin-right: 10px;
+  }
+}
+
+.edit {
+  color: #f13a3a;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline solid 1px;
+  }
+}
+
+.confirmOrderSuccess {
+  width: 100%;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  padding: 20px 20px 20px 50px;
+}
+
+.orderAmount {
+  font-size: 18px;
+  color: #f13a3a;
+}
+
+.payTypeTitle {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.payTypeButton {
+  width: 260px;
+  background-color: white;
+  padding: 20px;
+  border: #d9d9d9 solid 2px;
+  border-radius: 4px;
+  margin-right: 10px;
+
+  div {
+    display: inline-block;
+  }
+
+  img {
+    width: 80%;
+    height: 80%;
+  }
+}
+
+.pay {
+  margin-top: 80px;
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    width: 160px;
+    height: 40px;
+  }
+}
+
+.paySuccess {
+  width: 100%;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

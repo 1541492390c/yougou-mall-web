@@ -9,7 +9,7 @@ const HotProductCardHooks: any = (): any => {
 
 }
 
-const HotProductCardComponent: React.FC<Props> = ({product}) => {
+const HotProductCardComponent: React.FC<Props> = ({product}): JSX.Element => {
     return <div></div>
 }
 

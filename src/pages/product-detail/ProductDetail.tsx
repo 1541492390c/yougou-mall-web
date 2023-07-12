@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import style from './style.module.scss'
+import CommentEmpty from '@/assets/img/empty/comment-empty.png'
 import Cookies from 'js-cookie'
-import { useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import {
     getAttrListApi,
     getProductByProductIdApi,
@@ -10,26 +11,31 @@ import {
     isFavoriteApi,
     saveFavoriteApi
 } from '@/api/product-api'
-import event from '@/event/index'
-import { Attr, AttrValue, Product, ShopCarItem, Sku, SkuSpecs } from '@/interface'
+import { Attr, AttrValue, Product, RateStatistics, ShopCarItem, Sku, SkuSpecs } from '@/interface'
 import { HeartOutlined, LeftOutlined, RightOutlined, ShoppingCartOutlined } from '@ant-design/icons'
-import { Button, InputNumber, message } from 'antd'
+import { Button, InputNumber, message, Rate } from 'antd'
 import { isEmpty } from '@/utils'
+import { setShopCar } from '@/store'
+import { getCommentRateStatistics } from '@/api/user-api'
 
 const ProductDetailHooks: any = (): any => {
     const params = useParams()
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const rateStars: Array<number> = [5,4,3,2,1]
     const isLogin = useSelector((state: any) => state.isLogin)
     const imgPageSize = useRef<number>(4)
     const [quantity, setQuantity] = useState<number>(1)
     const [product, setProduct] = useState<Product>()
     const [currentSku, setCurrentSku] = useState<Sku>()
+    const [rateStatistics, setRateStatistics] = useState<RateStatistics>()
     const [skuList, setSkuList] = useState<Array<Sku>>([])
     const [attrList, setAttrList] = useState<Array<Attr>>([])
     const [imgList, setImgList] = useState<Array<string>>([])
     const [attrValueMap, setAttrValueMap] = useState<Map<string, string>>(new Map())
     const [imgPage, setImgPage] = useState<number>(1)
     const [currentImg, setCurrentImg] = useState<string>('')
-    const [isFavorite, setIsFavorite] = useState<boolean>()
+    const [isFavorite, setIsFavorite] = useState<boolean>(false)
 
     useEffect(() => {
         // 获取商品信息
@@ -78,6 +84,14 @@ const ProductDetailHooks: any = (): any => {
                 console.log(err)
             })
         }
+
+        // 获取评价统计信息
+        getCommentRateStatistics(params.id).then((res) => {
+            console.log(res.data)
+            setRateStatistics(res.data)
+        }).catch((err) => {
+            console.log(err)
+        })
 
         return () => {
             document.title = '优购商城'
@@ -139,6 +153,7 @@ const ProductDetailHooks: any = (): any => {
                     skuId: currentSku?.skuId,
                     quantity: quantity,
                     totalAmount: quantity * currentSku?.price,
+                    price: currentSku?.price,
                     productName: product?.name,
                     specs: specs,
                     img: product?.cover
@@ -163,6 +178,7 @@ const ProductDetailHooks: any = (): any => {
                         skuId: currentSku?.skuId,
                         quantity: quantity,
                         totalAmount: quantity * currentSku?.price,
+                        price: currentSku?.price,
                         productName: product?.name,
                         specs: specs,
                         img: product?.cover
@@ -171,20 +187,25 @@ const ProductDetailHooks: any = (): any => {
                 }
             }
             Cookies.set('shop_car', JSON.stringify(shopCar), {expires: 24 * 60 * 60})
-            event.emit('shopCarUpdate')
+            dispatch(setShopCar(shopCar))
+            message.success('添加购物车成功').then()
         }
     }
 
     // 收藏当前商品
     const saveFavorite = (): void => {
-        saveFavoriteApi(product?.productId).then((res) => {
-            if (res) {
-                message.success('收藏成功').then()
-                setIsFavorite(true)
-            }
-        }).catch((err) => {
-            console.log(err)
-        })
+        if (!isLogin) {
+            navigate('/login')
+        } else {
+            saveFavoriteApi(product?.productId).then((res) => {
+                if (res) {
+                    message.success('收藏成功').then()
+                    setIsFavorite(true)
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+        }
     }
 
     const imgPageChange = (value: number): void => {
@@ -203,9 +224,11 @@ const ProductDetailHooks: any = (): any => {
     }
 
     return {
+        rateStars,
         quantity,
         product,
         currentSku,
+        rateStatistics,
         skuList,
         attrList,
         imgList,
@@ -225,11 +248,13 @@ const ProductDetailHooks: any = (): any => {
     }
 }
 
-const ProductDetailPages: React.FC = () => {
+const ProductDetailPages: React.FC = (): JSX.Element => {
     const {
+        rateStars,
         quantity,
         product,
         currentSku,
+        rateStatistics,
         skuList,
         attrList,
         imgList,
@@ -308,10 +333,17 @@ const ProductDetailPages: React.FC = () => {
                     {transformImgList}
                 </div>
                 <div style={{marginLeft: '10px'}}>
-                    {(imgPage * imgPageSize.current >= imgList?.length || !imgList) ?
-                        <div className={style.arrowDisable}><RightOutlined /></div> :
-                        <div onClick={() => imgPageChange(imgPage + 1)} className={style.arrow}>
-                            <RightOutlined /></div>}
+                    {(() => {
+                       if (imgPage * imgPageSize.current >= imgList?.length || !imgList) {
+                           return <div className={style.arrowDisable}><RightOutlined /></div>
+                       } else {
+                           return <div onClick={() => imgPageChange(imgPage + 1)} className={style.arrow}><RightOutlined /></div>
+                       }
+                    })()}
+                    {/*{(imgPage * imgPageSize.current >= imgList?.length || !imgList) ?*/}
+                    {/*    <div className={style.arrowDisable}><RightOutlined /></div> :*/}
+                    {/*    <div onClick={() => imgPageChange(imgPage + 1)} className={style.arrow}>*/}
+                    {/*        <RightOutlined /></div>}*/}
                 </div>
             </div>
         </div>
@@ -343,6 +375,13 @@ const ProductDetailPages: React.FC = () => {
                 {(() => {
                     if (!currentSku) {
                         return <div style={{color: '#f13a3a'}}>当前商品规格暂无价格</div>
+                    } else if (currentSku?.isDiscount) {
+                        return (
+                            <div className={style.price}>
+                                <div>{currentSku?.discountPrice.toFixed(2)}</div>
+                                <div className={style.costPrice}>{currentSku?.price.toFixed(2)}</div>
+                            </div>
+                        )
                     } else {
                         return <div className={style.price}>{currentSku?.price.toFixed(2)}</div>
                     }
@@ -413,10 +452,49 @@ const ProductDetailPages: React.FC = () => {
                             </div>
                             <div className={style.productRate}>
                                 <div className={style.rateBox}>
-
+                                    {(() => {
+                                        if (!!rateStatistics && !rateStatistics.average) {
+                                            return (
+                                                <>
+                                                    <div className={style.rateText}>
+                                                        <span>0.0</span>
+                                                    </div>
+                                                    <div>
+                                                        <span>暂无评分</span>
+                                                    </div>
+                                                </>
+                                            )
+                                        } else {
+                                            return <Rate value={rateStatistics?.average} disabled allowHalf
+                                                         className={style.rateStar} />
+                                        }
+                                    })()}
+                                </div>
+                                <div className={style.rateCount}>
+                                    {rateStars.map((item: number) => {
+                                        return (
+                                            <div key={item}>
+                                                <span>{item.toFixed(1)}</span>
+                                                <Rate defaultValue={item} disabled className={style.rateCountStar} />
+                                                <span>({!rateStatistics ? 0 : rateStatistics.fiveCount})</span>
+                                            </div>
+                                        )
+                                    })}
                                 </div>
                             </div>
                             <div className={style.commentItem}>
+                                <div className={style.noComment}>
+                                    <img src={CommentEmpty} alt='' />
+                                    <div><span>暂无商品评论</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={style.guessLike}>
+                            <div className={style.guessLikeTitle}>
+                                <span>猜你喜欢</span>
+                            </div>
+                            <div className={style.noGuessLike}>
+                                <span>暂无商品</span>
                             </div>
                         </div>
                     </div>

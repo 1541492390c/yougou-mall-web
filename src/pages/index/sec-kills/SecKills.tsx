@@ -4,7 +4,7 @@ const SecKillsHooks: any = (): any => {
 
 }
 
-const SecKillPage: React.FC = () => {
+const SecKillPage: React.FC = (): JSX.Element => {
     return <div>sec-kills</div>
 }
 

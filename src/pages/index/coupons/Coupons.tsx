@@ -4,7 +4,7 @@ const CouponsHooks: any = (): any => {
 
 }
 
-const CouponsPage: React.FC = () => {
+const CouponsPage: React.FC = (): JSX.Element => {
     return <div>coupons</div>
 }
 
