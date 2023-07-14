@@ -4,7 +4,7 @@ import { Banner } from '@/interface'
 import PageBanner from '@/components/page-banner/PageBanner'
 
 const DiscountHooks: any = (): any => {
-    const [bannerList, setBannerList] = useState<Banner[]>([])
+    const [bannerList, setBannerList] = useState<Array<Banner>>([])
 
     return {bannerList}
 }

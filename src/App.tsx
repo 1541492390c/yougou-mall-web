@@ -11,8 +11,8 @@ import { Dispatch } from '@reduxjs/toolkit'
 
 const AppHooks: any = (): any => {
     const dispatch: Dispatch = useDispatch()
+    const isLogin: boolean = useSelector((state: any) => state.isLogin)
     const transformRoutes = useRoutes(routes)
-    const isLogin = useSelector((state: any) => state.isLogin)
 
     useEffect(() => {
         // 如果已登录则获取用户信息

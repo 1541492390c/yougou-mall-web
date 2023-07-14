@@ -1,5 +1,6 @@
 import request from '@/request'
 import { AxiosResponse } from 'axios'
+import favorite from '@/pages/personal/favorite/Favorite'
 
 // 获取分类接口
 const getCategoryListApi = (): Promise<AxiosResponse> => {
@@ -25,6 +26,7 @@ const getProductByProductIdApi = (id: string | undefined): Promise<AxiosResponse
     })
 }
 
+// 获取属性列表
 const getAttrListApi = (productId: string | undefined): Promise<AxiosResponse> => {
     return request({
         url: '/product/attr/list',
@@ -60,6 +62,27 @@ const saveFavoriteApi = (productId: number | undefined): Promise<AxiosResponse> 
     }, true)
 }
 
+// 获取收藏分页信息
+const getFavoritePagesApi = (pageNum: number = 1, pageSize: number = 10): Promise<AxiosResponse> => {
+    return request({
+        url: '/product/favorite/pages',
+        method: 'GET',
+        params: {
+            page_num: pageNum,
+            page_size: pageSize
+        }
+    }, true)
+}
+
+// 删除收藏
+const deleteFavoriteApi = (favoriteId: number | undefined): Promise<AxiosResponse> => {
+    return request({
+        url: '/product/favorite/delete',
+        method: 'DELETE',
+        params: {favorite_id: favoriteId}
+    }, true)
+}
+
 export {
     getCategoryListApi,
     getRecommendedProductListApi,
@@ -67,5 +90,7 @@ export {
     getAttrListApi,
     getSkuListApi,
     isFavoriteApi,
-    saveFavoriteApi
+    saveFavoriteApi,
+    getFavoritePagesApi,
+    deleteFavoriteApi
 }

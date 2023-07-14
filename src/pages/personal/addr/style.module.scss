@@ -1,0 +1,71 @@
+.main {
+  padding: 15px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border: #f5f5f5 solid 1px;
+  margin-bottom: 40px;
+}
+
+.cardTitle {
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+  align-items: center;
+  border-bottom: #f0f0f0 solid 1px;
+}
+
+.cardTitleText {
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.plusIcon {
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 16px;
+  color: #f13a3a;
+}
+
+.consigneeCardList {
+  display: flex;
+  flex-direction: row;
+}
+
+.consigneeCard {
+  width: 33.3%;
+  padding: 20px;
+}
+
+.consigneeCardBody {
+  border: #f5f5f5 solid 1px;
+  box-shadow: 0 3px 8px #f2f2f2, 0 -3px 8px #f2f2f2;
+  padding: 20px;
+}
+
+.consigneeCardItem {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+  font-size: 14px;
+}
+
+.edit {
+  margin-top: 25px;
+  display: flex;
+  justify-content: flex-end;
+
+  div {
+    color: #f13a3a;
+    display: inline-block;
+    margin-right: 15px;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline #f13a3a 1px;
+    }
+  }
+}

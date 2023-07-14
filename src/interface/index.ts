@@ -126,7 +126,8 @@ interface OrderItem {
     totalAmount?: number,
     productName?: string,
     img?: string,
-    specs?: string
+    specs?: string,
+    isComment?: boolean
 }
 
 // 购物车

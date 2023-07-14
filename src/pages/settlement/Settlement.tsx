@@ -31,7 +31,8 @@ const SettlementHooks: any = (): any => {
     const [buttonDisabled, setButtonDisabled] = useState<boolean>(false)
     const [addrList, setAddrList] = useState<Array<Addr>>([])
     const [currentAddr, setCurrentAddr] = useState<number>()
-    const [modal, contextHolder] = Modal.useModal()
+    const [modal, modalContextHolder] = Modal.useModal()
+    const [messageApi, messageContextHolder] = message.useMessage()
     const stepItems: Array<StepProps> = [
         {title: '填写订单信息', icon: <FormOutlined style={{fontSize: '25px'}} />},
         {title: '支付', icon: <PayCircleOutlined style={{fontSize: '25px'}} />},
@@ -97,7 +98,7 @@ const SettlementHooks: any = (): any => {
     }
 
     // 删除收货地址
-    const deleteAddr = (addrId: number, index: number) => {
+    const deleteAddr = (addrId: number, index: number): void => {
         modal.confirm({
             title: '删除收货地址',
             content: '此操作将删除收货地址,是否继续?',
@@ -107,7 +108,7 @@ const SettlementHooks: any = (): any => {
             onOk: () => {
                 deleteAddrApi(addrId).then((res) => {
                     if (res) {
-                        message.success('删除成功').then()
+                        messageApi.success('删除成功').then()
                         setAddrList((pre) => {
                             pre.splice(index, 1)
                             setCurrentAddr(pre[0].addrId)
@@ -167,7 +168,8 @@ const SettlementHooks: any = (): any => {
         addrList,
         currentAddr,
         stepItems,
-        contextHolder,
+        modalContextHolder,
+        messageContextHolder,
         shopCarAmount,
         transformSpecs,
         openAddrModal,
@@ -185,7 +187,8 @@ const SettlementPage: React.FC = (): JSX.Element => {
         addrList,
         currentAddr,
         stepItems,
-        contextHolder,
+        modalContextHolder,
+        messageContextHolder,
         shopCarAmount,
         transformSpecs,
         openAddrModal,
@@ -195,7 +198,7 @@ const SettlementPage: React.FC = (): JSX.Element => {
     } = SettlementHooks()
 
     // 购物车项
-    const shopCarItems = (
+    const shopCarItems: JSX.Element = (
         <div className={style.card}>
             <div className={style.cardTitle}>
                 <span className={style.cardTitleText}>送货清单</span>
@@ -217,7 +220,7 @@ const SettlementPage: React.FC = (): JSX.Element => {
     )
 
     // 收货人项
-    const addrItems = (
+    const addrItems: JSX.Element = (
         <div className={style.card}>
             <div className={style.cardTitle}>
                 <span className={style.cardTitleText}>收货人信息</span>
@@ -254,7 +257,6 @@ const SettlementPage: React.FC = (): JSX.Element => {
                                     </div>
                                 )
                             })}
-                            {contextHolder}
                         </Radio.Group>
                     )
                 }
@@ -263,7 +265,7 @@ const SettlementPage: React.FC = (): JSX.Element => {
     )
 
     // 第一步:确认订单
-    const confirmOrder = (
+    const confirmOrder: JSX.Element = (
         <>
             <AddrModal />
             {addrItems}
@@ -282,7 +284,7 @@ const SettlementPage: React.FC = (): JSX.Element => {
     )
 
     // 第二步:支付
-    const pay = (
+    const pay: JSX.Element = (
         <>
             <div className={style.confirmOrderSuccess}>
                 <div>
@@ -319,7 +321,7 @@ const SettlementPage: React.FC = (): JSX.Element => {
     )
 
     // 第三步:完成
-    const success = (
+    const success: JSX.Element = (
         <div>
             完成
         </div>
@@ -341,6 +343,10 @@ const SettlementPage: React.FC = (): JSX.Element => {
                 </div>
             </div>
             <Footer />
+            {/*对话框*/}
+            {modalContextHolder}
+            {/*全局消息提醒*/}
+            {messageContextHolder}
         </>
     )
 }

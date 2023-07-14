@@ -1,0 +1,53 @@
+.main {
+  padding: 10px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border: #f5f5f5 solid 1px;
+  margin-bottom: 40px;
+}
+
+.cardTitle {
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+  align-items: center;
+  border-bottom: #f0f0f0 solid 1px;
+}
+
+.cardTitleText {
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.couponUserList {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.couponUserItem {
+  width: 33.3%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.noCoupons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: gray;
+  font-size: 14px;
+  margin-bottom: 50px;
+
+  img {
+    height: 150px;
+    width: 150px;
+  }
+}

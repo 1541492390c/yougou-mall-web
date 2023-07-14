@@ -25,6 +25,7 @@ const ProductDetailHooks: any = (): any => {
     const rateStars: Array<number> = [5,4,3,2,1]
     const isLogin = useSelector((state: any) => state.isLogin)
     const imgPageSize = useRef<number>(4)
+    const [messageApi, messageContextHolder] = message.useMessage()
     const [quantity, setQuantity] = useState<number>(1)
     const [product, setProduct] = useState<Product>()
     const [currentSku, setCurrentSku] = useState<Sku>()
@@ -188,7 +189,7 @@ const ProductDetailHooks: any = (): any => {
             }
             Cookies.set('shop_car', JSON.stringify(shopCar), {expires: 24 * 60 * 60})
             dispatch(setShopCar(shopCar))
-            message.success('添加购物车成功').then()
+            messageApi.success('添加购物车成功').then()
         }
     }
 
@@ -199,7 +200,7 @@ const ProductDetailHooks: any = (): any => {
         } else {
             saveFavoriteApi(product?.productId).then((res) => {
                 if (res) {
-                    message.success('收藏成功').then()
+                    messageApi.success('收藏成功').then()
                     setIsFavorite(true)
                 }
             }).catch((err) => {
@@ -236,6 +237,7 @@ const ProductDetailHooks: any = (): any => {
         imgPageSize,
         currentImg,
         isFavorite,
+        messageContextHolder,
         setQuantity,
         setCurrentImg,
         isCurrentAttrValue,
@@ -262,6 +264,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
         imgPageSize,
         currentImg,
         isFavorite,
+        messageContextHolder,
         setQuantity,
         setCurrentImg,
         isCurrentAttrValue,
@@ -500,6 +503,8 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                     </div>
                 </div>
             </div>
+            {/*全局消息提醒*/}
+            {messageContextHolder}
         </div>
     )
 }

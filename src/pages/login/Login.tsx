@@ -16,6 +16,7 @@ const LoginHooks: any = (): any => {
     const dispatch: Dispatch = useDispatch()
     const captchaUrl: string = baseUrl + '/biz/captcha/image'
     const [random, setRandom] = useState(Math.random())
+    const [messageApi, messageContextHolder] = message.useMessage()
     const [buttonDisabled, setButtonDisabled] = useState<boolean>(false)
 
     useEffect(() => {
@@ -60,7 +61,7 @@ const LoginHooks: any = (): any => {
         loginApi(values.username, values.password, values.code)
             .then((res => {
                 localStorage.setItem('token', res.data.accessToken)
-                message.success({
+                messageApi.success({
                     content: '登录成功',
                     duration: 0.5,
                     onClose: () => {
@@ -75,13 +76,33 @@ const LoginHooks: any = (): any => {
             })
     }
 
-    return {captchaUrl, random, buttonDisabled, setRandom, validateUsername, validatePassword, validateCode, login}
+    return {
+        captchaUrl,
+        random,
+        buttonDisabled,
+        messageContextHolder,
+        setRandom,
+        validateUsername,
+        validatePassword,
+        validateCode,
+        login
+    }
 }
 
 const LoginPage: React.FC = (): JSX.Element => {
-    const {captchaUrl, random, buttonDisabled, setRandom, validateUsername, validatePassword, validateCode, login} = LoginHooks()
+    const {
+        captchaUrl,
+        random,
+        buttonDisabled,
+        messageContextHolder,
+        setRandom,
+        validateUsername,
+        validatePassword,
+        validateCode,
+        login
+    } = LoginHooks()
 
-    const loginForm = (
+    const loginForm: JSX.Element = (
         <Form onFinish={login}>
             <Form.Item name='username' rules={[{validator: validateUsername}]}>
                 <Input placeholder='请输入账号' prefix={<UserOutlined />} className={style.loginInput} />
@@ -97,7 +118,8 @@ const LoginPage: React.FC = (): JSX.Element => {
                        className={style.codeInput} />
             </Form.Item>
             <Form.Item>
-                <Button type='primary' htmlType='submit' disabled={buttonDisabled} className={style.loginButton}>登录</Button>
+                <Button type='primary' htmlType='submit' disabled={buttonDisabled}
+                        className={style.loginButton}>登录</Button>
             </Form.Item>
         </Form>
     )
@@ -128,6 +150,8 @@ const LoginPage: React.FC = (): JSX.Element => {
                 </div>
             </div>
             <Footer />
+            {/*全局消息提醒*/}
+            {messageContextHolder}
         </>
     )
 }

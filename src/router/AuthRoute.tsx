@@ -6,7 +6,7 @@ interface Props {
     children: ReactElement
 }
 
-const AuthRoute: React.FC<Props> = ({ children }) => {
+const AuthRoute: React.FC<Props> = ({ children }): JSX.Element => {
     const isLogin = useSelector((state: any) => state.isLogin)
     return isLogin ? children : <Navigate to='/login' />
 }

@@ -15,6 +15,10 @@ import AuthRoute from '@/router/AuthRoute'
 import Settlement from '@/pages/settlement/Settlement'
 import PersonalOrders from '@/pages/personal/order/Order'
 import PersonalDocument from '@/pages/personal/peresonal-document/PersonalDocument'
+import Favorite from '@/pages/personal/favorite/Favorite'
+import Addr from '@/pages/personal/addr/Addr'
+import PersonalCoupons from '@/pages/personal/personal-coupons/PersonalCoupons'
+import Comment from '@/pages/comment/Comment'
 
 const routes: Array<RouteObject> = [
     // 首页
@@ -36,7 +40,10 @@ const routes: Array<RouteObject> = [
         element: <AuthRoute><Personal /></AuthRoute>,
         children: [
             {path: '*', element: <PersonalDocument />},
-            {path: 'order', element: <PersonalOrders />}
+            {path: 'order', element: <PersonalOrders />},
+            {path: 'favorite', element: <Favorite />},
+            {path: 'addr', element: <Addr />},
+            {path: 'coupons', element: <PersonalCoupons />}
         ]
     },
     // 登录
@@ -63,6 +70,11 @@ const routes: Array<RouteObject> = [
     {
         path: '/settlement',
         element: <AuthRoute><Settlement /></AuthRoute>
+    },
+    // 评价
+    {
+        path: '/comment',
+        element: <AuthRoute><Comment /></AuthRoute>
     }
 ]
 
