@@ -2,29 +2,26 @@ import React, { useEffect, useRef, useState } from 'react'
 import style from './style.module.scss'
 import CommentEmpty from '@/assets/img/empty/comment-empty.png'
 import Cookies from 'js-cookie'
-import { useNavigate, useParams } from 'react-router-dom'
+import { NavigateFunction, Params, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-    getAttrListApi,
-    getProductByProductIdApi,
-    getSkuListApi,
-    isFavoriteApi,
-    saveFavoriteApi
-} from '@/api/product-api'
-import { Attr, AttrValue, Product, RateStatistics, ShopCarItem, Sku, SkuSpecs } from '@/interface'
-import { HeartOutlined, LeftOutlined, RightOutlined, ShoppingCartOutlined } from '@ant-design/icons'
+import { getAttrListApi, getProductByProductIdApi, getSkuListApi } from '@/api/product/product-api'
+import { isFavoriteApi, saveFavoriteApi } from '@/api/product/favorite-api'
+import { LeftOutlined, RightOutlined, ShoppingCartOutlined, StarOutlined } from '@ant-design/icons'
 import { Button, InputNumber, message, Rate } from 'antd'
 import { isEmpty } from '@/utils'
 import { setShopCar } from '@/store'
-import { getCommentRateStatistics } from '@/api/user-api'
+import { getCommentRateStatistics } from '@/api/user/user-api'
+import { Dispatch } from '@reduxjs/toolkit'
+import { AttrValue, Attr, Product, Sku, SkuSpecs } from '@/interface/product'
+import { RateStatistics, ShopCarItem } from '@/interface/other'
 
 const ProductDetailHooks: any = (): any => {
-    const params = useParams()
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const rateStars: Array<number> = [5,4,3,2,1]
-    const isLogin = useSelector((state: any) => state.isLogin)
+    const params: Readonly<Params> = useParams()
+    const navigate: NavigateFunction = useNavigate()
+    const dispatch: Dispatch = useDispatch()
+    const isLogin: boolean = useSelector((state: any) => state.isLogin)
     const imgPageSize = useRef<number>(4)
+    const rateStars = useRef<Array<number>>([5, 4, 3, 2, 1])
     const [messageApi, messageContextHolder] = message.useMessage()
     const [quantity, setQuantity] = useState<number>(1)
     const [product, setProduct] = useState<Product>()
@@ -337,11 +334,12 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                 </div>
                 <div style={{marginLeft: '10px'}}>
                     {(() => {
-                       if (imgPage * imgPageSize.current >= imgList?.length || !imgList) {
-                           return <div className={style.arrowDisable}><RightOutlined /></div>
-                       } else {
-                           return <div onClick={() => imgPageChange(imgPage + 1)} className={style.arrow}><RightOutlined /></div>
-                       }
+                        if (imgPage * imgPageSize.current >= imgList?.length || !imgList) {
+                            return <div className={style.arrowDisable}><RightOutlined /></div>
+                        } else {
+                            return <div onClick={() => imgPageChange(imgPage + 1)} className={style.arrow}>
+                                <RightOutlined /></div>
+                        }
                     })()}
                     {/*{(imgPage * imgPageSize.current >= imgList?.length || !imgList) ?*/}
                     {/*    <div className={style.arrowDisable}><RightOutlined /></div> :*/}
@@ -422,7 +420,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                                             disabled={isEmpty(currentSku) || currentSku?.skuStock === 0}
                                             onClick={addShopCar}
                                             type='primary'>加入购物车</Button>
-                                    <Button icon={<HeartOutlined />}
+                                    <Button icon={<StarOutlined />}
                                             disabled={isFavorite}
                                             onClick={saveFavorite}
                                             className={style.favoriteButton}>{isFavorite ? '您已收藏该商品' : '收藏商品'}</Button>
@@ -474,7 +472,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                                     })()}
                                 </div>
                                 <div className={style.rateCount}>
-                                    {rateStars.map((item: number) => {
+                                    {rateStars.current.map((item: number) => {
                                         return (
                                             <div key={item}>
                                                 <span>{item.toFixed(1)}</span>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import style from './style.module.scss'
 import Header from '@/components/header/Header'
 import { Button, message, Modal, Radio, RadioChangeEvent, Steps, Table } from 'antd'
@@ -11,20 +11,24 @@ import {
 } from '@ant-design/icons'
 import Footer from '@/components/footer/Footer'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteAddrApi, getAddrListApi } from '@/api/user-api'
-import { Addr, Order, OrderAddr, OrderItem, ShopCarItem } from '@/interface'
+import { deleteAddrApi, getAddrListApi } from '@/api/user/addr-api'
 import AddrModal from '@/components/addr-modal/AddrModal'
 import { AddrModalTypeEnum } from '@/enums'
 import event from '@/event'
 import Column from 'antd/es/table/Column'
 import { isEmpty } from '@/utils'
 import { StepProps } from 'antd/es/steps'
-import { submitOrderApi } from '@/api/order-api'
+import { submitOrderApi } from '@/api/order/order-api'
 import Cookies from 'js-cookie'
 import { setShopCar } from '@/store'
 import { Dispatch } from '@reduxjs/toolkit'
+import { Location, useLocation } from 'react-router-dom'
+import { Addr } from '@/interface/user'
+import { Order, OrderAddr, OrderItem } from '@/interface/order'
+import { ShopCarItem } from '@/interface/other'
 
 const SettlementHooks: any = (): any => {
+    const location: Location = useLocation()
     const dispatch: Dispatch = useDispatch()
     const shopCar: Array<ShopCarItem> = useSelector((state: any) => state.shopCar)
     const [step, setStep] = useState<number>(0)
@@ -33,25 +37,31 @@ const SettlementHooks: any = (): any => {
     const [currentAddr, setCurrentAddr] = useState<number>()
     const [modal, modalContextHolder] = Modal.useModal()
     const [messageApi, messageContextHolder] = message.useMessage()
-    const stepItems: Array<StepProps> = [
+    const stepItems = useRef<Array<StepProps>>([
         {title: '填写订单信息', icon: <FormOutlined style={{fontSize: '25px'}} />},
         {title: '支付', icon: <PayCircleOutlined style={{fontSize: '25px'}} />},
         {title: '完成', icon: <CheckOutlined style={{fontSize: '25px'}} />}
-    ]
+    ])
 
     useEffect(() => {
         document.title = '优购商城,结算'
-        // 获取收获地址列表
-        getAddrListApi().then((res) => {
-            if (!!res.data && res.data.length !== 0) {
-                res.data.forEach((item: Addr) => {
-                    if (item.isDefault) {
-                        setCurrentAddr(item.addrId)
-                    }
-                })
-            }
-            setAddrList(res.data)
-        })
+
+        //传入订单ID,直接到第二步
+        if (!isEmpty(location.state) && !isEmpty(location.state.orderId)) {
+            setStep(pre => ++pre)
+        } else {
+            // 获取收获地址列表
+            getAddrListApi().then((res) => {
+                if (!!res.data && res.data.length !== 0) {
+                    res.data.forEach((item: Addr) => {
+                        if (item.isDefault) {
+                            setCurrentAddr(item.addrId)
+                        }
+                    })
+                }
+                setAddrList(res.data)
+            })
+        }
         return () => {
             document.title = '优购商城'
         }
@@ -112,7 +122,7 @@ const SettlementHooks: any = (): any => {
                         setAddrList((pre) => {
                             pre.splice(index, 1)
                             setCurrentAddr(pre[0].addrId)
-                            return pre
+                            return pre.slice()
                         })
                     }
                 })
@@ -268,7 +278,9 @@ const SettlementPage: React.FC = (): JSX.Element => {
     const confirmOrder: JSX.Element = (
         <>
             <AddrModal />
+            {/*收货人项*/}
             {addrItems}
+            {/*购物车项*/}
             {shopCarItems}
             <div className={style.addOrder}>
                 <div className={style.amountText}>
@@ -333,7 +345,7 @@ const SettlementPage: React.FC = (): JSX.Element => {
             <div className={style.main}>
                 <div className={style.settlement}>
                     <div className={style.step}>
-                        <Steps current={step} items={stepItems} />
+                        <Steps current={step} items={stepItems.current} />
                     </div>
                     <div>
                         {step === 0 && confirmOrder}

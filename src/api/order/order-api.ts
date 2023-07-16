@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios'
 import request from '@/request'
-import { Order } from '@/interface'
+import { Order } from '@/interface/order'
 
 // 提交订单接口
 const submitOrderApi = (order: Order): Promise<AxiosResponse> => {

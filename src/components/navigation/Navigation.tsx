@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import style from './style.module.scss'
 import { Dropdown, Menu, MenuProps } from 'antd'
 import { RightOutlined, UnorderedListOutlined } from '@ant-design/icons'
 import { Location, NavigateFunction, NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { getCategoryListApi } from '@/api/product-api'
-import { Category } from '@/interface'
+import { getCategoryListApi } from '@/api/product/category-api'
+import { Category } from '@/interface/product'
 
 const NavigationHooks: any = (): any => {
     const location: Location = useLocation()
@@ -14,13 +14,13 @@ const NavigationHooks: any = (): any => {
     const [selectCategoryId, setSelectCategoryId] = useState<number>()
     const [categoryList, setCategoryList] = useState<Array<Category>>([])
     const [currentChildren, setCurrentChildren] = useState<Array<Category>>([])
-    const menuItems: MenuProps['items'] = [
+    const menuItems = useRef<MenuProps['items']>([
         {label: '首页', key: '/'},
-        {label: '限时特惠', key: '/discount'},
+        {label: '特惠专场', key: '/discount'},
         {label: '秒杀专场', key: '/sec_kills'},
         {label: '品牌专场', key: '/brands'},
         {label: '领券中心', key: '/coupons'}
-    ]
+    ])
 
     useEffect(() => {
         setSelectKey(location.pathname)
@@ -65,7 +65,7 @@ const NavigationHooks: any = (): any => {
     }
 }
 
-const NavigationComponent: React.FC = () => {
+const NavigationComponent: React.FC = (): JSX.Element => {
     const {
         selectKey,
         categoryList,
@@ -86,8 +86,7 @@ const NavigationComponent: React.FC = () => {
                 </div>
                 <div className={style.childrenCategory}>
                     {item.children?.map((item, index) => {
-                        return <NavLink key={index} to='home'
-                                        state={{parentId: item.parentId, categoryId: item.categoryId}}
+                        return <NavLink key={index} to='list' state={{node: item.node, parentId: item.parentId}}
                                         onClick={handleCategoryMenuOpen}>{item.name}</NavLink>
                     })}
                 </div>
@@ -95,7 +94,7 @@ const NavigationComponent: React.FC = () => {
         )
     })
 
-    const categoryMenu = (
+    const categoryMenu: JSX.Element = (
         <div onMouseLeave={handleCategoryMenuOpen} className={style.category}>
             <div className={style.categoryMenu}>
                 <ul>
@@ -118,14 +117,15 @@ const NavigationComponent: React.FC = () => {
     return (
         <div className={style.main}>
             <div className={style.menu}>
-                <Dropdown dropdownRender={() => categoryMenu} open={categoryMenuOpen} onOpenChange={handleCategoryMenuOpen}>
+                <Dropdown dropdownRender={() => categoryMenu} open={categoryMenuOpen}
+                          onOpenChange={handleCategoryMenuOpen}>
                     <div onMouseEnter={handleCategoryMenuOpen}
                          className={style.categoryHeader}>
                         <span>分类</span>
                         <div className={style.categoryIcon}><UnorderedListOutlined /></div>
                     </div>
                 </Dropdown>
-                <Menu mode='horizontal' theme='dark' selectedKeys={[selectKey]} items={menuItems}
+                <Menu mode='horizontal' theme='dark' selectedKeys={[selectKey]} items={menuItems.current}
                       onSelect={handleSelect} />
             </div>
         </div>

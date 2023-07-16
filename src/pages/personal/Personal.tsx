@@ -4,7 +4,13 @@ import Header from '@/components/header/Header'
 import { Location, NavigateFunction, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Footer from '@/components/footer/Footer'
 import { Menu, MenuProps } from 'antd'
-import { ContainerOutlined, HeartOutlined, UserOutlined, WalletOutlined, WhatsAppOutlined } from '@ant-design/icons'
+import {
+    ContainerOutlined,
+    StarOutlined,
+    UserOutlined,
+    WalletOutlined,
+    WhatsAppOutlined
+} from '@ant-design/icons'
 
 const PersonalHooks: any = (): any => {
     const location: Location = useLocation()
@@ -13,7 +19,7 @@ const PersonalHooks: any = (): any => {
     const menuItems: MenuProps['items'] = [
         {label: '个人资料', key: '', icon: <UserOutlined />},
         {label: '我的订单', key: 'order', icon: <ContainerOutlined />},
-        {label: '我的收藏', key: 'favorite', icon: <HeartOutlined />},
+        {label: '我的收藏', key: 'favorite', icon: <StarOutlined />},
         {label: '我的优惠券', key: 'coupons', icon: <WalletOutlined />},
         {label: '收货人信息', key: 'addr', icon: <WhatsAppOutlined />}
     ]

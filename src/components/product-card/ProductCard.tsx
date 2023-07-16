@@ -1,7 +1,7 @@
 import React from 'react'
 import style from './style.module.scss'
-import { Product } from '@/interface'
 import { useNavigate } from 'react-router-dom'
+import { Product } from '@/interface/product'
 
 interface Props {
     product: Product

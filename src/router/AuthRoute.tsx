@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { message } from 'antd'
 
 interface Props {
     children: ReactElement

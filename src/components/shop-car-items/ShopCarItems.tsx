@@ -1,19 +1,20 @@
 import React from 'react'
 import style from './style.module.scss'
-import { ShopCarItem } from '@/interface'
 import { NavLink } from 'react-router-dom'
 import { InputNumber } from 'antd'
 import event from '@/event'
 import { useDispatch, useSelector } from 'react-redux'
 import { setShopCar } from '@/store'
 import Cookies from 'js-cookie'
+import { Dispatch } from '@reduxjs/toolkit'
+import { ShopCarItem } from '@/interface/other'
 
 interface Props {
     shopCarItem: ShopCarItem
 }
 
 const ShopCarItemsHooks: any = (): any => {
-    const dispatch = useDispatch()
+    const dispatch: Dispatch = useDispatch()
     const shopCar: Array<ShopCarItem> = useSelector((state: any) => state.shopCar)
 
     // 解析规格
@@ -43,6 +44,7 @@ const ShopCarItemsHooks: any = (): any => {
         dispatch(setShopCar(shopCarTemp))
     }
 
+    // 删除购物车项
     const deleteShopCarItem = (skuId: number): void => {
         let shopCarTemp: Array<ShopCarItem> = new Array<ShopCarItem>()
         Object.assign(shopCarTemp, shopCar)

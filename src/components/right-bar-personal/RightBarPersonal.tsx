@@ -1,27 +1,27 @@
 import React from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavigateFunction, NavLink, useNavigate } from 'react-router-dom'
 import { Button, message, Modal } from 'antd'
 import { ExportOutlined, LockOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import style from './style.module.scss'
 import { isEmpty } from '@/utils'
 import AvatarEmpty from '@/assets/img/empty/avatar-empty.png'
-import { logoutApi } from '@/api/auth-api'
+import { logoutApi } from '@/api/auth/auth-api'
 import { setIsLogin, setUserinfo } from '@/store'
+import { Dispatch } from '@reduxjs/toolkit'
+import { User } from '@/interface/user'
 
 const RightBarPersonalHooks: any = (): any => {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
+    const navigate: NavigateFunction = useNavigate()
+    const dispatch: Dispatch = useDispatch()
     const [modal, contextHolder] = Modal.useModal()
-    const userinfo = useSelector((state: any) => state.userinfo)
+    const userinfo: User = useSelector((state: any) => state.userinfo)
 
     const logout = () => {
         modal.confirm({
             title: '退出登录',
             content: '此操作将退出登录,是否继续?',
             okType: 'danger',
-            okText: '确定',
-            cancelText: '取消',
             onOk: () => {
                 logoutApi().then((res) => {
                     if (res) {
@@ -56,7 +56,7 @@ const RightBarPersonalComponent: React.FC = (): JSX.Element => {
                     }
                     return (
                         <NavLink to='/personal'>
-                            <div style={{textAlign: 'center'}}>{userinfo.username}</div>
+                            <div style={{textAlign: 'center'}}>{userinfo.nickname}</div>
                         </NavLink>
                     )
                 })()}

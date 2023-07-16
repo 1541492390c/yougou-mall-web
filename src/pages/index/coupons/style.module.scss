@@ -1,43 +1,68 @@
 .main {
-  padding: 10px;
+  background-color: #f9f9f9;
 }
 
-.card {
+.flex {
+  display: flex;
+  justify-content: center;
+}
+
+.body {
+  width: 1200px;
   display: flex;
   flex-direction: column;
-  background-color: white;
-  border: #f5f5f5 solid 1px;
+  margin-top: 40px;
   margin-bottom: 40px;
 }
 
-.cardTitle {
+.banner {
+  width: 100%;
   display: flex;
-  flex-direction: row;
-  height: 40px;
-  align-items: center;
-  border-bottom: #f0f0f0 solid 1px;
+  justify-content: center;
+  margin-top: 4px;
+
+  img {
+    width: 100%;
+    height: 320px;
+  }
 }
 
-.cardTitleText {
-  font-size: 16px;
-  margin-left: 10px;
+.smallBanner {
+  width: 1200px;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
-.couponUserList {
-  padding: 10px;
+.couponsTitle {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 10px;
+
+  img {
+    padding-bottom: 8px;
+  }
+}
+
+.coupons {
+  margin-top: 20px;
+  margin-bottom: 50px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
 
-.couponUserItem {
-  width: 33.3%;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
+.couponItem {
+  padding-right: 20px;
+
+  &:nth-child(4n) {
+    padding-right: 0;
+  }
 }
 
-.noCoupons {
+.couponsIsEmpty {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -50,4 +75,22 @@
     height: 150px;
     width: 150px;
   }
+}
+
+.couponsListIsEmpty {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 80px;
+
+  img {
+    height: 220px;
+    width: 220px;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }

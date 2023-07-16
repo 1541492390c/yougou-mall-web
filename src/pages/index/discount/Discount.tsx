@@ -1,10 +1,21 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
-import { Banner } from '@/interface'
 import PageBanner from '@/components/page-banner/PageBanner'
+import { getBannerListApi } from '@/api/platform/platform-api'
+import { BannerTypeEnum } from '@/enums'
+import { Banner } from '@/interface/other'
 
 const DiscountHooks: any = (): any => {
     const [bannerList, setBannerList] = useState<Array<Banner>>([])
+
+    useEffect(() => {
+        // 获取轮播图列表
+        getBannerListApi(BannerTypeEnum.PC, 'discount').then((res) => {
+            setBannerList(res.data)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }, [])
 
     return {bannerList}
 }

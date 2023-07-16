@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import ServiceZhengpin from '@/assets/img/index/service-zhengpin.png'
 import ServiceShandian from '@/assets/img/index/service-shandian.png'
 import ServiceShouhou from '@/assets/img/index/service-shouhou.png'
@@ -9,11 +9,11 @@ import { SearchOutlined } from '@ant-design/icons'
 
 const IndexHeaderHooks: any = (): any => {
     const [keyword, setKeyword] = useState<string>('')
-    const serviceList = [
+    const serviceList = useRef<any>([
         {img: ServiceZhengpin, ch: '正品保障', en: 'Genuine'},
         {img: ServiceShandian, ch: '闪电送货', en: 'Speedy'},
         {img: ServiceShouhou, ch: '安心售后', en: 'AfterSale '}
-    ]
+    ])
 
     const search = (): void => {
         console.log(keyword)
@@ -27,7 +27,7 @@ const IndexHeaderComponent: React.FC = (): JSX.Element => {
 
     const transformServiceList: JSX.Element = (
         <div className={style.service}>
-            {serviceList.map((item: any, index: number) => {
+            {serviceList.current.map((item: any, index: number) => {
                 return (
                     <div key={index} className={style.serviceCard}>
                         <div>

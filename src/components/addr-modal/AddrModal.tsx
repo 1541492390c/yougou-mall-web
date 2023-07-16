@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
 import { Col, Form, Input, message, Modal, Row, Select, Switch } from 'antd'
 import { AddrModalTypeEnum } from '@/enums'
-import { Addr, District } from '@/interface'
 import axios from 'axios'
-import store from '@/store'
 import event from '@/event'
-import { saveAddrApi, updateAddrApi } from '@/api/user-api'
+import { useSelector } from 'react-redux'
+import { saveAddrApi, updateAddrApi } from '@/api/user/addr-api'
+import { Addr } from '@/interface/user'
+import { District } from '@/interface/other'
 
 const AddrModalHooks: any = (): any => {
-    const amapKey = store.getState().amapKey
+    const amapKey: string = useSelector((state: any) => state.amapKey)
     const [form] = Form.useForm()
     const [addrId, setAddrId] = useState<number>()
     const [type, setType] = useState<number>(AddrModalTypeEnum.ADD)

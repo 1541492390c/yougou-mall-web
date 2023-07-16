@@ -3,17 +3,18 @@ import style from './style.module.scss'
 import AddrModal from '@/components/addr-modal/AddrModal'
 import {
     DeleteOutlined,
-    EnvironmentOutlined, HomeOutlined,
+    EnvironmentOutlined,
+    HomeOutlined,
     PhoneOutlined,
     PlusCircleOutlined,
     ToolOutlined,
     UserOutlined
 } from '@ant-design/icons'
-import { Addr } from '@/interface'
-import { deleteAddrApi, getAddrListApi } from '@/api/user-api'
 import { AddrModalTypeEnum } from '@/enums'
 import event from '@/event'
 import { message, Modal } from 'antd'
+import { getAddrListApi, deleteAddrApi } from '@/api/user/addr-api'
+import { Addr } from '@/interface/user'
 
 const AddrHooks: any = (): any => {
     const [addrList, setAddrList] = useState<Array<Addr>>([])
@@ -52,8 +53,6 @@ const AddrHooks: any = (): any => {
             title: '删除收货地址',
             content: '此操作将删除收货地址,是否继续?',
             okType: 'danger',
-            okText: '确定',
-            cancelText: '取消',
             onOk: () => {
                 deleteAddrApi(addrId).then((res) => {
                     if (res) {
@@ -74,30 +73,35 @@ const AddrHooks: any = (): any => {
 const AddrPage: React.FC = (): JSX.Element => {
     const {addrList, modalContextHolder, messageContextHolder, openAddrModal, deleteAddr} = AddrHooks()
 
-    const transformConsignee = (addr: Addr, key: number): JSX.Element => {
+    const transformAddr = (addr: Addr, key: number): JSX.Element => {
         return (
-            <div key={key} className={style.consigneeCard}>
-                <div className={style.consigneeCardBody}>
-                    <div className={style.consigneeCardItem}><UserOutlined
+            <div key={key} className={style.addrCard}>
+                <div className={style.addrCardBody}>
+                    <div className={style.addrCardItem}><UserOutlined
                         style={{marginRight: '5px'}} />收货人: {addr.consignee}</div>
-                    <div className={style.consigneeCardItem}><PhoneOutlined
+                    <div className={style.addrCardItem}><PhoneOutlined
                         style={{marginRight: '5px'}} />联系电话: {addr.telephone}</div>
-                    <div className={style.consigneeCardItem}><EnvironmentOutlined
+                    <div className={style.addrCardItem}><EnvironmentOutlined
                         style={{marginRight: '5px'}} />所在省市: {addr.province} - {addr.city}</div>
-                    <div className={style.consigneeCardItem}><HomeOutlined
+                    <div className={style.addrCardItem}><HomeOutlined
                         style={{marginRight: '5px'}} />详细地址: {addr.detailedAddr}</div>
                     <div className={style.edit}>
-                        <div onClick={() => openAddrModal(AddrModalTypeEnum.UPDATE, addr)}><ToolOutlined
-                            style={{marginRight: '2px'}} />编辑
-                        </div>
-                        <div onClick={() => deleteAddr(addr.addrId, key)}><DeleteOutlined style={{marginRight: '2px'}} />删除
+                        <div className={style.editBottom}>
+                            <div onClick={() => openAddrModal(AddrModalTypeEnum.UPDATE, addr)}>
+                                <ToolOutlined style={{marginRight: '2px'}} />
+                                <span>编辑</span>
+                            </div>
+                            <div onClick={() => deleteAddr(addr.addrId, key)}>
+                                <DeleteOutlined style={{marginRight: '2px'}} />
+                                <span>删除</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         )
     }
-    
+
     return (
         <>
             <AddrModal />
@@ -108,9 +112,9 @@ const AddrPage: React.FC = (): JSX.Element => {
                         <span className={style.plusIcon}
                               onClick={() => openAddrModal(AddrModalTypeEnum.ADD, undefined)}><PlusCircleOutlined /></span>
                     </div>
-                    <div className={style.consigneeCardList}>
+                    <div className={style.addrCardList}>
                         {addrList.map((item: Addr, index: number) => {
-                            return transformConsignee(item, index)
+                            return transformAddr(item, index)
                         })}
                     </div>
                 </div>

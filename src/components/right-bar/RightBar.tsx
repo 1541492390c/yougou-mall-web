@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import style from './style.module.scss'
 import { Popover, Tooltip } from 'antd'
 import { FormOutlined, HomeOutlined, ShoppingCartOutlined, UpOutlined, UserOutlined } from '@ant-design/icons'
@@ -8,14 +8,15 @@ import RightBarShopCar from '@/components/right-bar-shop-car/RightBarShopCar'
 import event from '@/event'
 import { useSelector } from 'react-redux'
 import { isEmpty } from '@/utils'
+import { ShopCarItem } from '@/interface/other'
 
 interface Props {
     pathname: string
 }
 
 const RightBarHooks: any = (): any => {
-    const navigate = useNavigate()
-    const shopCar = useSelector((state: any) => state.shopCar)
+    const navigate: NavigateFunction = useNavigate()
+    const shopCar: Array<ShopCarItem> = useSelector((state: any) => state.shopCar)
     const [shopCarTotal, setShopCarTotal] = useState<number>(0)
     const [personalClick, setPersonalClick] = useState<boolean>(false)
     const [personalHover, setPersonalHover] = useState<boolean>(false)
@@ -57,8 +58,8 @@ const RightBarHooks: any = (): any => {
     }
 
     const backTop = (): void => {
-        let scrollHeight = window.scrollY
-        let timer = setInterval(() => {
+        let scrollHeight: number = window.scrollY
+        let timer: NodeJS.Timer = setInterval(() => {
             if (scrollHeight > 0) {
                 scrollHeight -= 80
                 window.scrollTo(0, scrollHeight)

@@ -1,25 +1,27 @@
 import React from 'react'
 import style from './style.module.scss'
-import { Button, Modal } from 'antd'
+import { Button, message, Modal } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import ShopCarItemEmpty from '@/assets/img/empty/shop-car-item-empty.png'
-import { ShopCarItem } from '@/interface'
 import ShopCarItems from '@/components/shop-car-items/ShopCarItems'
 import { useDispatch, useSelector } from 'react-redux'
 import Cookies from 'js-cookie'
 import event from '@/event'
 import { setShopCar } from '@/store'
+import { Dispatch } from '@reduxjs/toolkit'
+import { ShopCarItem } from '@/interface/other'
 
 const RightShopCarHooks: any = (): any => {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const [modal, contextHolder] = Modal.useModal()
-    const shopCar: Array<ShopCarItem>  = useSelector((state: any) => state.shopCar)
+    const navigate: NavigateFunction = useNavigate()
+    const dispatch: Dispatch = useDispatch()
+    const shopCar: Array<ShopCarItem> = useSelector((state: any) => state.shopCar)
+    const [modal, modalContextHolder] = Modal.useModal()
+    const [messageApi, messageContextHolder] = message.useMessage()
 
     // 计算购物车总价
     const shopCarAmount = (): number => {
-        let amount = 0
+        let amount: number = 0
         shopCar.forEach((item: ShopCarItem) => {
             amount += item.totalAmount
         })
@@ -33,21 +35,19 @@ const RightShopCarHooks: any = (): any => {
             title: '清空购物车',
             content: '此操作将清空购物车,是否继续?',
             okType: 'danger',
-            okText: '确定',
-            cancelText: '取消',
             onOk: () => {
+                messageApi.success('购物车已清空').then()
                 Cookies.remove('shop_car')
                 dispatch(setShopCar([]))
-                //setShopCarAmount(0)
             }
         })
     }
 
-    return {navigate, shopCar, contextHolder, shopCarAmount, clearShopCar}
+    return {navigate, shopCar, modalContextHolder, messageContextHolder, shopCarAmount, clearShopCar}
 }
 
 const RightBarShopCarComponent: React.FC = (): JSX.Element => {
-    const {navigate, shopCar, contextHolder, shopCarAmount, clearShopCar} = RightShopCarHooks()
+    const {navigate, shopCar, modalContextHolder, messageContextHolder, shopCarAmount, clearShopCar} = RightShopCarHooks()
 
     return (
         <div className={style.main}>
@@ -92,7 +92,8 @@ const RightBarShopCarComponent: React.FC = (): JSX.Element => {
                                     <span>清空购物车</span>
                                 </span>
                                         <span>
-                                    <Button onClick={() => navigate('settlement')} type='primary' style={{width: '85px'}}>结算</Button>
+                                    <Button onClick={() => navigate('settlement')} type='primary'
+                                            style={{width: '85px'}}>结算</Button>
                                 </span>
                                     </div>
                                 </div>
@@ -101,8 +102,10 @@ const RightBarShopCarComponent: React.FC = (): JSX.Element => {
                     })()}
                 </div>
             </div>
-
-            {contextHolder}
+            {/*对话框*/}
+            {modalContextHolder}
+            {/*全局消息提醒*/}
+            {messageContextHolder}
         </div>
     )
 }

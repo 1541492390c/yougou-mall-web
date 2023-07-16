@@ -1,10 +1,18 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import style from './style.module.scss'
 import { Button, Form, Input, Result, Select, Steps } from 'antd'
-import { CheckOutlined, FormOutlined, LockOutlined, MailOutlined, MobileOutlined, UserOutlined } from '@ant-design/icons'
+import {
+    CheckOutlined,
+    FormOutlined,
+    LockOutlined,
+    MailOutlined,
+    MobileOutlined,
+    SmileOutlined,
+    UserOutlined
+} from '@ant-design/icons'
 import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
-import { registerApi } from '@/api/user-api'
+import { registerApi } from '@/api/user/user-api'
 import { StepProps } from 'antd/es/steps'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 
@@ -13,15 +21,22 @@ const RegisterHooks: any = (): any => {
     const [currentStep, setCurrentStep] = useState<number>(1)
     const [emailSuffix, setEmailSuffix] = useState<string>('@qq.com')
     const [registerForm] = Form.useForm()
-    const stepItems: Array<StepProps> = [
+    const stepItems = useRef<Array<StepProps>>([
         {title: '手机验证', icon: <MobileOutlined style={{fontSize: '25px'}} />},
         {title: '填写信息', icon: <FormOutlined style={{fontSize: '25px'}} />},
         {title: '完成注册', icon: <CheckOutlined style={{fontSize: '25px'}} />}
-    ]
+    ])
 
     const validateUsername = (_: any, value: string): Promise<any> => {
         if (!value) {
             return Promise.reject(new Error('请输入用户名'))
+        }
+        return Promise.resolve()
+    }
+
+    const validateNickname = (_: any, value: string): Promise<any> => {
+        if (!value) {
+            return Promise.reject(new Error('请输入昵称'))
         }
         return Promise.resolve()
     }
@@ -56,6 +71,7 @@ const RegisterHooks: any = (): any => {
         return Promise.resolve()
     }
 
+    // 注册
     const register = (values: { username: string, password: string, email: string }): void => {
         if (!!values.email) {
             values.email =  values.email + emailSuffix
@@ -76,6 +92,7 @@ const RegisterHooks: any = (): any => {
         stepItems,
         setEmailSuffix,
         validateUsername,
+        validateNickname,
         validatePassword,
         validatePassword2,
         validateEmail,
@@ -91,24 +108,30 @@ const RegisterPage: React.FC = () => {
         stepItems,
         setEmailSuffix,
         validateUsername,
+        validateNickname,
         validatePassword,
         validatePassword2,
         validateEmail,
         register,
     } = RegisterHooks()
 
+    // 邮箱后缀
     const emailInputSuffix: JSX.Element = (
-        <Select defaultValue='@qq.com' onChange={(value) => setEmailSuffix(value)}>
+        <Select defaultValue='@qq.com' onChange={(value: string) => setEmailSuffix(value)}>
             <Select.Option value='@qq.com'>@qq.com</Select.Option>
             <Select.Option value='@gmail.com'>@gmail.com</Select.Option>
             <Select.Option value='@aliyun.com'>@aliyun.com</Select.Option>
         </Select>
     )
 
-    const step2: JSX.Element = (
+    // 填写用户信息
+    const registerInfo: JSX.Element = (
         <Form form={registerForm} onFinish={register}>
             <Form.Item name='username' rules={[{validator: validateUsername}]}>
-                <Input placeholder='请输入昵称' prefix={<UserOutlined />} />
+                <Input placeholder='请输入用户名' prefix={<UserOutlined />} />
+            </Form.Item>
+            <Form.Item name='nickname' rules={[{validator: validateNickname}]}>
+                <Input placeholder='请输入昵称' prefix={<SmileOutlined />} />
             </Form.Item>
             <Form.Item name='password' rules={[{validator: validatePassword}]}>
                 <Input.Password placeholder='请输入密码' prefix={<LockOutlined />} />
@@ -126,7 +149,7 @@ const RegisterPage: React.FC = () => {
         </Form>
     )
 
-    const step3: JSX.Element = (
+    const registerSuccess: JSX.Element = (
         <Result status='success' title='注册成功,请前往登录或返回首页' extra={[
             <Button type='primary' onClick={() => navigate('/login')}>前往登录</Button>,
             <Button type='default' onClick={() => navigate('/')}>返回首页</Button>
@@ -138,11 +161,11 @@ const RegisterPage: React.FC = () => {
             <Header />
             <div className={style.main}>
                 <div className={style.register}>
-                    <Steps current={currentStep} items={stepItems} />
+                    <Steps current={currentStep} items={stepItems.current} />
                     <div className={style.registerForm}>
                         {/*{step === 0 && stepOne}*/}
-                        {currentStep === 1 && step2}
-                        {currentStep === 2 && step3}
+                        {currentStep === 1 && registerInfo}
+                        {currentStep === 2 && registerSuccess}
                     </div>
                 </div>
             </div>

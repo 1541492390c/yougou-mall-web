@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
-import { Favorite } from '@/interface'
 import { message, Table } from 'antd'
-import { deleteFavoriteApi, getFavoritePagesApi } from '@/api/product-api'
 import Column from 'antd/es/table/Column'
 import { NavLink } from 'react-router-dom'
+import { deleteFavoriteApi, getFavoritePagesApi } from '@/api/product/favorite-api'
+import { Favorite } from '@/interface/product'
 
 const FavoriteHooks: any = (): any => {
     const [total, setTotal] = useState<number>(0)
-    const [favoriteList, setFavoriteList] = useState<Favorite[]>([])
+    const [favoriteList, setFavoriteList] = useState<Array<Favorite>>([])
     const [messageApi, messageContextHolder] = message.useMessage()
 
     useEffect(() => {
@@ -27,7 +27,7 @@ const FavoriteHooks: any = (): any => {
                 messageApi.success('取消收藏成功').then()
                 setFavoriteList((pre) => {
                     pre.splice(index, 1)
-                    return pre
+                    return pre.slice()
                 })
             }
         })
@@ -42,7 +42,7 @@ const FavoritePage: React.FC = (): JSX.Element => {
     return (
         <div className={style.main}>
             <div className={style.card}>
-                <Table pagination={{pageSize: 10, total: total}} dataSource={favoriteList}>
+                <Table pagination={{pageSize: 10, total: total}} dataSource={favoriteList} rowKey='favoriteId'>
                     <Column title='商品图片' align='center' dataIndex='cover' render={(value: string) => {
                         return <img src={value} alt='' className={style.favoriteItemImg} />
                     }} />

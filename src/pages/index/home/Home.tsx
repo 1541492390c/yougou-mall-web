@@ -2,17 +2,21 @@ import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { RightCircleOutlined, ThunderboltFilled } from '@ant-design/icons'
-import { Banner, Product } from '@/interface'
 import SecKillEmpty from '@/assets/img/empty/sec-kill-empty.png'
 import ProductEmpty from '@/assets/img/empty/product-empty.png'
 import CouponsEmpty from '@/assets/img/empty/coupons-empty.png'
-import TitleBlockRight from '@/assets/img/common/title-block-right.png'
-import TitleBlockLeft from '@/assets/img/common/title-block-left.png'
+import TitleCircle from '@/assets/img/common/title-circle.png'
 import IndexBanner from '@/components/page-banner/PageBanner'
-import { getBannerListApi } from '@/api/platform-api'
+import { getBannerListApi } from '@/api/platform/platform-api'
 import { BannerTypeEnum } from '@/enums'
-import { getRecommendedProductListApi } from '@/api/product-api'
+import { getRecommendedProductListApi } from '@/api/product/product-api'
 import ProductCard from '@/components/product-card/ProductCard'
+import { Product } from '@/interface/product'
+import { Banner } from '@/interface/other'
+import { Coupon } from '@/interface/payment'
+import { getCouponPagesApi } from '@/api/payment/coupon-api'
+import CouponCard from '@/components/coupon-card/CouponCard'
+import { isEmpty } from '@/utils'
 
 const HomeHooks: any = (): any => {
     const navigate: NavigateFunction = useNavigate()
@@ -20,13 +24,20 @@ const HomeHooks: any = (): any => {
     const [secKillTimeout, setSecKillTimeout] = useState<number>(0)
     const [hotProductList, setHotProductList] = useState<Array<Product>>([])
     const [recommendProductList, setRecommendProductList] = useState<Array<Product>>([])
-    const [couponList, setCouponList] = useState<Array<Product>>([])
+    const [couponList, setCouponList] = useState<Array<Coupon>>([])
     const [bannerList, setBannerList] = useState<Array<Banner>>([])
 
     useEffect(() => {
         // 获取轮播图列表
         getBannerListApi(BannerTypeEnum.PC, 'home').then((res) => {
             setBannerList(res.data)
+        }).catch((err) => {
+            console.log(err)
+        })
+
+        // 获取优惠券分页信息(首页展示3张优惠券)
+        getCouponPagesApi(1, 3).then((res) => {
+            setCouponList(res.data.list)
         }).catch((err) => {
             console.log(err)
         })
@@ -74,7 +85,7 @@ const HomePage: React.FC = (): JSX.Element => {
                 </div>
             </div>
             <div>
-                <div className={style.notProduct}>
+                <div className={style.productIsEmpty}>
                     <img src={SecKillEmpty} alt='' />
                     <div><span>该功能尚未开发</span></div>
                 </div>
@@ -131,9 +142,9 @@ const HomePage: React.FC = (): JSX.Element => {
                 </div>
                 <div>
                     {(() => {
-                        if (!couponList || couponList.length === 0) {
+                        if (isEmpty(couponList) || couponList.length === 0) {
                             return (
-                                <div className={style.notCoupons}>
+                                <div className={style.couponsIsEmpty}>
                                     <div>
                                         <img src={CouponsEmpty} alt='' />
                                         <div><span>暂无优惠券</span></div>
@@ -142,14 +153,14 @@ const HomePage: React.FC = (): JSX.Element => {
                             )
                         } else {
                             return (
-                                <div className={style.notCoupons}>
-                                    {/*{couponList.map((item, index) => {*/}
-                                    {/*    return (*/}
-                                    {/*        <div key={index} className={style.couponItem}>*/}
-                                    {/*            <CouponCard coupon={item} />*/}
-                                    {/*        </div>*/}
-                                    {/*    )*/}
-                                    {/*})}*/}
+                                <div className={style.couponsList}>
+                                    {couponList.map((item: Coupon, index: number) => {
+                                        return (
+                                            <div key={index} className={style.couponItem}>
+                                                <CouponCard coupon={item} />
+                                            </div>
+                                        )
+                                    })}
                                 </div>
                             )
                         }
@@ -178,15 +189,15 @@ const HomePage: React.FC = (): JSX.Element => {
                     <div>{secKill}</div>
                     <div>{hotProductAndCoupons}</div>
                     <div className={style.recommendTitle}>
-                        <div style={{marginRight: '10px'}}><img src={TitleBlockLeft} alt='' /></div>
+                        <div style={{marginRight: '10px'}}><img src={TitleCircle} alt='' /></div>
                         <div><span>为你推荐</span></div>
-                        <div style={{marginLeft: '10px'}}><img src={TitleBlockRight} alt='' /></div>
+                        <div style={{marginLeft: '10px'}}><img src={TitleCircle} alt='' /></div>
                     </div>
                     {(() => {
                         if (!recommendProductList || recommendProductList.length <= 0) {
                             return (
-                                <div className={style.noRecommendProduct}>
-                                    <div className={style.notProduct}>
+                                <div className={style.recommendProductIsEmpty}>
+                                    <div className={style.productIsEmpty}>
                                         <img src={ProductEmpty} alt='' />
                                         <div><span>暂无推荐商品</span></div>
                                     </div>

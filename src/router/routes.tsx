@@ -19,6 +19,7 @@ import Favorite from '@/pages/personal/favorite/Favorite'
 import Addr from '@/pages/personal/addr/Addr'
 import PersonalCoupons from '@/pages/personal/personal-coupons/PersonalCoupons'
 import Comment from '@/pages/comment/Comment'
+import List from '@/pages/list/List'
 
 const routes: Array<RouteObject> = [
     // 首页
@@ -31,6 +32,7 @@ const routes: Array<RouteObject> = [
             {path: 'sec_kills', element: <SecKills />},
             {path: 'brands', element: <Brands />},
             {path: 'coupons', element: <Coupons />},
+            {path: 'list', element: <List />},
             {path: 'detail/:id', element: <ProductDetail />}
         ]
     },

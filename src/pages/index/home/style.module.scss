@@ -153,13 +153,6 @@
   padding-left: 10px;
 }
 
-.recommendBlock {
-  width: 120px;
-  height: 10px;
-  background-color: #f13a3a;
-  border-radius: 12px 12px;
-}
-
 .recommendTitle {
   width: 100%;
   display: flex;
@@ -231,7 +224,7 @@
   }
 }
 
-.notCoupons {
+.couponsIsEmpty {
   height: 402px;
   display: flex;
   flex-direction: column;
@@ -247,7 +240,15 @@
   }
 }
 
-.notProduct {
+.couponsList {
+  height: 402px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: center;
+}
+
+.productIsEmpty {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -274,7 +275,7 @@
 }
 
 .notHotProduct {
-  @extend .notProduct;
+  @extend .productIsEmpty;
   height: 402px;
   margin-bottom: 0;
 }
@@ -286,7 +287,7 @@
   flex-wrap: wrap;
 }
 
-.noRecommendProduct {
+.recommendProductIsEmpty {
   display: flex;
   justify-content: center;
   margin-bottom: 80px;

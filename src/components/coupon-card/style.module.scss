@@ -41,23 +41,41 @@
 .couponRight {
   width: 76.5%;
   padding-left: 10px;
-  padding-top: 4px;
+  padding-top: 20px;
 
   span {
     display: inline-block;
   }
 }
 
+.amountAndDescription {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 15px;
+}
+
 .withAmount {
-  font-size: 42px;
+  font-size: 35px;
 }
 
 .yuanIcon {
-  font-size: 20px;
+  font-size: 14px;
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  div {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .usedAmount {
-  margin-left: 6px;
+  margin-left: 4px;
+  margin-bottom: 2px;
   background-color: #f13a3a;
   color: white;
   border: #f13a3a solid 1px;
