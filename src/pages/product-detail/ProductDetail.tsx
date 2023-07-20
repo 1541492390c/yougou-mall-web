@@ -9,11 +9,12 @@ import { isFavoriteApi, saveFavoriteApi } from '@/api/product/favorite-api'
 import { LeftOutlined, RightOutlined, ShoppingCartOutlined, StarOutlined } from '@ant-design/icons'
 import { Button, InputNumber, message, Rate } from 'antd'
 import { isEmpty } from '@/utils'
-import { setShopCar } from '@/store'
+import { setShopCar } from '@/store/slice'
 import { getCommentRateStatistics } from '@/api/user/user-api'
 import { Dispatch } from '@reduxjs/toolkit'
 import { AttrValue, Attr, Product, Sku, SkuSpecs } from '@/interface/product'
-import { RateStatistics, ShopCarItem } from '@/interface/other'
+import { ShopCarItem } from '@/interface/other'
+import { RateStatistics } from '@/interface/user'
 
 const ProductDetailHooks: any = (): any => {
     const params: Readonly<Params> = useParams()

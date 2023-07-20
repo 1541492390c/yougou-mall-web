@@ -18,13 +18,14 @@ const getProductByProductIdApi = (id: string | undefined): Promise<AxiosResponse
 }
 
 // 获取商品分页信息接口
-const getProductPagesApi = (pageNum: number = 1, pageSize: number = 10, categoryNode: string | undefined): Promise<AxiosResponse> => {
+const getProductPagesApi = (pageNum: number = 1, pageSize: number = 10, recommended: boolean | undefined, categoryNode: string | undefined): Promise<AxiosResponse> => {
     return request({
         url: '/product/pages',
         method: 'GET',
         params: {
             page_num: pageNum,
             page_size: pageSize,
+            recommended: recommended,
             category_node: categoryNode
         }
     })

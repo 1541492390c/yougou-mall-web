@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { message, Progress, Tag } from 'antd'
 import { receiveCouponApi } from '@/api/payment/coupon-api'
 import { Dispatch } from '@reduxjs/toolkit'
-import { setCouponUserList } from '@/store'
+import { setCouponUserList } from '@/store/slice'
 
 interface Props {
     coupon: Coupon

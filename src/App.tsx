@@ -4,7 +4,7 @@ import { useRoutes } from 'react-router-dom'
 import routes from '@/router/routes'
 import { ConfigProvider } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
-import { setCouponUserList, setShopCar, setUserinfo } from '@/store'
+import { setCouponUserList, setShopCar, setUserinfo } from '@/store/slice'
 import { getUserinfoApi } from '@/api/user/user-api'
 import Cookies from 'js-cookie'
 import { Dispatch } from '@reduxjs/toolkit'
@@ -46,7 +46,7 @@ const App: React.FC = (): JSX.Element => {
     const {transformRoutes} = AppHooks()
 
     return (
-        <ConfigProvider locale={zhCN} theme={{token: {colorPrimary: '#f13a3a'}}}>
+        <ConfigProvider locale={zhCN} theme={{token: {colorPrimary: '#f13a3a', borderRadius: 0}}}>
             <AppScrollTop>
                 {transformRoutes}
             </AppScrollTop>

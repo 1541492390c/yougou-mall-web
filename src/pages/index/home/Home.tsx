@@ -9,14 +9,15 @@ import TitleCircle from '@/assets/img/common/title-circle.png'
 import IndexBanner from '@/components/page-banner/PageBanner'
 import { getBannerListApi } from '@/api/platform/platform-api'
 import { BannerTypeEnum } from '@/enums'
-import { getRecommendedProductListApi } from '@/api/product/product-api'
+import { getProductPagesApi, getRecommendedProductListApi } from '@/api/product/product-api'
 import ProductCard from '@/components/product-card/ProductCard'
 import { Product } from '@/interface/product'
-import { Banner } from '@/interface/other'
 import { Coupon } from '@/interface/payment'
+import { Banner } from '@/interface/platform'
 import { getCouponPagesApi } from '@/api/payment/coupon-api'
 import CouponCard from '@/components/coupon-card/CouponCard'
 import { isEmpty } from '@/utils'
+import HotProductCard from '@/components/hot-product-card/HotProductCard'
 
 const HomeHooks: any = (): any => {
     const navigate: NavigateFunction = useNavigate()
@@ -45,6 +46,13 @@ const HomeHooks: any = (): any => {
         // 获取推荐商品
         getRecommendedProductListApi().then((res) => {
             setRecommendProductList(res.data)
+        }).catch((err) => {
+            console.log(err)
+        })
+
+        // 获取热门商品
+        getProductPagesApi(1, 10, false, undefined).then((res) => {
+            setHotProductList(res.data.list)
         }).catch((err) => {
             console.log(err)
         })
@@ -118,13 +126,13 @@ const HomePage: React.FC = (): JSX.Element => {
                                 </div>
                             )
                         }
-                        // return (
-                        //     <div className={style.hotProductItems}>
-                        //         {hotProductList.map((item: Product, index: number) => {
-                        //             return <div key={index}><HotProductCard product={item} /></div>
-                        //         })}
-                        //     </div>
-                        // )
+                        return (
+                            <div className={style.hotProductItems}>
+                                {hotProductList.map((item: Product, index: number) => {
+                                    return <div key={index}><HotProductCard product={item} /></div>
+                                })}
+                            </div>
+                        )
                     })()}
                 </div>
             </div>

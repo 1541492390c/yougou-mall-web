@@ -21,4 +21,14 @@ interface Addr {
     isDefault: boolean
 }
 
-export type { User, Addr }
+// 评分统计
+interface RateStatistics {
+    average: number,
+    oneCount: number,
+    twoCount: number,
+    threeCount: number,
+    fourCount: number,
+    fiveCount: number
+}
+
+export type { User, Addr, RateStatistics }

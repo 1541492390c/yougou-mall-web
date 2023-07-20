@@ -13,11 +13,11 @@ import Personal from '@/pages/personal/Personal'
 import ProductDetail from '@/pages/product-detail/ProductDetail'
 import AuthRoute from '@/router/AuthRoute'
 import Settlement from '@/pages/settlement/Settlement'
-import PersonalOrders from '@/pages/personal/order/Order'
+import MyOrder from '@/pages/personal/my-order/MyOrder'
 import PersonalDocument from '@/pages/personal/peresonal-document/PersonalDocument'
 import Favorite from '@/pages/personal/favorite/Favorite'
 import Addr from '@/pages/personal/addr/Addr'
-import PersonalCoupons from '@/pages/personal/personal-coupons/PersonalCoupons'
+import MyCoupon from '@/pages/personal/my-coupon/MyCoupon'
 import Comment from '@/pages/comment/Comment'
 import List from '@/pages/list/List'
 
@@ -39,13 +39,13 @@ const routes: Array<RouteObject> = [
     // 个人中心
     {
         path: '/personal/*',
-        element: <AuthRoute><Personal /></AuthRoute>,
+        element: <Personal />,
         children: [
             {path: '*', element: <PersonalDocument />},
-            {path: 'order', element: <PersonalOrders />},
+            {path: 'my_order', element: <MyOrder />},
+            {path: 'my_coupon', element: <MyCoupon />},
             {path: 'favorite', element: <Favorite />},
             {path: 'addr', element: <Addr />},
-            {path: 'coupons', element: <PersonalCoupons />}
         ]
     },
     // 登录

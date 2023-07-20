@@ -1,12 +1,9 @@
-.main {
-  padding: 10px;
-}
-
 .card {
   display: flex;
   flex-direction: column;
   background-color: white;
   border: #f5f5f5 solid 1px;
+  padding: 10px 10px 0 10px;
 }
 
 .orderItemImg {

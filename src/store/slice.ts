@@ -1,4 +1,4 @@
-import { configureStore, createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import { User } from '@/interface/user'
 import { ShopCarItem } from '@/interface/other'
 import { CouponUser } from '@/interface/payment'
@@ -7,15 +7,16 @@ const userinfo: User = {}
 const couponUserList: Array<CouponUser> = []
 const shopCar: Array<ShopCarItem> = []
 const isLogin: boolean = !!localStorage.getItem('token')
+const aMapKey: string = '7bba558979c7e30aceceb8ff471d93a1'
 
-const reducer = createSlice({
-    name: 'reducer',
+const slice = createSlice({
+    name: 'slice',
     initialState: {
         userinfo,
         couponUserList,
         shopCar,
         isLogin,
-        amapKey: '7bba558979c7e30aceceb8ff471d93a1'
+        aMapKey
     },
     reducers: {
         setUserinfo: (state, {payload}) => void (state.userinfo = payload),
@@ -25,15 +26,11 @@ const reducer = createSlice({
     }
 })
 
-const store = configureStore({
-    reducer: reducer.reducer
-})
-
 export const {
     setUserinfo,
     setCouponUserList,
     setShopCar,
     setIsLogin
-} = reducer.actions
+} = slice.actions
 
-export default store
+export default slice

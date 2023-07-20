@@ -5,12 +5,12 @@ import { BannerTypeEnum } from '@/enums'
 import PageBanner from '@/components/page-banner/PageBanner'
 import TitleCircle from '@/assets/img/common/title-circle.png'
 import CouponsEmpty from '@/assets/img/empty/coupons-empty.png'
-import { Banner } from '@/interface/other'
 import { getCouponPagesApi } from '@/api/payment/coupon-api'
 import { Coupon } from '@/interface/payment'
 import { isEmpty } from '@/utils'
 import CouponCard from '@/components/coupon-card/CouponCard'
 import { Pagination } from 'antd'
+import { Banner } from '@/interface/platform'
 
 const CouponsHooks: any = (): any => {
     const [bannerList, setBannerList] = useState<Array<Banner>>([])

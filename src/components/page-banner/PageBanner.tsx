@@ -3,7 +3,7 @@ import style from './style.module.scss'
 import { Carousel } from 'antd'
 import { isEmpty } from '@/utils'
 import BannerEmpty from '@/assets/img/empty/banner-empty.png'
-import { Banner } from '@/interface/other'
+import { Banner } from '@/interface/platform'
 
 interface Props {
     bannerList: Array<Banner>

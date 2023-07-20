@@ -3,7 +3,7 @@ import style from './style.module.scss'
 import PageBanner from '@/components/page-banner/PageBanner'
 import { getBannerListApi } from '@/api/platform/platform-api'
 import { BannerTypeEnum } from '@/enums'
-import { Banner } from '@/interface/other'
+import { Banner } from '@/interface/platform'
 
 const DiscountHooks: any = (): any => {
     const [bannerList, setBannerList] = useState<Array<Banner>>([])

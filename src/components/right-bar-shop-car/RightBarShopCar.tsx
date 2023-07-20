@@ -8,7 +8,7 @@ import ShopCarItems from '@/components/shop-car-items/ShopCarItems'
 import { useDispatch, useSelector } from 'react-redux'
 import Cookies from 'js-cookie'
 import event from '@/event'
-import { setShopCar } from '@/store'
+import { setShopCar } from '@/store/slice'
 import { Dispatch } from '@reduxjs/toolkit'
 import { ShopCarItem } from '@/interface/other'
 

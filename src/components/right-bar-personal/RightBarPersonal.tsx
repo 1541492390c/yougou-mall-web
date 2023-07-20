@@ -7,7 +7,7 @@ import style from './style.module.scss'
 import { isEmpty } from '@/utils'
 import AvatarEmpty from '@/assets/img/empty/avatar-empty.png'
 import { logoutApi } from '@/api/auth/auth-api'
-import { setIsLogin, setUserinfo } from '@/store'
+import { setIsLogin, setUserinfo } from '@/store/slice'
 import { Dispatch } from '@reduxjs/toolkit'
 import { User } from '@/interface/user'
 
@@ -17,6 +17,7 @@ const RightBarPersonalHooks: any = (): any => {
     const [modal, contextHolder] = Modal.useModal()
     const userinfo: User = useSelector((state: any) => state.userinfo)
 
+    // 退出登录
     const logout = () => {
         modal.confirm({
             title: '退出登录',

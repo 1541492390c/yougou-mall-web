@@ -40,28 +40,13 @@ const PersonalDocumentPage: React.FC = (): JSX.Element => {
     )
 
     return (
-        <div className={style.info}>
-            <div>
-                <div className={style.avatar}>
-                    <img src={userinfo.avatar} alt='' />
+        <div>
+            <div className={style.card}>
+                <div className={style.title}>
+                    <span>简介</span>
                 </div>
-                <div className={style.form}>
-                    <Form form={form} onFinish={updateUserinfo} labelCol={{span: '4'}}>
-                        <Form.Item label='手机号' name='phone'>
-                            <span>{userinfo?.phone}</span>
-                        </Form.Item>
-                        <Form.Item label='用户名' name='username'>
-                            <Input placeholder='请输入用户名' />
-                        </Form.Item>
-                        <Form.Item label='邮箱' name='email'>
-                            <Input placeholder='请输入邮箱(选填)' addonAfter={emailInputSuffix} />
-                        </Form.Item>
-                        <Form.Item>
-                            <div className={style.updateButton}>
-                                <Button type='primary' htmlType='submit' icon={<EditOutlined />}>修改资料</Button>
-                            </div>
-                        </Form.Item>
-                    </Form>
+                <div>
+
                 </div>
             </div>
         </div>

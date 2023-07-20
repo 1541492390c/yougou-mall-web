@@ -19,10 +19,10 @@ const saveFavoriteApi = (productId: string | undefined): Promise<AxiosResponse> 
     }, true)
 }
 
-// 获取收藏分页信息
+// 获取用户收藏分页信息
 const getFavoritePagesApi = (pageNum: number = 1, pageSize: number = 10): Promise<AxiosResponse> => {
     return request({
-        url: '/product/favorite/pages',
+        url: '/product/favorite/my_favorite',
         method: 'GET',
         params: {
             page_num: pageNum,

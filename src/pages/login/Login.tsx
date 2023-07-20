@@ -8,7 +8,7 @@ import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
 import { baseUrl } from '@/request'
 import { useDispatch } from 'react-redux'
-import { setIsLogin } from '@/store'
+import { setIsLogin } from '@/store/slice'
 import { Dispatch } from '@reduxjs/toolkit'
 
 const LoginHooks: any = (): any => {

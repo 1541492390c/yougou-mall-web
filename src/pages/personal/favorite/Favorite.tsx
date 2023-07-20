@@ -42,7 +42,7 @@ const FavoritePage: React.FC = (): JSX.Element => {
     return (
         <div className={style.main}>
             <div className={style.card}>
-                <Table pagination={{pageSize: 10, total: total}} dataSource={favoriteList} rowKey='favoriteId'>
+                <Table pagination={{pageSize: 10, total: total}} dataSource={favoriteList} rowKey='favoriteId' size='middle'>
                     <Column title='商品图片' align='center' dataIndex='cover' render={(value: string) => {
                         return <img src={value} alt='' className={style.favoriteItemImg} />
                     }} />

@@ -40,7 +40,7 @@ const ListHooks: any = (): any => {
                 console.log(err)
             })
         }
-    }, [location.state.node])
+    }, [location.state?.node])
 
     useEffect(() => {
         // 获取子分类列表
@@ -51,11 +51,11 @@ const ListHooks: any = (): any => {
                 console.log(err)
             })
         }
-    }, [location.state.parentId])
+    }, [location.state?.parentId])
 
     useEffect(() => {
         if (!isEmpty(currentCategory)) {
-            getProductPagesApi(1, 10, currentCategory?.node).then((res) => {
+            getProductPagesApi(1, 10, undefined, currentCategory?.node).then((res) => {
                 setProductTotal(res.data.total)
                 setProductList(res.data.list)
             })
@@ -136,31 +136,32 @@ const ListPage: React.FC = (): JSX.Element => {
     const products: JSX.Element = (
         <>
             {(() => {
-               if (isEmpty(productList)) {
-                   return (
-                       <div className={style.productIsEmpty}>
-                           <img src={SearchEmpty} alt='' />
-                           <div><span>暂无相关商品</span></div>
-                       </div>
-                   )
-               } else {
-                   return (
-                       <div>
-                           <div className={style.productItems}>
-                               {productList.map((item: Product, index: number) => {
-                                   return (
-                                       <div key={index} className={style.productItem}>
-                                           <ProductCard product={item} />
-                                       </div>
-                                   )
-                               })}
-                           </div>
-                           <div className={style.pagination}>
-                               {productTotal !== 0 && <Pagination pageSize={20} total={productTotal} showSizeChanger={false} />}
-                           </div>
-                       </div>
-                   )
-               }
+                if (isEmpty(productList)) {
+                    return (
+                        <div className={style.productIsEmpty}>
+                            <img src={SearchEmpty} alt='' />
+                            <div><span>暂无相关商品</span></div>
+                        </div>
+                    )
+                } else {
+                    return (
+                        <div>
+                            <div className={style.productItems}>
+                                {productList.map((item: Product, index: number) => {
+                                    return (
+                                        <div key={index} className={style.productItem}>
+                                            <ProductCard product={item} />
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                            <div className={style.pagination}>
+                                {productTotal !== 0 &&
+                                    <Pagination pageSize={20} total={productTotal} showSizeChanger={false} />}
+                            </div>
+                        </div>
+                    )
+                }
             })()}
         </>
     )

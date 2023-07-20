@@ -3,7 +3,7 @@ import style from './style.module.scss'
 import { getBannerListApi } from '@/api/platform/platform-api'
 import { BannerTypeEnum } from '@/enums'
 import PageBanner from '@/components/page-banner/PageBanner'
-import { Banner } from '@/interface/other'
+import { Banner } from '@/interface/platform'
 
 const SecKillsHooks: any = (): any => {
     const [bannerList, setBannerList] = useState<Array<Banner>>([])

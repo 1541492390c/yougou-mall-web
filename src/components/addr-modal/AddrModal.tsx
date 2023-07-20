@@ -10,7 +10,7 @@ import { Addr } from '@/interface/user'
 import { District } from '@/interface/other'
 
 const AddrModalHooks: any = (): any => {
-    const amapKey: string = useSelector((state: any) => state.amapKey)
+    const aMapKey: string = useSelector((state: any) => state.aMapKey)
     const [form] = Form.useForm()
     const [addrId, setAddrId] = useState<number>()
     const [type, setType] = useState<number>(AddrModalTypeEnum.ADD)
@@ -22,7 +22,7 @@ const AddrModalHooks: any = (): any => {
     const [currentDistrict, setCurrentDistrict] = useState<District>()
 
     useEffect(() => {
-        axios.get(`https://restapi.amap.com/v3/config/district?subdistrict=3&key=${amapKey}`).then((res) => {
+        axios.get(`https://restapi.amap.com/v3/config/district?subdistrict=3&key=${aMapKey}`).then((res) => {
             let districtList: Array<District> = new Array<District>()
             let result = res.data.districts[0].districts
             for (let index in result) {

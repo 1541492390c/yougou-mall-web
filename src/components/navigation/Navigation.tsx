@@ -16,7 +16,7 @@ const NavigationHooks: any = (): any => {
     const [currentChildren, setCurrentChildren] = useState<Array<Category>>([])
     const menuItems = useRef<MenuProps['items']>([
         {label: '首页', key: '/'},
-        {label: '特惠专场', key: '/discount'},
+        {label: '新品推荐', key: '/discount'},
         {label: '秒杀专场', key: '/sec_kills'},
         {label: '品牌专场', key: '/brands'},
         {label: '领券中心', key: '/coupons'}
