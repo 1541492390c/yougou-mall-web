@@ -18,4 +18,10 @@ enum AddrModalTypeEnum {
     UPDATE
 }
 
-export { ResponseCodeEnum, BannerTypeEnum, AddrModalTypeEnum }
+// 上传资源类型
+enum UploadFileTypeEnum {
+    AVATAR = 1,
+    FEEDBACK
+}
+
+export { ResponseCodeEnum, BannerTypeEnum, AddrModalTypeEnum, UploadFileTypeEnum }

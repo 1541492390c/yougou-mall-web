@@ -1,0 +1,56 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9f9;
+}
+
+.block {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.title {
+  margin-bottom: 10px;
+}
+
+.card {
+  width: 702px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border: #f5f5f5 solid 1px;
+  padding: 20px;
+}
+
+.radioGroup {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.radio {
+  width: 33.3%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 16px;
+}
+
+.submit {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+
+  button {
+    width: 100px;
+    height: 40px;
+  }
+}
+
+.flex {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}

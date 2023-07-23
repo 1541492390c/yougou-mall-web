@@ -4,19 +4,21 @@
   background-color: white;
   border: #f5f5f5 solid 1px;
   padding: 10px 10px 0 10px;
+  width: 960px;
 }
 
 .orderItemImg {
-  width: 65px;
-  height: 65px;
+  width: 45px;
+  height: 45px;
   border: silver solid 1px;
-  margin-right: 10px;
 }
 
 .orderItems {
   display: flex;
   flex-direction: row;
   align-items: center;
+  word-wrap: break-word;
+  word-break: break-word;
 
   div {
     margin-left: 30px;
@@ -26,12 +28,12 @@
 }
 
 .productName {
-  width: 25%;
+  width: 40%;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
-  font-size: 13px;
+  font-size: 12px;
 
   a {
     color: #f13a3a;
@@ -43,19 +45,19 @@
 }
 
 .specs {
-  width: 20%;
+  width: 25%;
   font-size: 10px;
   color: gray;
 }
 
 .quantity {
-  width: 20%;
+  width: 15%;
   font-size: 10px;
   color: gray;
 }
 
-.comment {
-  width: 20%;
+.isComment {
+  width: 10%;
   font-size: 12px;
   color: #f13a3a;
 

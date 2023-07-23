@@ -15,6 +15,8 @@ import event from '@/event'
 import { message, Modal } from 'antd'
 import { getAddrListApi, deleteAddrApi } from '@/api/user/addr-api'
 import { Addr } from '@/interface/user'
+import { isEmpty } from '@/utils'
+import AddrEmpty from '@/assets/img/empty/addr-empty.png'
 
 const AddrHooks: any = (): any => {
     const [addrList, setAddrList] = useState<Array<Addr>>([])
@@ -112,11 +114,24 @@ const AddrPage: React.FC = (): JSX.Element => {
                         <span className={style.plusIcon}
                               onClick={() => openAddrModal(AddrModalTypeEnum.ADD, undefined)}><PlusCircleOutlined /></span>
                     </div>
-                    <div className={style.addrCardList}>
-                        {addrList.map((item: Addr, index: number) => {
-                            return transformAddr(item, index)
-                        })}
-                    </div>
+                    {(() => {
+                       if (isEmpty(addrList) || addrList.length === 0) {
+                           return (
+                               <div className={style.addrIsEmpty}>
+                                   <img src={AddrEmpty} alt='' />
+                                   <div><span>暂无收货地址</span></div>
+                               </div>
+                           )
+                       }  else {
+                           return (
+                               <div className={style.addrCardList}>
+                                   {addrList.map((item: Addr, index: number) => {
+                                       return transformAddr(item, index)
+                                   })}
+                               </div>
+                           )
+                       }
+                    })()}
                 </div>
             </div>
             {/*对话框*/}

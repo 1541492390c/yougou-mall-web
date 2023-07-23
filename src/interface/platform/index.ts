@@ -6,4 +6,10 @@ interface Banner {
     img: string
 }
 
-export type { Banner }
+// 用户反馈类型
+interface FeedbackType {
+    feedbackTypeId: number,
+    name: string
+}
+
+export type { Banner, FeedbackType }

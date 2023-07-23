@@ -56,14 +56,14 @@ const MyOrderPage: React.FC = (): JSX.Element => {
 
     return (
         <div className={style.card}>
-            <Table pagination={{pageSize: 5, total: total}} dataSource={orderList} rowKey='orderId' size='middle'>
-                <Column title='订单号' align='center' dataIndex='orderId' />
-                <Column title='订单详情' dataIndex='orderItemList' align='center'
+            <Table pagination={{pageSize: 5, total: total}} dataSource={orderList} rowKey='orderId' scroll={{x: '600px'}} style={{width: '100%'}}>
+                <Column title='订单号' align='center' width={180} dataIndex='orderId' />
+                <Column title='订单详情' align='center' width={600} dataIndex='orderItemList'
                         render={(value: Array<OrderItem>, record: Order) => (
                             value.map((item: OrderItem, index: number) => {
                                 return (
                                     <div key={index} className={style.orderItems}>
-                                        <div style={{width: '20%'}}>
+                                        <div style={{width: '10%'}}>
                                             <img key={index} src={item.img} alt='' className={style.orderItemImg} />
                                         </div>
                                         <div className={style.productName}>
@@ -72,9 +72,9 @@ const MyOrderPage: React.FC = (): JSX.Element => {
                                         <div className={style.specs}>
                                             {transformSpecs(item.specs)}</div>
                                         <div className={style.quantity}>
-                                            <span>x{item.quantity}</span>
+                                            <span>x {item.quantity}</span>
                                         </div>
-                                        <div className={style.comment}>
+                                        <div className={style.isComment}>
                                             {(() => {
                                                 if (record.state !== 4) {
                                                     return <span />
@@ -90,9 +90,9 @@ const MyOrderPage: React.FC = (): JSX.Element => {
                                 )
                             })
                         )} />
-                <Column title='金额' align='center' dataIndex='totalAmount'
+                <Column title='金额' align='center' width={100} dataIndex='totalAmount'
                         render={(value: number) => (<span>￥{value.toFixed(2)}</span>)} />
-                <Column title='时间' align='center' render={(record: Order) => (
+                <Column title='时间' align='center' width={250} render={(record: Order) => (
                     <div className={style.time}>
                         {!!record.submitTime && <div>下单时间:{record.submitTime?.toString()}</div>}
                         {!!record.payTime && <div>支付时间:{record.payTime.toString()}</div>}
@@ -100,9 +100,9 @@ const MyOrderPage: React.FC = (): JSX.Element => {
                         {!!record.finishTime && <div>完成时间:{record.finishTime.toString()}</div>}
                     </div>
                 )} />
-                <Column title='订单状态' align='center' dataIndex='state'
+                <Column title='订单状态' align='center' width={90} dataIndex='state'
                         render={(value: number) => (<span>{transformOrderState(value)}</span>)} />
-                <Column title='操作' align='center' render={(value: any, record: Order, index: number) => (
+                <Column title='操作' align='center' width={90} fixed={'right'} render={(value: any, record: Order, index: number) => (
                     <div className={style.edit}>
                         {(() => {
                             if (record.state === 0) {

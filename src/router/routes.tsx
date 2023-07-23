@@ -14,12 +14,13 @@ import ProductDetail from '@/pages/product-detail/ProductDetail'
 import AuthRoute from '@/router/AuthRoute'
 import Settlement from '@/pages/settlement/Settlement'
 import MyOrder from '@/pages/personal/my-order/MyOrder'
-import PersonalDocument from '@/pages/personal/peresonal-document/PersonalDocument'
 import Favorite from '@/pages/personal/favorite/Favorite'
 import Addr from '@/pages/personal/addr/Addr'
 import MyCoupon from '@/pages/personal/my-coupon/MyCoupon'
 import Comment from '@/pages/comment/Comment'
 import List from '@/pages/list/List'
+import AccountSecurity from '@/pages/personal/account-security/AccountSecurity'
+import MyFeedback from '@/pages/personal/my-feedback/MyFeedback'
 
 const routes: Array<RouteObject> = [
     // 首页
@@ -41,11 +42,12 @@ const routes: Array<RouteObject> = [
         path: '/personal/*',
         element: <Personal />,
         children: [
-            {path: '*', element: <PersonalDocument />},
+            {path: '*', element: <AccountSecurity />},
             {path: 'my_order', element: <MyOrder />},
             {path: 'my_coupon', element: <MyCoupon />},
+            {path: 'my_feedback', element: <MyFeedback />},
             {path: 'favorite', element: <Favorite />},
-            {path: 'addr', element: <Addr />},
+            {path: 'addr', element: <Addr />}
         ]
     },
     // 登录

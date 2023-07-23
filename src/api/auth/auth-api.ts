@@ -20,4 +20,12 @@ const logoutApi = (): Promise<AxiosResponse> => {
     }, true)
 }
 
-export { loginApi, logoutApi }
+// 获取认证信息账号
+const getAuthAccountApi = (): Promise<AxiosResponse> => {
+    return request({
+        url: '/auth/info',
+        method: 'GET'
+    }, true)
+}
+
+export { loginApi, logoutApi, getAuthAccountApi }

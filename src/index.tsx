@@ -4,6 +4,7 @@ import App from './App'
 import { BrowserRouter } from 'react-router-dom'
 import 'antd/dist/reset.css'
 import  './assets/style/index.css'
+import '@wangeditor/editor/dist/css/style.css'
 import { Provider } from 'react-redux'
 import store from '@/store/store'
 

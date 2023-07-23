@@ -3,7 +3,7 @@
   flex-direction: column;
   background-color: white;
   border: #f5f5f5 solid 1px;
-  margin-bottom: 40px;
+  min-height: 650px;
 }
 
 .cardTitle {
@@ -33,7 +33,7 @@
 }
 
 .addrCard {
-  width: 25%;
+  width: 50%;
   padding: 10px;
 }
 
@@ -72,5 +72,20 @@
     &:hover {
       text-decoration: underline #f13a3a 1px;
     }
+  }
+}
+
+.addrIsEmpty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: gray;
+  font-size: 14px;
+  margin-top: 150px;
+
+  img {
+    height: 150px;
+    width: 150px;
   }
 }
