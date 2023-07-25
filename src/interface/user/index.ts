@@ -31,4 +31,14 @@ interface RateStatistics {
     fiveCount: number
 }
 
-export type { User, Addr, RateStatistics }
+// 用户反馈
+interface Feedback {
+    feedbackId?: string,
+    feedbackTypeId?: number,
+    feedbackTypeName?: string,
+    content?: string,
+    imgList?: string
+    contactWay: string,
+}
+
+export type { User, Addr, RateStatistics, Feedback }

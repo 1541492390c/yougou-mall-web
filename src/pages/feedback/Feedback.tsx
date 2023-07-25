@@ -5,18 +5,23 @@ import Footer from '@/components/footer/Footer'
 import { getFeedbackTypeListApi } from '@/api/platform/platform-api'
 import { FeedbackType } from '@/interface/platform'
 import { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor'
-import { Button, Input, Radio, RadioChangeEvent, Upload } from 'antd'
+import { Button, Input, message, Radio, RadioChangeEvent, Upload, UploadFile } from 'antd'
 import { Editor, Toolbar } from '@wangeditor/editor-for-react'
 import { PlusOutlined } from '@ant-design/icons'
 import { uploadFileApi } from '@/api/biz/resource-api'
 import { UploadFileTypeEnum } from '@/enums'
+import { isEmpty } from '@/utils'
+import { Feedback } from '@/interface/user'
+import { saveFeedbackApi } from '@/api/user/feedback-api'
 
 const FeedbackHooks: any = (): any => {
+    const [messageApi, messageContextHolder] = message.useMessage()
     const [feedbackTypeList, setFeedbackTypeList] = useState<Array<FeedbackType>>([])
-    const [imgList, setImgList] = useState<Array<string>>([])
-    const [currentFeedbackType, setCurrentFeedbackType] = useState<number>(0)
-    const [feedbackContent, setFeedbackContent] = useState<string>()
+    const [fileList, setFileList] = useState<Array<UploadFile>>([])
+    const [currentFeedbackType, setCurrentFeedbackType] = useState<FeedbackType>()
+    const [feedbackContent, setFeedbackContent] = useState<string>('')
     const [editor, setEditor] = useState<IDomEditor | null>(null)
+    const contactWayInput = useRef<any>()
     const editorConfig = useRef<Partial<IEditorConfig>>({placeholder: '请输入内容...'})
     const toolbarConfig = useRef<Partial<IToolbarConfig>>({
         toolbarKeys: ['emotion', 'bulletedList', 'numberedList']
@@ -47,48 +52,87 @@ const FeedbackHooks: any = (): any => {
         formData.append('resourceType', UploadFileTypeEnum.FEEDBACK.toString())
         formData.append('file', option.file as File)
         uploadFileApi(formData).then((res) => {
-            setImgList((pre) => {
-                pre.push(res.data)
-                return pre
-            })
+            if (res) {
+                messageApi.success('上传成功').then()
+                let newFileList: Array<UploadFile> = [...fileList]
+                newFileList.push({name: res.data, url: res.data, response: undefined, uid: res.data, xhr: undefined, status: 'success'})
+                setFileList(newFileList)
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
+    // 提交反馈
+    const submit = (): void => {
+        if (isEmpty(currentFeedbackType)) {
+            messageApi.error('请选择反馈类型').then()
+            return
+        }
+        if (isEmpty(feedbackContent)) {
+            messageApi.error('请输入反馈内容').then()
+        }
+        let imgList: Array<string> = []
+        fileList.forEach((item: UploadFile) => imgList.push(item.url as string))
+        let feedback: Feedback = {
+            feedbackTypeId: currentFeedbackType?.feedbackTypeId,
+            feedbackTypeName: currentFeedbackType?.name,
+            content: feedbackContent,
+            imgList: JSON.stringify(imgList),
+            contactWay: contactWayInput.current.input.value
+        }
+        saveFeedbackApi(feedback).then((res) => {
+            if (res) {
+                messageApi.success('反馈成功').then()
+                // 重置
+                setFeedbackContent('')
+                contactWayInput.current.input.value = ''
+                setFileList([])
+            }
         }).catch((err) => {
             console.log(err)
         })
     }
 
     return {
+        messageContextHolder,
         feedbackTypeList,
-        imgList,
+        fileList,
         currentFeedbackType,
         feedbackContent,
+        contactWayInput,
         editor,
         editorConfig,
         toolbarConfig,
         uploadFile,
         setCurrentFeedbackType,
         setFeedbackContent,
-        setEditor
+        setEditor,
+        submit
     }
 }
 
 const FeedbackPage: React.FC = (): JSX.Element => {
     const {
+        messageContextHolder,
         feedbackTypeList,
-        imgList,
+        fileList,
         currentFeedbackType,
         feedbackContent,
+        contactWayInput,
         editor,
         editorConfig,
         toolbarConfig,
         uploadFile,
         setCurrentFeedbackType,
         setFeedbackContent,
-        setEditor
+        setEditor,
+        submit
     } = FeedbackHooks()
 
     // 解析用户反馈类型列表
     const transformFeedbackTypeList: JSX.Element = feedbackTypeList.map((item: FeedbackType, index: number) => {
-        return <Radio key={index} value={item.feedbackTypeId} className={style.radio}>{item.name}</Radio>
+        return <Radio key={index} value={item} className={style.radio}>{item.name}</Radio>
     })
 
     return (
@@ -108,7 +152,7 @@ const FeedbackPage: React.FC = (): JSX.Element => {
                         <div className={style.title}>
                             <span>联系方式(手机\邮箱\微信)</span>
                         </div>
-                        <Input placeholder='手机\邮箱\微信' style={{height: '50px', width: '100%'}} />
+                        <Input ref={contactWayInput} placeholder='手机\邮箱\微信' style={{height: '50px', width: '100%'}} />
                     </div>
                 </div>
                 <div className={style.block}>
@@ -117,8 +161,8 @@ const FeedbackPage: React.FC = (): JSX.Element => {
                             <span>上传图片</span>
                         </div>
                         <div className={style.flex}>
-                            <Upload listType='picture-card' customRequest={uploadFile}>
-                                {imgList.length >= 8 ? <></> : <PlusOutlined />}
+                            <Upload listType='picture-card' fileList={fileList} customRequest={uploadFile}>
+                                {fileList.length >= 6 ? null : <PlusOutlined />}
                             </Upload>
                         </div>
                     </div>
@@ -134,14 +178,17 @@ const FeedbackPage: React.FC = (): JSX.Element => {
                             value={feedbackContent}
                             mode='simple'
                             onCreated={setEditor}
+                            className={style.editor}
                             onChange={(editor: IDomEditor) => setFeedbackContent(editor.getHtml)} />
                     </div>
                 </div>
                 <div className={style.submit}>
-                    <Button type='primary'>发送反馈</Button>
+                    <Button onClick={submit} type='primary'>发送反馈</Button>
                 </div>
             </div>
             <Footer />
+            {/*全局消息提醒*/}
+            {messageContextHolder}
         </>
     )
 }
