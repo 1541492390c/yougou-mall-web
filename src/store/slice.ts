@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { User } from '@/interface/user'
-import { ShopCarItem } from '@/interface/other'
+import { ShopCarItem } from 'src/interface/extension'
 import { CouponUser } from '@/interface/payment'
 
 const userinfo: User = {}

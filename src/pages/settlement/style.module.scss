@@ -10,10 +10,6 @@
   margin-bottom: 75px;
 }
 
-.step {
-  margin-bottom: 50px;
-}
-
 .plusIcon {
   margin-left: 5px;
   font-size: 16px;
@@ -21,36 +17,6 @@
 
   &:hover {
     cursor: pointer;
-  }
-}
-
-.consigneeIsEmpty {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 5px;
-  margin-top: 5px;
-  color: gray;
-}
-
-.consigneeInfo {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  color: gray;
-  font-size: 12px;
-  padding: 8px;
-
-  div {
-    display: flex;
-    flex-direction: row;
-  }
-
-  span {
-    margin-right: 10px;
   }
 }
 
@@ -171,62 +137,4 @@
     cursor: pointer;
     text-decoration: underline solid 1px;
   }
-}
-
-.confirmOrderSuccess {
-  width: 100%;
-  background-color: #f0f0f0;
-  display: flex;
-  align-items: center;
-  padding: 20px 20px 20px 50px;
-}
-
-.orderAmount {
-  font-size: 18px;
-  color: #f13a3a;
-}
-
-.payTypeTitle {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  font-size: 20px;
-}
-
-.payTypeButton {
-  width: 260px;
-  background-color: white;
-  padding: 20px;
-  border: #d9d9d9 solid 2px;
-  border-radius: 4px;
-  margin-right: 10px;
-
-  div {
-    display: inline-block;
-  }
-
-  img {
-    width: 80%;
-    height: 80%;
-  }
-}
-
-.pay {
-  margin-top: 80px;
-  display: flex;
-  justify-content: flex-end;
-
-  button {
-    width: 160px;
-    height: 40px;
-  }
-}
-
-.paySuccess {
-  width: 100%;
-  margin-top: 50px;
-  margin-bottom: 50px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }

@@ -10,7 +10,7 @@ import Cookies from 'js-cookie'
 import event from '@/event'
 import { setShopCar } from '@/store/slice'
 import { Dispatch } from '@reduxjs/toolkit'
-import { ShopCarItem } from '@/interface/other'
+import { ShopCarItem } from 'src/interface/extension'
 
 const RightShopCarHooks: any = (): any => {
     const navigate: NavigateFunction = useNavigate()

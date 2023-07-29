@@ -7,7 +7,7 @@ import event from '@/event'
 import { useSelector } from 'react-redux'
 import { saveAddrApi, updateAddrApi } from '@/api/user/addr-api'
 import { Addr } from '@/interface/user'
-import { District } from '@/interface/other'
+import { District } from 'src/interface/extension'
 
 const AddrModalHooks: any = (): any => {
     const aMapKey: string = useSelector((state: any) => state.aMapKey)

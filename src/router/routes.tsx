@@ -21,6 +21,8 @@ import Comment from '@/pages/comment/Comment'
 import List from '@/pages/list/List'
 import AccountSecurity from '@/pages/personal/account-security/AccountSecurity'
 import MyFeedback from '@/pages/personal/my-feedback/MyFeedback'
+import Payment from '@/pages/payment/Payment'
+import PaymentSuccess from '@/pages/payment-success/PaymentSuccess'
 
 const routes: Array<RouteObject> = [
     // 首页
@@ -40,7 +42,7 @@ const routes: Array<RouteObject> = [
     // 个人中心
     {
         path: '/personal/*',
-        element: <Personal />,
+        element: <AuthRoute><Personal /></AuthRoute>,
         children: [
             {path: '*', element: <AccountSecurity />},
             {path: 'my_order', element: <MyOrder />},
@@ -73,7 +75,16 @@ const routes: Array<RouteObject> = [
     // 结算
     {
         path: '/settlement',
-        element: <AuthRoute><Settlement /></AuthRoute>
+        element: <Settlement />
+    },
+    // 支付
+    {
+        path: '/payment',
+        element: <Payment />
+    },
+    {
+        path: '/payment_success',
+        element: <PaymentSuccess />
     },
     // 评价
     {

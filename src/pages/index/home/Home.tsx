@@ -139,6 +139,7 @@ const HomePage: React.FC = (): JSX.Element => {
         </div>
     )
 
+    // 优惠券
     const coupons: JSX.Element = (
         <div className={style.coupon}>
             <div className={style.card}>
@@ -178,6 +179,7 @@ const HomePage: React.FC = (): JSX.Element => {
         </div>
     )
 
+    // 热门商品与优惠券
     const hotProductAndCoupons: JSX.Element = (
         <div className={style.hotProductAndCoupons}>
             {hotProduct}
@@ -225,9 +227,6 @@ const HomePage: React.FC = (): JSX.Element => {
                             )
                         }
                     })()}
-                    {/*<div className={style.recommend}>*/}
-
-                    {/*</div>*/}
                 </div>
             </div>
         </>

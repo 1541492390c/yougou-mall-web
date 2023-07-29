@@ -8,7 +8,7 @@ import RightBarShopCar from '@/components/right-bar-shop-car/RightBarShopCar'
 import event from '@/event'
 import { useSelector } from 'react-redux'
 import { isEmpty } from '@/utils'
-import { ShopCarItem } from '@/interface/other'
+import { ShopCarItem } from 'src/interface/extension'
 
 interface Props {
     pathname: string

@@ -52,12 +52,11 @@ const OrdersHooks: any = (): any => {
 const MyOrderPage: React.FC = (): JSX.Element => {
     const {total, orderList, transformOrderState, transformSpecs} = OrdersHooks()
 
-
-
     return (
         <div className={style.card}>
-            <Table pagination={{pageSize: 5, total: total}} dataSource={orderList} rowKey='orderId' scroll={{x: '600px'}} style={{width: '100%'}}>
-                <Column title='订单号' align='center' width={180} dataIndex='orderId' />
+            <Table pagination={{pageSize: 5, total: total}} dataSource={orderList} rowKey='orderId'
+                   scroll={{x: '600px'}} style={{width: '100%', height: '100%'}}>
+                <Column title='订单号' align='center' width={200} dataIndex='orderNo' />
                 <Column title='订单详情' align='center' width={600} dataIndex='orderItemList'
                         render={(value: Array<OrderItem>, record: Order) => (
                             value.map((item: OrderItem, index: number) => {
@@ -102,7 +101,7 @@ const MyOrderPage: React.FC = (): JSX.Element => {
                 )} />
                 <Column title='订单状态' align='center' width={90} dataIndex='state'
                         render={(value: number) => (<span>{transformOrderState(value)}</span>)} />
-                <Column title='操作' align='center' width={90} fixed={'right'} render={(value: any, record: Order, index: number) => (
+                <Column title='操作' align='center' width={120} fixed={'right'} render={(record: Order) => (
                     <div className={style.edit}>
                         {(() => {
                             if (record.state === 0) {
@@ -111,8 +110,7 @@ const MyOrderPage: React.FC = (): JSX.Element => {
                                 return (
                                     <div>
                                         <div>
-                                            <NavLink to='/settlement'
-                                                     state={{orderId: record.orderId}}>前往付款</NavLink>
+                                            <NavLink to='/payment' state={{orderId: record.orderId}}>前往付款</NavLink>
                                         </div>
                                         <div><span className={style.cancel}>取消订单</span></div>
                                     </div>

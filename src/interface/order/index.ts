@@ -3,6 +3,7 @@ interface Order {
     orderId?: string,
     userId?: string,
     state?: number,
+    orderNo?: string,
     remark?: string,
     submitTime?: Date,
     cancelTime?: Date,

@@ -1,14 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
 import Header from '@/components/header/Header'
-import { Button, message, Modal, Radio, RadioChangeEvent, Steps, Table } from 'antd'
-import {
-    CheckCircleFilled,
-    CheckOutlined,
-    FormOutlined,
-    PayCircleOutlined,
-    PlusCircleOutlined
-} from '@ant-design/icons'
+import { Button, message, Modal, Radio, RadioChangeEvent, Table } from 'antd'
+import { PlusCircleOutlined } from '@ant-design/icons'
 import Footer from '@/components/footer/Footer'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteAddrApi, getAddrListApi } from '@/api/user/addr-api'
@@ -17,51 +11,43 @@ import { AddrModalTypeEnum } from '@/enums'
 import event from '@/event'
 import Column from 'antd/es/table/Column'
 import { isEmpty } from '@/utils'
-import { StepProps } from 'antd/es/steps'
 import { submitOrderApi } from '@/api/order/order-api'
 import Cookies from 'js-cookie'
 import { setShopCar } from '@/store/slice'
 import { Dispatch } from '@reduxjs/toolkit'
-import { Location, useLocation } from 'react-router-dom'
 import { Addr } from '@/interface/user'
 import { Order, OrderAddr, OrderItem } from '@/interface/order'
-import { ShopCarItem } from '@/interface/other'
+import { ShopCarItem } from 'src/interface/extension'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 
 const SettlementHooks: any = (): any => {
-    const location: Location = useLocation()
+    const navigate: NavigateFunction = useNavigate()
     const dispatch: Dispatch = useDispatch()
     const shopCar: Array<ShopCarItem> = useSelector((state: any) => state.shopCar)
-    const [step, setStep] = useState<number>(0)
     const [buttonDisabled, setButtonDisabled] = useState<boolean>(false)
     const [addrList, setAddrList] = useState<Array<Addr>>([])
     const [currentAddr, setCurrentAddr] = useState<number>()
     const [modal, modalContextHolder] = Modal.useModal()
     const [messageApi, messageContextHolder] = message.useMessage()
-    const stepItems = useRef<Array<StepProps>>([
-        {title: '填写订单信息', icon: <FormOutlined style={{fontSize: '25px'}} />},
-        {title: '支付', icon: <PayCircleOutlined style={{fontSize: '25px'}} />},
-        {title: '完成', icon: <CheckOutlined style={{fontSize: '25px'}} />}
-    ])
 
     useEffect(() => {
         document.title = '优购商城,结算'
 
-        //传入订单ID,直接到第二步
-        if (!isEmpty(location.state) && !isEmpty(location.state.orderId)) {
-            setStep(pre => ++pre)
-        } else {
-            // 获取收获地址列表
-            getAddrListApi().then((res) => {
-                if (!!res.data && res.data.length !== 0) {
-                    res.data.forEach((item: Addr) => {
-                        if (item.isDefault) {
-                            setCurrentAddr(item.addrId)
-                        }
-                    })
-                }
-                setAddrList(res.data)
-            })
+        // 购物车为空,返回首页
+        if (isEmpty(shopCar) || shopCar.length === 0) {
+            navigate('/')
         }
+        // 获取收获地址列表
+        getAddrListApi().then((res) => {
+            if (!!res.data && res.data.length !== 0) {
+                res.data.forEach((item: Addr) => {
+                    if (item.isDefault) {
+                        setCurrentAddr(item.addrId)
+                    }
+                })
+            }
+            setAddrList(res.data)
+        })
         return () => {
             document.title = '优购商城'
         }
@@ -90,7 +76,7 @@ const SettlementHooks: any = (): any => {
         let specsStr: string = ''
         for (let index in arr) {
             let object: Object = arr[index]
-            specsStr += Object.keys(object)[0] + ':' + Object.values(object)[0] + ','
+            specsStr += Object.values(object)[0] + ', '
         }
         return specsStr.substring(0, specsStr.lastIndexOf(','))
     }
@@ -119,6 +105,7 @@ const SettlementHooks: any = (): any => {
                 deleteAddrApi(addrId).then((res) => {
                     if (res) {
                         messageApi.success('删除成功').then()
+                        // 设置收货地址
                         setAddrList((pre) => {
                             pre.splice(index, 1)
                             setCurrentAddr(pre[0].addrId)
@@ -130,6 +117,7 @@ const SettlementHooks: any = (): any => {
         })
     }
 
+    // 选择收货地址
     const selectAddr = (event: RadioChangeEvent): void => {
         setCurrentAddr(event.target.value)
     }
@@ -159,25 +147,23 @@ const SettlementHooks: any = (): any => {
         }
         submitOrderApi(order).then((res) => {
             if (res) {
+                message.success('订单提交成功').then()
                 Cookies.remove('shop_car')
                 dispatch(setShopCar([]))
-                message.success('订单提交成功').then()
-                setStep(pre => pre + 1)
-                setButtonDisabled(false)
+                navigate('/payment', {state: {orderId: res.data}})
             }
         }).catch((err) => {
-            setButtonDisabled(false)
             console.log(err)
+        }).finally(() => {
+            setButtonDisabled(false)
         })
     }
 
     return {
-        step,
         buttonDisabled,
         shopCar,
         addrList,
         currentAddr,
-        stepItems,
         modalContextHolder,
         messageContextHolder,
         shopCarAmount,
@@ -191,12 +177,10 @@ const SettlementHooks: any = (): any => {
 
 const SettlementPage: React.FC = (): JSX.Element => {
     const {
-        step,
         buttonDisabled,
         shopCar,
         addrList,
         currentAddr,
-        stepItems,
         modalContextHolder,
         messageContextHolder,
         shopCarAmount,
@@ -274,84 +258,26 @@ const SettlementPage: React.FC = (): JSX.Element => {
         </div>
     )
 
-    // 第一步:确认订单
-    const confirmOrder: JSX.Element = (
-        <>
-            <AddrModal />
-            {/*收货人项*/}
-            {addrItems}
-            {/*购物车项*/}
-            {shopCarItems}
-            <div className={style.addOrder}>
-                <div className={style.amountText}>
-                    <span>总计:</span>
-                    <span className={style.amount}>￥{shopCarAmount().toFixed(2)}</span>
-                </div>
-                <div style={{padding: '10px'}}>
-                    <Button disabled={!currentAddr || buttonDisabled} onClick={submitOrder}
-                            type='primary'>提交订单</Button>
-                </div>
-            </div>
-        </>
-    )
-
-    // 第二步:支付
-    const pay: JSX.Element = (
-        <>
-            <div className={style.confirmOrderSuccess}>
-                <div>
-                    <CheckCircleFilled style={{color: '#73d13d', fontSize: 60}} />
-                </div>
-                <div style={{marginLeft: '20px'}}>
-                    <div><span style={{fontSize: '18px'}}>您的订单提交成功,请尽快看支付</span></div>
-                    <div><span style={{fontSize: '18px'}}>金额: <span
-                        className={style.orderAmount}>0</span></span></div>
-                </div>
-            </div>
-            <div>
-                <div className={style.payTypeTitle}>
-                    <span>支付方式</span>
-                </div>
-                {/*<div>*/}
-                {/*    <Radio.Group defaultValue={payType} */}
-                {/*                 style={{width: '100%'}}>*/}
-                {/*        <Radio value={0} className={Style.payTypeButton}>*/}
-                {/*            <div style={{width: '80%'}}>*/}
-                {/*                <img src={AliPayLogo} alt='' />*/}
-                {/*            </div>*/}
-                {/*            <div style={{width: '20%'}}>*/}
-                {/*                <img src={PayRecommend} alt='' />*/}
-                {/*            </div>*/}
-                {/*        </Radio>*/}
-                {/*    </Radio.Group>*/}
-                {/*</div>*/}
-                <div className={style.pay}>
-                    <Button type='primary'>付款</Button>
-                </div>
-            </div>
-        </>
-    )
-
-    // 第三步:完成
-    const success: JSX.Element = (
-        <div>
-            完成
-        </div>
-    )
-
     return (
         <>
             <Header />
             <div className={style.main}>
                 <div className={style.settlement}>
-                    <div className={style.step}>
-                        <Steps current={step} items={stepItems.current} />
-                    </div>
-                    <div>
-                        {step === 0 && confirmOrder}
-                        {step === 1 && pay}
-                        {step === 2 && success}
-                    </div>
+                    <>
+                        <AddrModal />
+                        {/*收货人项*/}
+                        {addrItems}
+                        {/*购物车项*/}
+                        {shopCarItems}
+                        <div className={style.addOrder}>
+                            <div className={style.amountText}>
+                                <span>总计:</span>
+                                <span className={style.amount}>￥{shopCarAmount().toFixed(2)}</span>
+                            </div>
+                            <Button disabled={!currentAddr || buttonDisabled} onClick={submitOrder}
+                                    type='primary'>提交订单</Button>
+                        </div>
+                    </>
                 </div>
             </div>
             <Footer />

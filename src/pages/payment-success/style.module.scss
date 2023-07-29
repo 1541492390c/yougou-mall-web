@@ -1,0 +1,22 @@
+.main {
+  display: flex;
+  justify-content: center;
+  background-color: #f9f9f9;
+}
+
+.paymentSuccess {
+  width: 1200px;
+  margin-top: 50px;
+  margin-bottom: 75px;
+}
+
+.result {
+  width: 100%;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}

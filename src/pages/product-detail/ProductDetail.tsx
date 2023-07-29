@@ -12,8 +12,8 @@ import { isEmpty } from '@/utils'
 import { setShopCar } from '@/store/slice'
 import { getCommentRateStatistics } from '@/api/user/user-api'
 import { Dispatch } from '@reduxjs/toolkit'
-import { AttrValue, Attr, Product, Sku, SkuSpecs } from '@/interface/product'
-import { ShopCarItem } from '@/interface/other'
+import { Attr, AttrValue, Product, Sku, SkuSpecs } from '@/interface/product'
+import { ShopCarItem } from 'src/interface/extension'
 import { RateStatistics } from '@/interface/user'
 
 const ProductDetailHooks: any = (): any => {
@@ -274,7 +274,8 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
         endPage
     } = ProductDetailHooks()
 
-    const transformAttrValueList = (attrName: string, attrValueList: Array<AttrValue>) => attrValueList.map((item: AttrValue, index: number) => {
+    // 解析属性值列表
+    const transformAttrValueList = (attrName: string, attrValueList: Array<AttrValue>) => attrValueList.map((item: AttrValue, index: number): JSX.Element => {
         // if (attrValueDisable(attrName, item.name)) {
         //     return (
         //         <div key={index} className={style.attrBoxDisable}>
@@ -299,7 +300,8 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
         )
     })
 
-    const transformAttrList = attrList.map((item: Attr, index: number) => {
+    // 解析属性列表
+    const transformAttrList = attrList.map((item: Attr, index: number): JSX.Element => {
         return (
             <div key={index} className={style.attrList}>
                 <div className={style.text}><span>{item.name}</span></div>
@@ -308,7 +310,8 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
         )
     })
 
-    const transformImgList = imgList?.slice(startPage(), endPage()).map((item: string, index: number) => {
+    // 解析图片列表
+    const transformImgList = imgList?.slice(startPage(), endPage()).map((item: string, index: number): JSX.Element => {
         return (
             <div key={index}
                  className={currentImg === item ? style.listImgSelect : style.listImg}>
@@ -318,7 +321,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
     })
 
     // 商品图片
-    const productImgList = (
+    const productImgList: JSX.Element = (
         <div className={style.productImg}>
             <div>
                 <img src={currentImg} alt='' />
@@ -342,17 +345,13 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                                 <RightOutlined /></div>
                         }
                     })()}
-                    {/*{(imgPage * imgPageSize.current >= imgList?.length || !imgList) ?*/}
-                    {/*    <div className={style.arrowDisable}><RightOutlined /></div> :*/}
-                    {/*    <div onClick={() => imgPageChange(imgPage + 1)} className={style.arrow}>*/}
-                    {/*        <RightOutlined /></div>}*/}
                 </div>
             </div>
         </div>
     )
 
     // 商品信息
-    const productInfo = (
+    const productInfo: JSX.Element = (
         <div className={style.productInfo}>
             <div className={style.productNameAndRate}>
                 <div style={{width: '90%'}}>

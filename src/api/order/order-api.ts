@@ -23,4 +23,12 @@ const getOrderPagesApi = (pageNum: number = 1, pageSize: number = 10): Promise<A
     }, true)
 }
 
-export { submitOrderApi, getOrderPagesApi }
+// 根据ID获取订单信息
+const getOrderByIdApi = (id: number | undefined) => {
+    return request({
+        url: `/order/${id}`,
+        method: 'GET'
+    }, true)
+}
+
+export { submitOrderApi, getOrderPagesApi, getOrderByIdApi }

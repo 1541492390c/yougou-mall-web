@@ -149,6 +149,7 @@ const RegisterPage: React.FC = () => {
         </Form>
     )
 
+    // 注册成功
     const registerSuccess: JSX.Element = (
         <Result status='success' title='注册成功,请前往登录或返回首页' extra={[
             <Button type='primary' onClick={() => navigate('/login')}>前往登录</Button>,

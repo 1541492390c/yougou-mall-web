@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setShopCar } from '@/store/slice'
 import Cookies from 'js-cookie'
 import { Dispatch } from '@reduxjs/toolkit'
-import { ShopCarItem } from '@/interface/other'
+import { ShopCarItem } from 'src/interface/extension'
 
 interface Props {
     shopCarItem: ShopCarItem
@@ -23,7 +23,7 @@ const ShopCarItemsHooks: any = (): any => {
         let specsStr: string = ''
         for (let index in arr) {
             let object: Object = arr[index]
-            specsStr += Object.keys(object)[0] + ':' + Object.values(object)[0] + ','
+            specsStr += Object.values(object)[0] + ' ,'
         }
         return specsStr.substring(0, specsStr.lastIndexOf(','))
     }
