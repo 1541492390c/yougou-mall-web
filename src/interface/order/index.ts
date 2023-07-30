@@ -30,6 +30,7 @@ interface OrderAddr {
 interface OrderItem {
     orderId?: string,
     productId?: string,
+    orderItemId?: number,
     skuId: number,
     quantity: number,
     totalAmount?: number,

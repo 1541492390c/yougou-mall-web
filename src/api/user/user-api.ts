@@ -18,17 +18,4 @@ const getUserinfoApi = (): Promise<AxiosResponse> => {
     }, true)
 }
 
-// 获取评价评分统计
-const getCommentRateStatistics = (productId: string | undefined): Promise<AxiosResponse> => {
-    return request({
-        url: '/user/comment/rate_statistics',
-        method: 'GET',
-        params: {product_id: productId}
-    })
-}
-
-export {
-    registerApi,
-    getUserinfoApi,
-    getCommentRateStatistics
-}
+export { registerApi, getUserinfoApi }

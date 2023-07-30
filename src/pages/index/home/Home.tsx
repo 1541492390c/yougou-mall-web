@@ -51,7 +51,7 @@ const HomeHooks: any = (): any => {
         })
 
         // 获取热门商品
-        getProductPagesApi(1, 10, false, undefined).then((res) => {
+        getProductPagesApi(1, 10, false, false,undefined).then((res) => {
             setHotProductList(res.data.list)
         }).catch((err) => {
             console.log(err)

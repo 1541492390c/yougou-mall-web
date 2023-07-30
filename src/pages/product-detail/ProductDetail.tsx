@@ -7,22 +7,20 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getAttrListApi, getProductByProductIdApi, getSkuListApi } from '@/api/product/product-api'
 import { isFavoriteApi, saveFavoriteApi } from '@/api/product/favorite-api'
 import { LeftOutlined, RightOutlined, ShoppingCartOutlined, StarOutlined } from '@ant-design/icons'
-import { Button, InputNumber, message, Rate } from 'antd'
+import { Avatar, Button, InputNumber, message, Pagination, Rate } from 'antd'
 import { isEmpty } from '@/utils'
 import { setShopCar } from '@/store/slice'
-import { getCommentRateStatistics } from '@/api/user/user-api'
 import { Dispatch } from '@reduxjs/toolkit'
 import { Attr, AttrValue, Product, Sku, SkuSpecs } from '@/interface/product'
 import { ShopCarItem } from 'src/interface/extension'
-import { RateStatistics } from '@/interface/user'
+import { IComment, RateStatistics } from '@/interface/user'
+import { getCommentPagesApi, getCommentRateStatisticsApi } from '@/api/user/comment-api'
 
 const ProductDetailHooks: any = (): any => {
     const params: Readonly<Params> = useParams()
     const navigate: NavigateFunction = useNavigate()
     const dispatch: Dispatch = useDispatch()
     const isLogin: boolean = useSelector((state: any) => state.isLogin)
-    const imgPageSize = useRef<number>(4)
-    const rateStars = useRef<Array<number>>([5, 4, 3, 2, 1])
     const [messageApi, messageContextHolder] = message.useMessage()
     const [quantity, setQuantity] = useState<number>(1)
     const [product, setProduct] = useState<Product>()
@@ -30,11 +28,21 @@ const ProductDetailHooks: any = (): any => {
     const [rateStatistics, setRateStatistics] = useState<RateStatistics>()
     const [skuList, setSkuList] = useState<Array<Sku>>([])
     const [attrList, setAttrList] = useState<Array<Attr>>([])
+    const [commentList, setCommentList] = useState<Array<IComment>>([])
     const [imgList, setImgList] = useState<Array<string>>([])
+    const [commentTotal, setCommentTotal] = useState<number>(0)
     const [attrValueMap, setAttrValueMap] = useState<Map<string, string>>(new Map())
     const [imgPage, setImgPage] = useState<number>(1)
     const [currentImg, setCurrentImg] = useState<string>('')
     const [isFavorite, setIsFavorite] = useState<boolean>(false)
+    const imgPageSize = useRef<number>(4)
+    const rateStars = useRef<Array<any>>([
+        {label: 5, value: 'fiveCount'},
+        {label: 4, value: 'fourCount'},
+        {label: 3, value: 'threeCount'},
+        {label: 2, value: 'twoCount'},
+        {label: 1, value: 'oneCount'}
+    ])
 
     useEffect(() => {
         // 获取商品信息
@@ -52,6 +60,7 @@ const ProductDetailHooks: any = (): any => {
         // 获取sku列表
         getSkuListApi(params.id).then((res) => {
             if (!!res.data) {
+                console.log(res.data)
                 setSkuList(res.data)
                 setCurrentSku(res.data[0])
             }
@@ -85,9 +94,17 @@ const ProductDetailHooks: any = (): any => {
         }
 
         // 获取评价统计信息
-        getCommentRateStatistics(params.id).then((res) => {
-            console.log(res.data)
+        getCommentRateStatisticsApi(params.id).then((res) => {
             setRateStatistics(res.data)
+        }).catch((err) => {
+            console.log(err)
+        })
+
+        // 获取评论分页信息
+        getCommentPagesApi(params.id).then((res) => {
+            setCommentList(res.data.list)
+            setCommentTotal(res.data.total)
+            console.log(res.data)
         }).catch((err) => {
             console.log(err)
         })
@@ -147,16 +164,7 @@ const ProductDetailHooks: any = (): any => {
         if (!!currentSku) {
             // 没有购物车cookie则创建一个,有效期24小时
             if (!shopCarStr) {
-                let shopCarItem: ShopCarItem = {
-                    productId: product?.productId,
-                    skuId: currentSku?.skuId,
-                    quantity: quantity,
-                    totalAmount: quantity * currentSku?.price,
-                    price: currentSku?.price,
-                    productName: product?.name,
-                    specs: specs,
-                    img: product?.cover
-                }
+                let shopCarItem: ShopCarItem = createShopCarItem(specs, currentSku)
                 shopCar.push(shopCarItem)
             } else {
                 shopCar = JSON.parse(shopCarStr)
@@ -168,20 +176,19 @@ const ProductDetailHooks: any = (): any => {
                     shopCar.forEach((item: ShopCarItem) => {
                         if (item.skuId === currentSku.skuId) {
                             item.quantity = item.quantity + quantity
-                            item.totalAmount = item.totalAmount + quantity * currentSku.price
+                            // item.totalAmount = item.totalAmount + quantity * currentSku.price
+                            // 判断当前商品是否特价
+                            if (product?.isDiscount) {
+                                item.price = currentSku.discountPrice
+                                item.totalAmount = quantity * currentSku.discountPrice
+                            } else {
+                                item.price = currentSku.price
+                                item.totalAmount = quantity * currentSku.price
+                            }
                         }
                     })
                 } else {
-                    let shopCarItem: ShopCarItem = {
-                        productId: product?.productId,
-                        skuId: currentSku?.skuId,
-                        quantity: quantity,
-                        totalAmount: quantity * currentSku?.price,
-                        price: currentSku?.price,
-                        productName: product?.name,
-                        specs: specs,
-                        img: product?.cover
-                    }
+                    let shopCarItem: ShopCarItem = createShopCarItem(specs, currentSku)
                     shopCar.push(shopCarItem)
                 }
             }
@@ -189,6 +196,30 @@ const ProductDetailHooks: any = (): any => {
             dispatch(setShopCar(shopCar))
             messageApi.success('添加购物车成功').then()
         }
+    }
+
+    // 创建购物车项
+    const createShopCarItem = (specs: string, currentSku: Sku): ShopCarItem => {
+        let shopCarItem: ShopCarItem = {
+            productId: product?.productId,
+            skuId: currentSku?.skuId,
+            quantity: quantity,
+            totalAmount: 0,
+            price: 0,
+            maxStock: currentSku?.skuStock,
+            productName: product?.name,
+            specs: specs,
+            img: product?.cover
+        }
+        // 判断当前商品是否特价
+        if (product?.isDiscount) {
+            shopCarItem.price = currentSku.discountPrice
+            shopCarItem.totalAmount = quantity * currentSku.discountPrice
+        } else {
+            shopCarItem.price = currentSku.price
+            shopCarItem.totalAmount = quantity * currentSku.price
+        }
+        return shopCarItem
     }
 
     // 收藏当前商品
@@ -230,7 +261,9 @@ const ProductDetailHooks: any = (): any => {
         rateStatistics,
         skuList,
         attrList,
+        commentList,
         imgList,
+        commentTotal,
         imgPage,
         imgPageSize,
         currentImg,
@@ -257,7 +290,9 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
         rateStatistics,
         skuList,
         attrList,
+        commentList,
         imgList,
+        commentTotal,
         imgPage,
         imgPageSize,
         currentImg,
@@ -376,7 +411,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                 {(() => {
                     if (!currentSku) {
                         return <div style={{color: '#f13a3a'}}>当前商品规格暂无价格</div>
-                    } else if (currentSku?.isDiscount) {
+                    } else if (product?.isDiscount) {
                         return (
                             <div className={style.price}>
                                 <div>{currentSku?.discountPrice.toFixed(2)}</div>
@@ -434,6 +469,87 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
         </div>
     )
 
+    // 商品评分
+    const productRate: JSX.Element = (
+        <div className={style.productRate}>
+            <div className={style.rateBox}>
+                <div className={style.rateText}>
+                    <span>{!!rateStatistics && !!rateStatistics.average ? rateStatistics.average.toFixed(1) : 0.0}</span>
+                </div>
+                {!!rateStatistics && !!rateStatistics.average ?
+                    <Rate value={rateStatistics?.average} disabled allowHalf className={style.rateStar} /> :
+                    <span>暂无评分</span>}
+            </div>
+            <div className={style.rateCount}>
+                {rateStars.current.map((item: any) => {
+                    return (
+                        <div key={item.label}>
+                            <span>{item.label.toFixed(1)}</span>
+                            <Rate defaultValue={item.label} disabled className={style.rateCountStar} />
+                            <span>({!rateStatistics ? 0 : rateStatistics[item.value]})</span>
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
+    )
+
+    // 商品评论列表
+    const transformCommentList: JSX.Element = (
+        <>
+            {(() => {
+                if (isEmpty(commentList) || commentList.length === 0) {
+                    return (
+                        <div className={style.commentIsEmpty}>
+                            <img src={CommentEmpty} alt='' />
+                            <div><span>暂无商品评论</span></div>
+                        </div>
+                    )
+                } else {
+                    return (
+                        <div className={style.commentArea}>
+                            {commentList.map((item: IComment, index: number) => {
+                                return (
+                                    <div key={index} className={style.commentValue}>
+                                        <div className={style.avatarAndNickname}>
+                                            <Avatar src={item.avatar} size={55} />
+                                            <div className={style.nickname}><span>{item.nickname}</span></div>
+                                        </div>
+                                        <div className={style.commentDetails}>
+                                            <Rate value={item.rate} disabled className={style.commentRate} />
+                                            <div className={style.commentContent}>
+                                                <div dangerouslySetInnerHTML={{__html: item.content}} />
+                                                <>
+                                                    {(() => {
+                                                        if (isEmpty(item.imgList)) {
+                                                            return <></>
+                                                        } else {
+                                                            return (
+                                                                <>
+                                                                    {JSON.parse(item.imgList as string).map((item: string, index: number) => {
+                                                                       return <img src={item} key={index} alt='' />
+                                                                    })}
+                                                                </>
+                                                            )
+                                                        }
+                                                    })()}
+                                                </>
+                                            </div>
+                                            <div className={style.creatTime}>{item.createTime}</div>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                            <div className={style.pagination}>
+                                <Pagination total={commentTotal} pageSize={10} showSizeChanger={false} />
+                            </div>
+                        </div>
+                    )
+                }
+            })()}
+        </>
+    )
+
     return (
         <div className={style.main}>
             <div className={style.detail}>
@@ -451,43 +567,11 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                                     <span>商品评价</span>
                                 </div>
                             </div>
-                            <div className={style.productRate}>
-                                <div className={style.rateBox}>
-                                    {(() => {
-                                        if (!!rateStatistics && !rateStatistics.average) {
-                                            return (
-                                                <>
-                                                    <div className={style.rateText}>
-                                                        <span>0.0</span>
-                                                    </div>
-                                                    <div>
-                                                        <span>暂无评分</span>
-                                                    </div>
-                                                </>
-                                            )
-                                        } else {
-                                            return <Rate value={rateStatistics?.average} disabled allowHalf
-                                                         className={style.rateStar} />
-                                        }
-                                    })()}
-                                </div>
-                                <div className={style.rateCount}>
-                                    {rateStars.current.map((item: number) => {
-                                        return (
-                                            <div key={item}>
-                                                <span>{item.toFixed(1)}</span>
-                                                <Rate defaultValue={item} disabled className={style.rateCountStar} />
-                                                <span>({!rateStatistics ? 0 : rateStatistics.fiveCount})</span>
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                            </div>
+                            {/*商品评分*/}
+                            {productRate}
                             <div className={style.commentItem}>
-                                <div className={style.noComment}>
-                                    <img src={CommentEmpty} alt='' />
-                                    <div><span>暂无商品评论</span></div>
-                                </div>
+                                {/*商品评论列表*/}
+                                {transformCommentList}
                             </div>
                         </div>
                         <div className={style.guessLike}>

@@ -1,6 +1,6 @@
 import React from 'react'
 import style from './style.module.scss'
-import { useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { Product } from '@/interface/product'
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 }
 
 const ProductCardComponent: React.FC<Props> = ({product}): JSX.Element => {
-    const navigate = useNavigate()
+    const navigate: NavigateFunction = useNavigate()
 
     return (
         <div onClick={() => navigate(`/detail/${product.productId}`)} className={style.cardBody}>
@@ -19,7 +19,20 @@ const ProductCardComponent: React.FC<Props> = ({product}): JSX.Element => {
                 <span>{product.name}</span>
             </div>
             <div>
-                {!product.price ? <span className={style.productPrice}>此商品暂无规格</span> : <span className={style.productPrice}>{product.price.toFixed(2)}</span>}
+                {(() => {
+                   if (!product.price) {
+                       return <span className={style.productPrice}>此商品暂无规格</span>
+                   } else if (product.isDiscount) {
+                       return (
+                           <div>
+                               <span className={style.productPrice}>{product.discountPrice.toFixed(2)}</span>
+                               <span className={style.costPrice}>{product.price.toFixed(2)}</span>
+                           </div>
+                       )
+                   } else {
+                       return <span className={style.productPrice}>{product.price.toFixed(2)}</span>
+                   }
+                })()}
             </div>
         </div>
     )

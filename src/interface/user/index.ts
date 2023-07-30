@@ -41,4 +41,19 @@ interface Feedback {
     contactWay: string,
 }
 
-export type { User, Addr, RateStatistics, Feedback }
+// 用户评论
+interface IComment {
+    commentId?: number,
+    userId?: string,
+    productId?: string,
+    orderId?: string,
+    orderItemId?: number,
+    rate?: number,
+    imgList?: string,
+    content: string,
+    avatar?: string,
+    nickname?: string,
+    createTime?: string
+}
+
+export type { User, Addr, RateStatistics, Feedback, IComment }

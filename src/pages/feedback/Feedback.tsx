@@ -71,6 +71,7 @@ const FeedbackHooks: any = (): any => {
         }
         if (isEmpty(feedbackContent)) {
             messageApi.error('请输入反馈内容').then()
+            return
         }
         let imgList: Array<string> = []
         fileList.forEach((item: UploadFile) => imgList.push(item.url as string))
@@ -139,6 +140,7 @@ const FeedbackPage: React.FC = (): JSX.Element => {
         <>
             <Header />
             <div className={style.main}>
+                {/*反馈类型*/}
                 <div className={style.block}>
                     <div className={style.card}>
                         <Radio.Group onChange={(e: RadioChangeEvent) => setCurrentFeedbackType(e.target.value)}
@@ -147,6 +149,7 @@ const FeedbackPage: React.FC = (): JSX.Element => {
                         </Radio.Group>
                     </div>
                 </div>
+                {/*联系方式*/}
                 <div className={style.block}>
                     <div className={style.card}>
                         <div className={style.title}>
@@ -155,6 +158,7 @@ const FeedbackPage: React.FC = (): JSX.Element => {
                         <Input ref={contactWayInput} placeholder='手机\邮箱\微信' style={{height: '50px', width: '100%'}} />
                     </div>
                 </div>
+                {/*上传图片*/}
                 <div className={style.block}>
                     <div className={style.card}>
                         <div className={style.title}>
@@ -167,6 +171,7 @@ const FeedbackPage: React.FC = (): JSX.Element => {
                         </div>
                     </div>
                 </div>
+                {/*反馈内容*/}
                 <div className={style.block}>
                     <div className={style.card}>
                         <div className={style.title}>
@@ -178,8 +183,8 @@ const FeedbackPage: React.FC = (): JSX.Element => {
                             value={feedbackContent}
                             mode='simple'
                             onCreated={setEditor}
-                            className={style.editor}
-                            onChange={(editor: IDomEditor) => setFeedbackContent(editor.getHtml)} />
+                            onChange={(editor: IDomEditor) => setFeedbackContent(editor.getHtml)}
+                            className={style.editor} />
                     </div>
                 </div>
                 <div className={style.submit}>

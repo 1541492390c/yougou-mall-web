@@ -100,7 +100,8 @@ const MyOrderPage: React.FC = (): JSX.Element => {
                     </div>
                 )} />
                 <Column title='订单状态' align='center' width={90} dataIndex='state'
-                        render={(value: number) => (<span>{transformOrderState(value)}</span>)} />
+                        render={(value: number) => (
+                            <span style={{fontSize: '12px'}}>{transformOrderState(value)}</span>)} />
                 <Column title='操作' align='center' width={120} fixed={'right'} render={(record: Order) => (
                     <div className={style.edit}>
                         {(() => {

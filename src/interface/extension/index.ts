@@ -5,6 +5,7 @@ interface ShopCarItem {
     quantity: number,
     totalAmount: number,
     price: number,
+    maxStock: number,
     productName?: string,
     img?: string,
     specs: string

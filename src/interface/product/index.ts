@@ -4,10 +4,13 @@ interface Product {
     brandId?: number,
     state: number,
     price: number,
+    discountPrice: number,
     categoryNode: string,
     name: string,
     cover: string,
-    imgList?: string
+    imgList?: string,
+    isDiscount: boolean,
+    recommended: boolean
 }
 
 // 商品分类

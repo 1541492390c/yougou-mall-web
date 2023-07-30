@@ -55,7 +55,7 @@ const ListHooks: any = (): any => {
 
     useEffect(() => {
         if (!isEmpty(currentCategory)) {
-            getProductPagesApi(1, 10, undefined, currentCategory?.node).then((res) => {
+            getProductPagesApi(1, 10, undefined, undefined, currentCategory?.node).then((res) => {
                 setProductTotal(res.data.total)
                 setProductList(res.data.list)
             })

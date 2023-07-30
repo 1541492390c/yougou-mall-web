@@ -82,7 +82,7 @@ const ShopCarItemsComponent: React.FC<Props> = ({shopCarItem}): JSX.Element => {
                 </div>
             </div>
             <div>
-                <InputNumber value={shopCarItem.quantity} min={1} onStep={(value: number) => updateShopCarItem(shopCarItem.skuId, value)} />
+                <InputNumber value={shopCarItem.quantity} min={1} max={shopCarItem.maxStock} onStep={(value: number) => updateShopCarItem(shopCarItem.skuId, value)} />
             </div>
             <div onClick={() => deleteShopCarItem(shopCarItem.skuId)} className={style.delete}><span>删除</span></div>
         </div>
