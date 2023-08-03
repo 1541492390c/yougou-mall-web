@@ -56,24 +56,22 @@ const LoginHooks: any = (): any => {
         return Promise.resolve()
     }
 
-    const login = (values: { username: string, password: string, code: string }): void => {
+    const login = (value: { username: string, password: string, code: string }): void => {
         setButtonDisabled(true)
-        loginApi(values.username, values.password, values.code)
-            .then((res => {
-                localStorage.setItem('token', res.data.accessToken)
-                messageApi.success({
-                    content: '登录成功',
-                    duration: 0.5,
-                    onClose: () => {
-                        dispatch(setIsLogin(true))
-                        navigate('/')
-                    }
-                }).then()
-            }))
-            .catch((err) => {
-                setButtonDisabled(false)
-                console.log(err)
-            })
+        loginApi(value.username, value.password, value.code).then((res => {
+            localStorage.setItem('token', res.data.accessToken)
+            messageApi.success({
+                content: '登录成功',
+                duration: 0.5,
+                onClose: () => {
+                    dispatch(setIsLogin(true))
+                    navigate('/')
+                }
+            }).then()
+        })).catch((err) => {
+            setButtonDisabled(false)
+            console.log(err)
+        })
     }
 
     return {

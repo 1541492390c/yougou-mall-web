@@ -53,7 +53,7 @@ interface IComment {
     content: string,
     avatar?: string,
     nickname?: string,
-    createTime?: string
+    commentTime?: string
 }
 
 export type { User, Addr, RateStatistics, Feedback, IComment }

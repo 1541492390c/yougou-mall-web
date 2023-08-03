@@ -1,14 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
 import { getAuthAccountApi } from '@/api/auth/auth-api'
 import { AuthAuthAccount } from '@/interface/auth'
-import { LockOutlined, MailOutlined, MobileOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons'
-import { Button, Col, Row } from 'antd'
+import { LockOutlined, MailOutlined, MobileOutlined, UserOutlined } from '@ant-design/icons'
+import { Button, Form, Input, Modal, Select } from 'antd'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 
 const AccountSecurityHooks: any = (): any => {
     const navigate: NavigateFunction = useNavigate()
+    const [updateAuthAccountForm] = Form.useForm()
     const [autAccount, setAuthAccount] = useState<AuthAuthAccount>()
+    const [modalType, setModalType] = useState<number>(0)
+    const [updateAuthAccountOpen, setUpdateAuthAccountOpen] = useState<boolean>(false)
+    const [emailSuffix, setEmailSuffix] = useState<string>('@qq.com')
 
     useEffect(() => {
         // 获取双认证授权账号信息
@@ -17,14 +21,112 @@ const AccountSecurityHooks: any = (): any => {
         })
     }, [])
 
-    return {navigate, autAccount}
+    useEffect(() => {
+        switch (modalType) {
+            case 1:
+                updateAuthAccountForm.setFieldValue('username', autAccount?.username)
+                return
+            case 3:
+                autAccount?.email ?
+                    updateAuthAccountForm.setFieldValue('email', autAccount?.email.substring(0, autAccount?.email.lastIndexOf('@'))) :
+                    updateAuthAccountForm.setFieldValue('email', '')
+                return
+        }
+    }, [modalType])
+
+    const validateUsername = (_: any, value: string): Promise<any> => {
+        if (!value && modalType === 1) {
+            return Promise.reject(new Error('请输入用户名'))
+        }
+        return Promise.resolve()
+    }
+
+    // 打开对话框
+    const openModal = (modalType: number): void => {
+        setUpdateAuthAccountOpen(true)
+        setModalType(modalType)
+    }
+
+    return {
+        navigate,
+        updateAuthAccountForm,
+        autAccount,
+        modalType,
+        updateAuthAccountOpen,
+        setUpdateAuthAccountOpen,
+        setEmailSuffix,
+        validateUsername,
+        openModal
+    }
 }
 
 const AccountSecurityPage: React.FC = (): JSX.Element => {
-    const {navigate, autAccount} = AccountSecurityHooks()
+    const {
+        navigate,
+        updateAuthAccountForm,
+        autAccount,
+        modalType,
+        updateAuthAccountOpen,
+        setUpdateAuthAccountOpen,
+        setEmailSuffix,
+        validateUsername,
+        openModal
+    } = AccountSecurityHooks()
+
+    // 邮箱后缀
+    const emailInputSuffix: JSX.Element = (
+        <Select defaultValue='@qq.com' onChange={(value: string) => setEmailSuffix(value)}>
+            <Select.Option value='@qq.com'>@qq.com</Select.Option>
+            <Select.Option value='@gmail.com'>@gmail.com</Select.Option>
+            <Select.Option value='@aliyun.com'>@aliyun.com</Select.Option>
+        </Select>
+    )
+
+    // 更新认证账号信息对话框
+    const updateAuthAccountModal: JSX.Element = (
+        <Modal title='修改认证账号信息' centered open={updateAuthAccountOpen} footer={null} forceRender
+               onCancel={() => setUpdateAuthAccountOpen(false)}>
+            <Form form={updateAuthAccountForm}>
+                {(() => {
+                    if (modalType === 1) {
+                        return (
+                            <Form.Item label='用户名' name='username' rules={[{validator: validateUsername}]}>
+                                <Input placeholder='请输入用户名' />
+                            </Form.Item>
+                        )
+                    }
+                    if (modalType === 2) {
+                        return (
+                            <>
+                                <Form.Item label='手机号'>
+                                    <Input placeholder='请输入手机号' />
+                                </Form.Item>
+                                <Form.Item label='验证码'>
+                                    <Input placeholder='请输入验证码' />
+                                </Form.Item>
+                            </>
+                        )
+                    }
+                    if (modalType === 3) {
+                        return (
+                            <Form.Item label='电子邮箱'>
+                                <Input placeholder='请输入邮箱(选填)' addonAfter={emailInputSuffix}
+                                       className={style.emailInput} />
+                            </Form.Item>
+                        )
+                    }
+                })()}
+                <Form.Item className={style.modalBottom}>
+                    <Button type='primary'>确认</Button>
+                    <Button onClick={() => setUpdateAuthAccountOpen(false)} type='default'
+                            style={{marginLeft: '5px'}}>取消</Button>
+                </Form.Item>
+            </Form>
+        </Modal>
+    )
 
     return (
-        <div>
+        <>
             <div className={style.card}>
                 {/*用户名*/}
                 <div className={style.authItem}>
@@ -35,7 +137,7 @@ const AccountSecurityPage: React.FC = (): JSX.Element => {
                         <span>{autAccount ? autAccount.username : '--'}</span>
                     </div>
                     <div className={style.authItemSetting}>
-                        <Button type='text' danger>修改用户名</Button>
+                        <Button onClick={() => openModal(1)} type='text' danger>修改用户名</Button>
                     </div>
                 </div>
                 {/*密码*/}
@@ -59,7 +161,7 @@ const AccountSecurityPage: React.FC = (): JSX.Element => {
                         <span>{autAccount && autAccount.mobile ? autAccount.mobile : '--'}</span>
                     </div>
                     <div className={style.authItemSetting}>
-                        <Button type='text' danger>修改绑定手机号</Button>
+                        <Button onClick={() => openModal(2)} type='text' danger>修改绑定手机号</Button>
                     </div>
                 </div>
                 {/*邮箱*/}
@@ -71,11 +173,14 @@ const AccountSecurityPage: React.FC = (): JSX.Element => {
                         <span>{autAccount && autAccount.email ? autAccount.email : '--'}</span>
                     </div>
                     <div className={style.authItemSetting}>
-                        <Button type='text' danger style={{fontSize: '12px'}}>修改绑定邮箱</Button>
+                        <Button onClick={() => openModal(3)} type='text' danger
+                                style={{fontSize: '12px'}}>修改绑定邮箱</Button>
                     </div>
                 </div>
             </div>
-        </div>
+            {/*更新认证账号对话框*/}
+            {updateAuthAccountModal}
+        </>
     )
 }
 

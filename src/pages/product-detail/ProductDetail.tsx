@@ -527,7 +527,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                                                             return (
                                                                 <>
                                                                     {JSON.parse(item.imgList as string).map((item: string, index: number) => {
-                                                                       return <img src={item} key={index} alt='' />
+                                                                        return <img src={item} key={index} alt='' />
                                                                     })}
                                                                 </>
                                                             )
@@ -535,7 +535,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                                                     })()}
                                                 </>
                                             </div>
-                                            <div className={style.creatTime}>{item.createTime}</div>
+                                            <div className={style.creatTime}>{item.commentTime}</div>
                                         </div>
                                     </div>
                                 )
@@ -564,7 +564,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                         <div className={style.comment}>
                             <div className={style.commentTitle}>
                                 <div className={style.commentBox}>
-                                    <span>商品评价</span>
+                                    <span>商品评价({commentTotal})</span>
                                 </div>
                             </div>
                             {/*商品评分*/}

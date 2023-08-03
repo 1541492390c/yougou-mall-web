@@ -72,11 +72,11 @@ const RegisterHooks: any = (): any => {
     }
 
     // 注册
-    const register = (values: { username: string, password: string, email: string }): void => {
-        if (!!values.email) {
-            values.email =  values.email + emailSuffix
+    const register = (value: { username: string, password: string, email: string }): void => {
+        if (!!value.email) {
+            value.email =  value.email + emailSuffix
         }
-        registerApi(values)
+        registerApi(value)
             .then(() => {
                 setCurrentStep(pre => ++pre)
             })

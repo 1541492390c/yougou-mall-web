@@ -295,9 +295,14 @@
 }
 
 .commentBox {
-  height: 100%;
+  height: 38px;
   width: 120px;
-  line-height: 38px;
+  line-height: 36px;
+  padding-top: 2px;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   background-color: white;
   border-right: #eaeaea solid 1px;
