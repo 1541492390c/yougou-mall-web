@@ -28,4 +28,13 @@ const getAuthAccountApi = (): Promise<AxiosResponse> => {
     }, true)
 }
 
-export { loginApi, logoutApi, getAuthAccountApi }
+// 更新认证账号信息
+const updateAuthAccountApi = (value: { username: string, email: string, mobile: string }): Promise<AxiosResponse> => {
+    return request({
+        url: '/auth/update',
+        method: 'PUT',
+        data: value
+    }, true)
+}
+
+export { loginApi, logoutApi, getAuthAccountApi, updateAuthAccountApi }

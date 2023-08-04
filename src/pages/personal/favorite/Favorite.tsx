@@ -54,7 +54,7 @@ const FavoritePage: React.FC = (): JSX.Element => {
                                     </div>
                                 )
                             }} />
-                    <Column title='操作' align='center' render={(value, record: Favorite, index: number) => {
+                    <Column title='操作' align='center' render={(record: Favorite, index: number) => {
                         return (
                             <div className={style.edit}>
                                 <span onClick={() => deleteFavorite(record.favoriteId, index)}>取消收藏</span>

@@ -60,7 +60,6 @@ const ProductDetailHooks: any = (): any => {
         // 获取sku列表
         getSkuListApi(params.id).then((res) => {
             if (!!res.data) {
-                console.log(res.data)
                 setSkuList(res.data)
                 setCurrentSku(res.data[0])
             }
@@ -139,6 +138,22 @@ const ProductDetailHooks: any = (): any => {
         setAttrValueMap((pre) => {
             return pre.set(attrName, attrValue)
         })
+    }
+
+    // sku规格是否禁用
+    const attrValueDisable = (attrName: string, attrValue: string): boolean => {
+        let specsObject = Object.create(null)
+        specsObject[attrName] = attrValue
+        for (let index in skuList) {
+            let sku: Sku = skuList[index]
+            for (let j in sku.skuSpecs) {
+                let skuSpecs: SkuSpecs = sku.skuSpecs[j]
+                if (skuSpecs.attrName === attrName && skuSpecs.attrValueName === attrValue) {
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     // 将当前SKU的规格转为购物车的格式
@@ -273,6 +288,7 @@ const ProductDetailHooks: any = (): any => {
         setCurrentImg,
         isCurrentAttrValue,
         selectAttrValue,
+        attrValueDisable,
         addShopCar,
         saveFavorite,
         imgPageChange,
@@ -302,6 +318,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
         setCurrentImg,
         isCurrentAttrValue,
         selectAttrValue,
+        attrValueDisable,
         addShopCar,
         saveFavorite,
         imgPageChange,
@@ -311,28 +328,21 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
 
     // 解析属性值列表
     const transformAttrValueList = (attrName: string, attrValueList: Array<AttrValue>) => attrValueList.map((item: AttrValue, index: number): JSX.Element => {
-        // if (attrValueDisable(attrName, item.name)) {
-        //     return (
-        //         <div key={index} className={style.attrBoxDisable}>
-        //             <span>{item.name}</span>
-        //         </div>
-        //     )
-        // } else {
-        //     return (
-        //         <div key={index}
-        //              onClick={() => selectAttrValue(attrName, item.name)}
-        //              className={isCurrentAttrValue(attrName, item.name) ? style.attrBoxSelect : style.attrBox}>
-        //             <span>{item.name}</span>
-        //         </div>
-        //     )
-        // }
-        return (
-            <div key={index}
-                 onClick={() => selectAttrValue(attrName, item.name)}
-                 className={isCurrentAttrValue(attrName, item.name) ? style.attrBoxSelect : style.attrBox}>
-                <span>{item.name}</span>
-            </div>
-        )
+        if (attrValueDisable(attrName, item.name)) {
+            return (
+                <div key={index} className={style.attrBoxDisable}>
+                    <span>{item.name}</span>
+                </div>
+            )
+        } else {
+            return (
+                <div key={index}
+                     onClick={() => selectAttrValue(attrName, item.name)}
+                     className={isCurrentAttrValue(attrName, item.name) ? style.attrBoxSelect : style.attrBox}>
+                    <span>{item.name}</span>
+                </div>
+            )
+        }
     })
 
     // 解析属性列表

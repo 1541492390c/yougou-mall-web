@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
-import { getAuthAccountApi } from '@/api/auth/auth-api'
+import { getAuthAccountApi, updateAuthAccountApi } from '@/api/auth/auth-api'
 import { AuthAuthAccount } from '@/interface/auth'
 import { LockOutlined, MailOutlined, MobileOutlined, UserOutlined } from '@ant-design/icons'
-import { Button, Form, Input, Modal, Select } from 'antd'
+import { Button, Form, Input, message, Modal, Select } from 'antd'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 
 const AccountSecurityHooks: any = (): any => {
     const navigate: NavigateFunction = useNavigate()
     const [updateAuthAccountForm] = Form.useForm()
+    const [messageApi, messageContextHolder] = message.useMessage()
     const [autAccount, setAuthAccount] = useState<AuthAuthAccount>()
     const [modalType, setModalType] = useState<number>(0)
     const [updateAuthAccountOpen, setUpdateAuthAccountOpen] = useState<boolean>(false)
@@ -41,22 +42,53 @@ const AccountSecurityHooks: any = (): any => {
         return Promise.resolve()
     }
 
+    const validateEmail = (_: any, value: any): Promise<any> => {
+        if (value && (/[\s$!\x22#%^&*()_+=.,?@]/).test(value) && modalType === 3) {
+            return Promise.reject(new Error('邮箱不能包含特殊符号'))
+        }
+        return Promise.resolve()
+    }
+
     // 打开对话框
     const openModal = (modalType: number): void => {
         setUpdateAuthAccountOpen(true)
         setModalType(modalType)
     }
 
+    // 更新认证账号信息
+    const updateAuthAccount = (value: { username: string, email: string, mobile: string }): void => {
+        if (!!value.email) {
+            value.email = value.email + emailSuffix
+        }
+        updateAuthAccountApi(value).then((res) => {
+            if (res) {
+                setUpdateAuthAccountOpen(false)
+                messageApi.success({
+                    content: '修改成功',
+                    duration: 0.5,
+                    onClose: () => {
+                        window.location.reload()
+                    }
+                }).then()
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
     return {
         navigate,
         updateAuthAccountForm,
+        messageContextHolder,
         autAccount,
         modalType,
         updateAuthAccountOpen,
         setUpdateAuthAccountOpen,
         setEmailSuffix,
         validateUsername,
-        openModal
+        validateEmail,
+        openModal,
+        updateAuthAccount
     }
 }
 
@@ -64,13 +96,16 @@ const AccountSecurityPage: React.FC = (): JSX.Element => {
     const {
         navigate,
         updateAuthAccountForm,
+        messageContextHolder,
         autAccount,
         modalType,
         updateAuthAccountOpen,
         setUpdateAuthAccountOpen,
         setEmailSuffix,
         validateUsername,
-        openModal
+        validateEmail,
+        openModal,
+        updateAuthAccount
     } = AccountSecurityHooks()
 
     // 邮箱后缀
@@ -86,7 +121,7 @@ const AccountSecurityPage: React.FC = (): JSX.Element => {
     const updateAuthAccountModal: JSX.Element = (
         <Modal title='修改认证账号信息' centered open={updateAuthAccountOpen} footer={null} forceRender
                onCancel={() => setUpdateAuthAccountOpen(false)}>
-            <Form form={updateAuthAccountForm}>
+            <Form form={updateAuthAccountForm} onFinish={updateAuthAccount}>
                 {(() => {
                     if (modalType === 1) {
                         return (
@@ -109,7 +144,7 @@ const AccountSecurityPage: React.FC = (): JSX.Element => {
                     }
                     if (modalType === 3) {
                         return (
-                            <Form.Item label='电子邮箱'>
+                            <Form.Item label='电子邮箱' name='email' rules={[{validator: validateEmail}]}>
                                 <Input placeholder='请输入邮箱(选填)' addonAfter={emailInputSuffix}
                                        className={style.emailInput} />
                             </Form.Item>
@@ -117,7 +152,7 @@ const AccountSecurityPage: React.FC = (): JSX.Element => {
                     }
                 })()}
                 <Form.Item className={style.modalBottom}>
-                    <Button type='primary'>确认</Button>
+                    <Button type='primary' htmlType='submit'>确认</Button>
                     <Button onClick={() => setUpdateAuthAccountOpen(false)} type='default'
                             style={{marginLeft: '5px'}}>取消</Button>
                 </Form.Item>
@@ -161,7 +196,10 @@ const AccountSecurityPage: React.FC = (): JSX.Element => {
                         <span>{autAccount && autAccount.mobile ? autAccount.mobile : '--'}</span>
                     </div>
                     <div className={style.authItemSetting}>
-                        <Button onClick={() => openModal(2)} type='text' danger>修改绑定手机号</Button>
+                        <Button disabled={autAccount && autAccount.mobile} onClick={() => openModal(2)} type='text'
+                                danger>
+                            {autAccount && autAccount.mobile ? '已绑定手机号' : '绑定手机号'}
+                        </Button>
                     </div>
                 </div>
                 {/*邮箱*/}
@@ -173,13 +211,16 @@ const AccountSecurityPage: React.FC = (): JSX.Element => {
                         <span>{autAccount && autAccount.email ? autAccount.email : '--'}</span>
                     </div>
                     <div className={style.authItemSetting}>
-                        <Button onClick={() => openModal(3)} type='text' danger
-                                style={{fontSize: '12px'}}>修改绑定邮箱</Button>
+                        <Button onClick={() => openModal(3)} type='text' danger>
+                            {autAccount && autAccount.email ? '修改邮箱' : '绑定邮箱'}
+                        </Button>
                     </div>
                 </div>
             </div>
             {/*更新认证账号对话框*/}
             {updateAuthAccountModal}
+            {/*全局消息提醒*/}
+            {messageContextHolder}
         </>
     )
 }

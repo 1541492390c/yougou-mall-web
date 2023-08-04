@@ -19,6 +19,7 @@ const FeedbackHooks: any = (): any => {
     const [feedbackTypeList, setFeedbackTypeList] = useState<Array<FeedbackType>>([])
     const [fileList, setFileList] = useState<Array<UploadFile>>([])
     const [currentFeedbackType, setCurrentFeedbackType] = useState<FeedbackType>()
+    const [buttonDisabled, setButtonDisabled] = useState<boolean>(false)
     const [feedbackContent, setFeedbackContent] = useState<string>('')
     const [editor, setEditor] = useState<IDomEditor | null>(null)
     const contactWayInput = useRef<any>()
@@ -65,6 +66,7 @@ const FeedbackHooks: any = (): any => {
 
     // 提交反馈
     const submit = (): void => {
+        setButtonDisabled(true)
         if (isEmpty(currentFeedbackType)) {
             messageApi.error('请选择反馈类型').then()
             return
@@ -92,6 +94,8 @@ const FeedbackHooks: any = (): any => {
             }
         }).catch((err) => {
             console.log(err)
+        }).finally(() => {
+            setButtonDisabled(false)
         })
     }
 
@@ -100,6 +104,7 @@ const FeedbackHooks: any = (): any => {
         feedbackTypeList,
         fileList,
         currentFeedbackType,
+        buttonDisabled,
         feedbackContent,
         contactWayInput,
         editor,
@@ -119,6 +124,7 @@ const FeedbackPage: React.FC = (): JSX.Element => {
         feedbackTypeList,
         fileList,
         currentFeedbackType,
+        buttonDisabled,
         feedbackContent,
         contactWayInput,
         editor,
@@ -188,7 +194,7 @@ const FeedbackPage: React.FC = (): JSX.Element => {
                     </div>
                 </div>
                 <div className={style.submit}>
-                    <Button onClick={submit} type='primary'>发送反馈</Button>
+                    <Button disabled={buttonDisabled} onClick={submit} type='primary'>发送反馈</Button>
                 </div>
             </div>
             <Footer />

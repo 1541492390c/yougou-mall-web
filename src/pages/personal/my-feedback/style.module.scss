@@ -1,0 +1,31 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border: #f5f5f5 solid 1px;
+  padding: 10px 10px 0 10px;
+}
+
+.myFeedbackImg {
+  width: 65px;
+  height: 65px;
+  border: silver solid 1px;
+  margin-right: 10px;
+}
+
+.edit {
+  span {
+    color: #f13a3a;
+    font-size: 12px;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline solid 1px;
+    }
+  }
+}
+
+.title {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
