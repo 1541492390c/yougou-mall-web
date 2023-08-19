@@ -37,4 +37,13 @@ const updateAuthAccountApi = (value: { username: string, email: string, mobile: 
     }, true)
 }
 
-export { loginApi, logoutApi, getAuthAccountApi, updateAuthAccountApi }
+// 修改密码
+const updatePasswordApi = (value: { mobile: string, newPassword: string }): Promise<AxiosResponse> => {
+    return request({
+        url: '/auth/update_password',
+        method: 'PUT',
+        data: value
+    }, true)
+}
+
+export { loginApi, logoutApi, getAuthAccountApi, updateAuthAccountApi, updatePasswordApi }

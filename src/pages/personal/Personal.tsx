@@ -20,6 +20,9 @@ import { User } from '@/interface/user'
 import { useSelector } from 'react-redux'
 import { updateUserApi } from '@/api/user/user-api'
 import moment from 'moment'
+import locale from 'antd/lib/date-picker/locale/zh_CN'
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn'
 
 const PersonalHooks: any = (): any => {
     const location: Location = useLocation()
@@ -51,10 +54,13 @@ const PersonalHooks: any = (): any => {
     }, [location])
 
     useEffect(() => {
-        updateUserinfoForm.setFieldsValue({
-            gender: userinfo.gender,
-            nickname: userinfo.nickname
-        })
+        if (updateUserinfoOpen) {
+            updateUserinfoForm.setFieldsValue({
+                gender: userinfo.gender,
+                nickname: userinfo.nickname,
+                birthday: dayjs(userinfo.birthday, 'YYYY-MM-DD')
+            })
+        }
     }, [updateUserinfoOpen])
 
     // 解析性别
@@ -191,7 +197,7 @@ const PersonalPage: React.FC = (): JSX.Element => {
                     <Input placeholder='请输入昵称' />
                 </Form.Item>
                 <Form.Item label='生日' name='birthday'>
-                    <DatePicker format='YYYY-MM-DD' style={{width: '100%'}} />
+                    <DatePicker locale={locale} style={{width: '100%'}} />
                 </Form.Item>
                 <Form.Item className={style.modalBottom}>
                     <Button disabled={buttonDisabled} type='primary' htmlType='submit'>确认</Button>

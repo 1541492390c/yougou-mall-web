@@ -11,7 +11,7 @@ import { Avatar, Button, InputNumber, message, Pagination, Rate } from 'antd'
 import { isEmpty } from '@/utils'
 import { setShopCar } from '@/store/slice'
 import { Dispatch } from '@reduxjs/toolkit'
-import { Attr, AttrValue, Product, Sku, SkuSpecs } from '@/interface/product'
+import { Attr, AttrValue, Product, Sku } from '@/interface/product'
 import { ShopCarItem } from 'src/interface/extension'
 import { IComment, RateStatistics } from '@/interface/user'
 import { getCommentPagesApi, getCommentRateStatisticsApi } from '@/api/user/comment-api'
@@ -118,25 +118,32 @@ const ProductDetailHooks: any = (): any => {
         return attrValueMap.get(attrName) === attrValue
     }
 
+    // 计算好评率
+    const acclaimRate = (): number => {
+        let acclaimCount: number = 0
+        if (rateStatistics?.fiveCount) {
+            acclaimCount += rateStatistics.fiveCount
+        }
+        if (rateStatistics?.fourCount) {
+            acclaimCount += rateStatistics.fourCount
+        }
+        if (rateStatistics?.threeCount) {
+            acclaimCount += rateStatistics.threeCount
+        }
+        return (commentTotal / acclaimCount) * 100
+    }
+
     // 选择属性值
     const selectAttrValue = (attrName: string, attrValue: string): void => {
-        let specs: Array<SkuSpecs> = []
-        Object.assign(specs, currentSku?.skuSpecs)
-
-        for (let index in specs) {
-            if (specs[index].attrName === attrName) {
-                specs[index] = {attrName: attrName, attrValueName: attrValue}
+        let specs = JSON.parse(currentSku?.specs as string)
+        specs[attrName] = attrValue
+        skuList.forEach((item: Sku) => {
+            if (JSON.stringify(specs) === item.specs) {
+                setCurrentSku(item)
+                setAttrValueMap((pre) => {
+                    return pre.set(attrName, attrValue)
+                })
             }
-        }
-
-        for (let index in skuList) {
-            if (JSON.stringify(skuList[index].skuSpecs) === JSON.stringify(specs)) {
-                setCurrentSku(skuList[index])
-            }
-        }
-        //设置选择的属性值
-        setAttrValueMap((pre) => {
-            return pre.set(attrName, attrValue)
         })
     }
 
@@ -145,41 +152,23 @@ const ProductDetailHooks: any = (): any => {
         let specsObject = Object.create(null)
         specsObject[attrName] = attrValue
         for (let index in skuList) {
-            let sku: Sku = skuList[index]
-            for (let j in sku.skuSpecs) {
-                let skuSpecs: SkuSpecs = sku.skuSpecs[j]
-                if (skuSpecs.attrName === attrName && skuSpecs.attrValueName === attrValue) {
-                    return false
-                }
+            let specs = JSON.parse(skuList[parseInt(index)].specs as string)
+            if (specs[attrName] === specsObject[attrName]) {
+                return false
             }
         }
         return true
     }
 
-    // 将当前SKU的规格转为购物车的格式
-    const currentSkuSpecsStringify = (): string => {
-        let specs: Array<Object> = new Array<Object>()
-        // 拼接规格
-        if (!!currentSku?.skuSpecs) {
-            for (let index in currentSku?.skuSpecs) {
-                let object = Object.create({})
-                object[currentSku.skuSpecs[index].attrName] = currentSku.skuSpecs[index].attrValueName
-                specs.push(object)
-            }
-        }
-        return JSON.stringify(specs)
-    }
-
     // 添加购物车
     const addShopCar = (): void => {
-        let specs: string = currentSkuSpecsStringify()
         //获取购物车cookie
         let shopCarStr: string | undefined = Cookies.get('shop_car')
         let shopCar: Array<ShopCarItem> = new Array<ShopCarItem>()
         if (!!currentSku) {
             // 没有购物车cookie则创建一个,有效期24小时
             if (!shopCarStr) {
-                let shopCarItem: ShopCarItem = createShopCarItem(specs, currentSku)
+                let shopCarItem: ShopCarItem = createShopCarItem(currentSku)
                 shopCar.push(shopCarItem)
             } else {
                 shopCar = JSON.parse(shopCarStr)
@@ -203,7 +192,7 @@ const ProductDetailHooks: any = (): any => {
                         }
                     })
                 } else {
-                    let shopCarItem: ShopCarItem = createShopCarItem(specs, currentSku)
+                    let shopCarItem: ShopCarItem = createShopCarItem(currentSku)
                     shopCar.push(shopCarItem)
                 }
             }
@@ -214,7 +203,7 @@ const ProductDetailHooks: any = (): any => {
     }
 
     // 创建购物车项
-    const createShopCarItem = (specs: string, currentSku: Sku): ShopCarItem => {
+    const createShopCarItem = (currentSku: Sku): ShopCarItem => {
         let shopCarItem: ShopCarItem = {
             productId: product?.productId,
             skuId: currentSku?.skuId,
@@ -223,7 +212,7 @@ const ProductDetailHooks: any = (): any => {
             price: 0,
             maxStock: currentSku?.skuStock,
             productName: product?.name,
-            specs: specs,
+            specs: currentSku.specs,
             img: product?.cover
         }
         // 判断当前商品是否特价
@@ -287,6 +276,7 @@ const ProductDetailHooks: any = (): any => {
         setQuantity,
         setCurrentImg,
         isCurrentAttrValue,
+        acclaimRate,
         selectAttrValue,
         attrValueDisable,
         addShopCar,
@@ -317,6 +307,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
         setQuantity,
         setCurrentImg,
         isCurrentAttrValue,
+        acclaimRate,
         selectAttrValue,
         attrValueDisable,
         addShopCar,
@@ -368,9 +359,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
     // 商品图片
     const productImgList: JSX.Element = (
         <div className={style.productImg}>
-            <div>
-                <img src={currentImg} alt='' />
-            </div>
+            <img src={currentImg} alt='' />
             <div className={style.productImgList}>
                 <div style={{marginRight: '10px'}}>
                     <div onClick={() => imgPageChange(imgPage - 1)}
@@ -403,7 +392,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                     <span>{product?.name}</span>
                 </div>
                 <div className={style.rate}>
-                    <span>0%</span>
+                    <span>{acclaimRate() ? acclaimRate() : '0'}%</span>
                 </div>
             </div>
             <div className={style.productDescAndPrise}>

@@ -38,12 +38,6 @@ interface Attr {
     attrValueList: Array<AttrValue>
 }
 
-// 商品sku规格
-interface SkuSpecs {
-    attrName: string,
-    attrValueName: string
-}
-
 // 商品sku
 interface Sku {
     skuId: number,
@@ -53,8 +47,8 @@ interface Sku {
     discount: number,
     discountPrice: number,
     description: string,
+    specs: string,
     isDiscount: boolean,
-    skuSpecs: Array<SkuSpecs>
 }
 
 // 用户收藏
@@ -63,4 +57,12 @@ interface Favorite {
     productId: string
 }
 
-export type { Product, Category, Attr, AttrValue, Sku, SkuSpecs, Favorite }
+// 秒杀活动场次
+interface SecKill {
+    secKillId: number,
+    description: string,
+    startTime: string,
+    endTime: string
+}
+
+export type { Product, Category, Attr, AttrValue, Sku, Favorite, SecKill }

@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react'
 import style from './style.module.scss'
-import { Button, Form, Input, Result, Select, Steps } from 'antd'
+import { Button, Form, Input, message, Result, Select, Steps } from 'antd'
 import {
+    CaretDownOutlined,
     CheckOutlined,
     FormOutlined,
     LockOutlined,
@@ -15,17 +16,43 @@ import Footer from '@/components/footer/Footer'
 import { registerApi } from '@/api/user/user-api'
 import { StepProps } from 'antd/es/steps'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { sendSmsApi, validateMobileApi } from '@/api/biz/sms-api'
 
 const RegisterHooks: any = (): any => {
     const navigate: NavigateFunction = useNavigate()
-    const [currentStep, setCurrentStep] = useState<number>(1)
-    const [emailSuffix, setEmailSuffix] = useState<string>('@qq.com')
     const [registerForm] = Form.useForm()
+    const [validateMobileForm] = Form.useForm()
+    const [messageApi, messageContextHolder] = message.useMessage()
+    const [sendCodeButtonActive, setSendCodeButtonActive] = useState<boolean>(false)
+    const [sendCodeButtonText, setSendCodeButtonText] = useState<string>('发送验证码')
+    const [mobile, setMobile] = useState<string>('')
+    const [currentStep, setCurrentStep] = useState<number>(2)
+    const [emailSuffix, setEmailSuffix] = useState<string>('@qq.com')
     const stepItems = useRef<Array<StepProps>>([
         {title: '手机验证', icon: <MobileOutlined style={{fontSize: '25px'}} />},
         {title: '填写信息', icon: <FormOutlined style={{fontSize: '25px'}} />},
         {title: '完成注册', icon: <CheckOutlined style={{fontSize: '25px'}} />}
     ])
+
+    const validateMobile = (_: any, value: string) => {
+        if (!value) {
+            return Promise.reject(new Error('请输入手机号'))
+        }
+        if (value.length !== 11) {
+            return Promise.reject(new Error('请输入正确的手机号'))
+        }
+        return Promise.resolve()
+    }
+
+    const validateCode = (_: any, value: string) => {
+        if (!value) {
+            return Promise.reject(new Error('请输入验证码'))
+        }
+        if (value.length !== 6) {
+            return Promise.reject(new Error('请输入正确的验证码'))
+        }
+        return Promise.resolve()
+    }
 
     const validateUsername = (_: any, value: string): Promise<any> => {
         if (!value) {
@@ -71,14 +98,57 @@ const RegisterHooks: any = (): any => {
         return Promise.resolve()
     }
 
+    // 发送手机验证码
+    const sendCode = (): void => {
+        if (!validateMobileForm.getFieldValue('mobile')) {
+            validateMobileForm.validateFields(['mobile']).then()
+        } else {
+            sendSmsApi(validateMobileForm.getFieldValue('mobile')).then((res) => {
+                if (res) {
+                    messageApi.success('发送成功').then()
+                    setSendCodeButtonActive(true)
+                    let timeout: number = 60
+                    let timer = setInterval(() => {
+                        if (timeout > 0) {
+                            timeout--
+                            setSendCodeButtonText(timeout + '秒后重新发送')
+                        } else {
+                            setSendCodeButtonActive(false)
+                            setSendCodeButtonText('发送验证码')
+                            clearInterval(timer)
+                            timeout = 60
+                        }
+                    }, 1000)
+                }
+            })
+        }
+    }
+
+    // 验证手机号
+    const validate = (value: { mobile: string, code: string }): void => {
+        validateMobileApi(value.mobile, value.code).then((res) => {
+            if (res.data) {
+                messageApi.success('验证成功').then()
+                setMobile(value.mobile)
+                setCurrentStep(1)
+            }
+        })
+    }
+
     // 注册
     const register = (value: { username: string, password: string, email: string }): void => {
         if (!!value.email) {
-            value.email =  value.email + emailSuffix
+            value.email = value.email + emailSuffix
         }
-        registerApi(value)
+        let data: any = {
+            username: value.username,
+            password: value.password,
+            email: value.email,
+            mobile: mobile
+        }
+        registerApi(data)
             .then(() => {
-                setCurrentStep(pre => ++pre)
+                setCurrentStep(2)
             })
             .catch((err) => {
                 console.log(err)
@@ -88,15 +158,23 @@ const RegisterHooks: any = (): any => {
     return {
         navigate,
         currentStep,
+        validateMobileForm,
         registerForm,
+        sendCodeButtonActive,
+        sendCodeButtonText,
         stepItems,
+        messageContextHolder,
         setEmailSuffix,
+        validateMobile,
+        validateCode,
         validateUsername,
         validateNickname,
         validatePassword,
         validatePassword2,
         validateEmail,
-        register,
+        sendCode,
+        validate,
+        register
     }
 }
 
@@ -105,14 +183,22 @@ const RegisterPage: React.FC = () => {
         navigate,
         currentStep,
         registerForm,
+        validateMobileForm,
+        sendCodeButtonActive,
+        sendCodeButtonText,
         stepItems,
+        messageContextHolder,
         setEmailSuffix,
+        validateMobile,
+        validateCode,
         validateUsername,
         validateNickname,
         validatePassword,
         validatePassword2,
         validateEmail,
-        register,
+        sendCode,
+        validate,
+        register
     } = RegisterHooks()
 
     // 邮箱后缀
@@ -122,6 +208,29 @@ const RegisterPage: React.FC = () => {
             <Select.Option value='@gmail.com'>@gmail.com</Select.Option>
             <Select.Option value='@aliyun.com'>@aliyun.com</Select.Option>
         </Select>
+    )
+
+    // 验证手机号
+    const validateMobileStep: JSX.Element = (
+        <Form form={validateMobileForm} onFinish={validate}>
+            <Form.Item name='mobile' rules={[{validator: validateMobile}]}>
+                <Input addonBefore={
+                    <div className={style.phoneBefore}>
+                        <span>+86</span>
+                        <span style={{marginLeft: '2px'}}><CaretDownOutlined /></span>
+                    </div>
+                } placeholder='请输入手机号' className={style.codeInput} />
+            </Form.Item>
+            <Form.Item name='code' rules={[{validator: validateCode}]}>
+                <Input addonAfter={
+                    <Button disabled={sendCodeButtonActive} onClick={sendCode}
+                            type='primary'>{sendCodeButtonText}</Button>}
+                       placeholder='请输入验证码' className={style.codeInput} />
+            </Form.Item>
+            <Form.Item>
+                <Button type='primary' htmlType='submit' className={style.registerButton}>下一步</Button>
+            </Form.Item>
+        </Form>
     )
 
     // 填写用户信息
@@ -164,13 +273,15 @@ const RegisterPage: React.FC = () => {
                 <div className={style.register}>
                     <Steps current={currentStep} items={stepItems.current} />
                     <div className={style.registerForm}>
-                        {/*{step === 0 && stepOne}*/}
+                        {currentStep === 0 && validateMobileStep}
                         {currentStep === 1 && registerInfo}
                         {currentStep === 2 && registerSuccess}
                     </div>
                 </div>
             </div>
             <Footer />
+            {/*全局消息提醒*/}
+            {messageContextHolder}
         </>
     )
 }

@@ -8,8 +8,8 @@ import { Button, message, Rate, Upload, UploadFile } from 'antd'
 import { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor'
 import { Editor, Toolbar } from '@wangeditor/editor-for-react'
 import { PlusOutlined } from '@ant-design/icons'
-import { UploadFileTypeEnum } from '@/enums'
-import { uploadFileApi } from '@/api/biz/resource-api'
+import { ResourceTypeEnum } from '@/enums'
+import { deleteFileApi, uploadFileApi } from '@/api/biz/resource-api'
 import { isEmpty } from '@/utils'
 import { IComment } from '@/interface/user'
 import { saveCommentApi } from '@/api/user/comment-api'
@@ -61,20 +61,37 @@ const CommentHooks: any = (): any => {
     // 上传图片
     const uploadFile = (option: any): void => {
         let formData: FormData = new FormData()
-        formData.append('resourceType', UploadFileTypeEnum.COMMENT.toString())
+        formData.append('resourceType', ResourceTypeEnum.COMMENT.toString())
         formData.append('file', option.file as File)
         uploadFileApi(formData).then((res) => {
             if (res) {
                 messageApi.success('上传成功').then()
                 let newFileList: Array<UploadFile> = [...fileList]
                 newFileList.push({
-                    name: res.data,
+                    name: res.data.substring(res.data.lastIndexOf('/') + 1, res.data.length),
                     url: res.data,
                     response: undefined,
                     uid: res.data,
                     xhr: undefined,
                     status: 'success'
                 })
+                setFileList(newFileList)
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
+    // 移除图片
+    const removeFile = (file: UploadFile): void => {
+        deleteFileApi(file.name, ResourceTypeEnum.COMMENT).then((res) => {
+            if (res) {
+                let newFileList: Array<UploadFile> = [...fileList]
+                for (let index in newFileList) {
+                    if (newFileList[index].name === file.name) {
+                        newFileList.splice(parseInt(index), 1)
+                    }
+                }
                 setFileList(newFileList)
             }
         }).catch((err) => {
@@ -127,6 +144,7 @@ const CommentHooks: any = (): any => {
         setEditor,
         transformSpecs,
         uploadFile,
+        removeFile,
         submit
     }
 }
@@ -147,6 +165,7 @@ const CommentPage: React.FC = (): JSX.Element => {
         setEditor,
         transformSpecs,
         uploadFile,
+        removeFile,
         submit
     } = CommentHooks()
 
@@ -177,7 +196,8 @@ const CommentPage: React.FC = (): JSX.Element => {
                             <span className={style.cardTitleText}>我的评分</span>
                         </div>
                         <div className={style.rate}>
-                            <Rate value={rate} onChange={(value: number) => setRate(value)} className={style.rateCountStar} />
+                            <Rate value={rate} onChange={(value: number) => setRate(value)}
+                                  className={style.rateCountStar} />
                         </div>
                     </div>
                 </div>
@@ -188,7 +208,8 @@ const CommentPage: React.FC = (): JSX.Element => {
                             <span>上传图片</span>
                         </div>
                         <div className={style.flex}>
-                            <Upload listType='picture-card' fileList={fileList} customRequest={uploadFile}>
+                            <Upload listType='picture-card' fileList={fileList} customRequest={uploadFile}
+                                    onRemove={removeFile}>
                                 {fileList.length >= 6 ? null : <PlusOutlined />}
                             </Upload>
                         </div>

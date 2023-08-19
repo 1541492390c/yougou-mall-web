@@ -23,7 +23,7 @@ const ShopCarItemsHooks: any = (): any => {
         let specsStr: string = ''
         for (let index in arr) {
             let object: Object = arr[index]
-            specsStr += Object.values(object)[0] + ' ,'
+            specsStr += object.toString() + ' ,'
         }
         return specsStr.substring(0, specsStr.lastIndexOf(','))
     }

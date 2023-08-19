@@ -8,8 +8,8 @@ import { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor'
 import { Button, Input, message, Radio, RadioChangeEvent, Upload, UploadFile } from 'antd'
 import { Editor, Toolbar } from '@wangeditor/editor-for-react'
 import { PlusOutlined } from '@ant-design/icons'
-import { uploadFileApi } from '@/api/biz/resource-api'
-import { UploadFileTypeEnum } from '@/enums'
+import { deleteFileApi, uploadFileApi } from '@/api/biz/resource-api'
+import { ResourceTypeEnum } from '@/enums'
 import { isEmpty } from '@/utils'
 import { Feedback } from '@/interface/user'
 import { saveFeedbackApi } from '@/api/user/feedback-api'
@@ -50,13 +50,37 @@ const FeedbackHooks: any = (): any => {
     // 上传图片
     const uploadFile = (option: any): void => {
         let formData: FormData = new FormData()
-        formData.append('resourceType', UploadFileTypeEnum.FEEDBACK.toString())
+        formData.append('resourceType', ResourceTypeEnum.FEEDBACK.toString())
         formData.append('file', option.file as File)
         uploadFileApi(formData).then((res) => {
             if (res) {
                 messageApi.success('上传成功').then()
                 let newFileList: Array<UploadFile> = [...fileList]
-                newFileList.push({name: res.data, url: res.data, response: undefined, uid: res.data, xhr: undefined, status: 'success'})
+                newFileList.push({
+                    name: res.data.substring(res.data.lastIndexOf('/') + 1, res.data.length),
+                    url: res.data,
+                    response: undefined,
+                    uid: res.data,
+                    xhr: undefined,
+                    status: 'success'
+                })
+                setFileList(newFileList)
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
+    // 移除图片
+    const removeFile = (file: UploadFile): void => {
+        deleteFileApi(file.name, ResourceTypeEnum.FEEDBACK).then((res) => {
+            if (res) {
+                let newFileList: Array<UploadFile> = [...fileList]
+                for (let index in newFileList) {
+                    if (newFileList[index].name === file.name) {
+                        newFileList.splice(parseInt(index), 1)
+                    }
+                }
                 setFileList(newFileList)
             }
         }).catch((err) => {
@@ -111,6 +135,7 @@ const FeedbackHooks: any = (): any => {
         editorConfig,
         toolbarConfig,
         uploadFile,
+        removeFile,
         setCurrentFeedbackType,
         setFeedbackContent,
         setEditor,
@@ -131,6 +156,7 @@ const FeedbackPage: React.FC = (): JSX.Element => {
         editorConfig,
         toolbarConfig,
         uploadFile,
+        removeFile,
         setCurrentFeedbackType,
         setFeedbackContent,
         setEditor,
@@ -161,7 +187,8 @@ const FeedbackPage: React.FC = (): JSX.Element => {
                         <div className={style.title}>
                             <span>联系方式(手机\邮箱\微信)</span>
                         </div>
-                        <Input ref={contactWayInput} placeholder='手机\邮箱\微信' style={{height: '50px', width: '100%'}} />
+                        <Input ref={contactWayInput} placeholder='手机\邮箱\微信'
+                               style={{height: '50px', width: '100%'}} />
                     </div>
                 </div>
                 {/*上传图片*/}
@@ -171,7 +198,8 @@ const FeedbackPage: React.FC = (): JSX.Element => {
                             <span>上传图片</span>
                         </div>
                         <div className={style.flex}>
-                            <Upload listType='picture-card' fileList={fileList} customRequest={uploadFile}>
+                            <Upload listType='picture-card' fileList={fileList} customRequest={uploadFile}
+                                    onRemove={removeFile}>
                                 {fileList.length >= 6 ? null : <PlusOutlined />}
                             </Upload>
                         </div>

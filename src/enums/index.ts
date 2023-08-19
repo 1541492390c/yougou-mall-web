@@ -19,10 +19,10 @@ enum AddrModalTypeEnum {
 }
 
 // 上传资源类型
-enum UploadFileTypeEnum {
+enum ResourceTypeEnum {
     AVATAR = 1,
     FEEDBACK,
     COMMENT
 }
 
-export { ResponseCodeEnum, BannerTypeEnum, AddrModalTypeEnum, UploadFileTypeEnum }
+export { ResponseCodeEnum, BannerTypeEnum, AddrModalTypeEnum, ResourceTypeEnum }

@@ -69,9 +69,9 @@
 }
 
 .secKillBox {
-  height: 80px;
+  height: 60px;
   width: 300px;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
   text-align: center;
   background-color: #f13a3a;
@@ -94,7 +94,7 @@
   }
 }
 
-.noSecKill {
+.secKillEmpty {
   display: flex;
   flex-direction: column;
   justify-content: center;

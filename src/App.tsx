@@ -9,7 +9,6 @@ import { getUserinfoApi } from '@/api/user/user-api'
 import Cookies from 'js-cookie'
 import { Dispatch } from '@reduxjs/toolkit'
 import zhCN from 'antd/locale/zh_CN'
-import 'moment/dist/locale/zh-cn.js'
 import { getCouponUserListApi } from '@/api/payment/coupon-api'
 
 const AppHooks: any = (): any => {

@@ -12,7 +12,6 @@ const OrdersHooks: any = (): any => {
 
     useEffect(() => {
         getOrderPagesApi(1, 5).then((res) => {
-            console.log(res.data.list)
             setTotal(res.data.total)
             setOrderList(res.data.list)
         })
@@ -55,24 +54,30 @@ const MyOrderPage: React.FC = (): JSX.Element => {
     return (
         <div className={style.card}>
             <Table pagination={{pageSize: 5, total: total}} dataSource={orderList} rowKey='orderId'
-                   scroll={{x: '600px'}} style={{width: '100%', height: '100%'}}>
+                   scroll={{x: '600px', y: '520px'}} style={{width: '100%', height: '100%'}}>
                 <Column title='订单号' align='center' width={200} dataIndex='orderNo' />
                 <Column title='订单详情' align='center' width={600} dataIndex='orderItemList'
                         render={(value: Array<OrderItem>, record: Order) => (
                             value.map((item: OrderItem, index: number) => {
                                 return (
                                     <div key={index} className={style.orderItems}>
+                                        {/*商品图片*/}
                                         <div style={{width: '10%'}}>
                                             <img key={index} src={item.img} alt='' className={style.orderItemImg} />
                                         </div>
+                                        {/*商品名称*/}
                                         <div className={style.productName}>
                                             <NavLink to={`/detail/${item.productId}`}>{item.productName}</NavLink>
                                         </div>
+                                        {/*商品规格*/}
                                         <div className={style.specs}>
-                                            {transformSpecs(item.specs)}</div>
+                                            <span>{transformSpecs(item.specs)}</span>
+                                        </div>
+                                        {/*购买数量*/}
                                         <div className={style.quantity}>
                                             <span>x {item.quantity}</span>
                                         </div>
+                                        {/*是否评价*/}
                                         <div className={style.isComment}>
                                             {(() => {
                                                 if (record.state !== 4) {
@@ -113,7 +118,9 @@ const MyOrderPage: React.FC = (): JSX.Element => {
                                         <div>
                                             <NavLink to='/payment' state={{orderId: record.orderId}}>前往付款</NavLink>
                                         </div>
-                                        <div><span className={style.cancel}>取消订单</span></div>
+                                        <div>
+                                            <span className={style.cancel}>取消订单</span>
+                                        </div>
                                     </div>
                                 )
                             } else if (record.state === 2) {

@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
 import request from '@/request'
 
-// 上传图片接口
+// 上传文件接口
 const uploadFileApi = (data: FormData): Promise<AxiosResponse> => {
     return request({
         url: '/biz/resource/upload',
@@ -11,4 +11,16 @@ const uploadFileApi = (data: FormData): Promise<AxiosResponse> => {
     }, true)
 }
 
-export { uploadFileApi }
+// 删除文件接口
+const deleteFileApi = (value: string, type: number): Promise<AxiosResponse> => {
+    return request({
+        url: '/biz/resource/delete',
+        method: 'DELETE',
+        params: {
+            file_name: value,
+            resource_type: type
+        }
+    }, true)
+}
+
+export { uploadFileApi, deleteFileApi }

@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios'
 import request from '@/request'
 
 // 注册接口
-const registerApi = (value: { username: string, password: string, email: string }): Promise<AxiosResponse> => {
+const registerApi = (value: { username: string, password: string, email: string, mobile: string }): Promise<AxiosResponse> => {
     return request({
         url: '/user/register',
         method: 'POST',

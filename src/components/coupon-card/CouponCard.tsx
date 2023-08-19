@@ -76,7 +76,7 @@ const CouponCardComponent: React.FC<Props> = ({coupon}): JSX.Element => {
     const couponRight: JSX.Element = (
         <div className={style.couponRight}>
             <div className={style.amountAndDescription}>
-                <div>
+                <div style={{width: '25%'}}>
                     <span className={style.yuanIcon}>￥</span>
                     <span className={style.withAmount}>{coupon.discountAmount}</span>
                 </div>
