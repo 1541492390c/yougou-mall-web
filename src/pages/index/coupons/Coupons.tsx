@@ -16,6 +16,7 @@ const CouponsHooks: any = (): any => {
     const [bannerList, setBannerList] = useState<Array<Banner>>([])
     const [couponList, setCouponList] = useState<Array<Coupon>>([])
     const [couponTotal, setCouponTotal] = useState<number>(0)
+    const [currentPage, setCurrentPage] = useState<number>(1)
 
     useEffect(() => {
         // 获取轮播图列表
@@ -26,7 +27,7 @@ const CouponsHooks: any = (): any => {
         })
 
         // 获取优惠券列表
-        getCouponPagesApi(1, 20).then((res) => {
+        getCouponPagesApi(currentPage, 20).then((res) => {
             setCouponList(res.data.list)
             setCouponTotal(res.data.total)
         }).catch((err) => {
@@ -34,11 +35,11 @@ const CouponsHooks: any = (): any => {
         })
     }, [])
 
-    return {bannerList, couponTotal, couponList}
+    return {bannerList, couponTotal, couponList, setCurrentPage}
 }
 
 const CouponsPage: React.FC = (): JSX.Element => {
-    const {bannerList, couponTotal, couponList} = CouponsHooks()
+    const {bannerList, couponTotal, couponList, setCurrentPage} = CouponsHooks()
 
     return (
         <div className={style.main}>
@@ -55,33 +56,36 @@ const CouponsPage: React.FC = (): JSX.Element => {
                         <div style={{marginLeft: '10px'}}><img src={TitleCircle} alt='' /></div>
                     </div>
                     {(() => {
-                       if (isEmpty(couponList) || couponList.length === 0) {
-                           return (
-                               <div className={style.couponsListIsEmpty}>
-                                   <div className={style.couponsIsEmpty}>
-                                       <img src={CouponsEmpty} alt='' />
-                                       <div><span>暂无优惠券</span></div>
-                                   </div>
-                               </div>
-                           )
-                       } else {
-                           return (
-                               <>
-                                   <div className={style.coupons}>
-                                       {couponList.map((item: Coupon, index: number) => {
-                                           return (
-                                               <div key={index} className={style.couponItem}>
-                                                   <CouponCard coupon={item} />
-                                               </div>
-                                           )
-                                       })}
-                                   </div>
-                                   <div className={style.pagination}>
-                                       {couponTotal !== 0 && <Pagination pageSize={20} total={couponTotal} showSizeChanger={false} />}
-                                   </div>
-                               </>
-                           )
-                       }
+                        if (isEmpty(couponList) || couponList.length === 0) {
+                            return (
+                                <div className={style.couponsListIsEmpty}>
+                                    <div className={style.couponsIsEmpty}>
+                                        <img src={CouponsEmpty} alt='' />
+                                        <div><span>暂无优惠券</span></div>
+                                    </div>
+                                </div>
+                            )
+                        } else {
+                            return (
+                                <>
+                                    <div className={style.coupons}>
+                                        {couponList.map((item: Coupon, index: number) => {
+                                            return (
+                                                <div key={index} className={style.couponItem}>
+                                                    <CouponCard coupon={item} />
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                    <div className={style.pagination}>
+                                        {couponTotal !== 0 &&
+                                            <Pagination pageSize={20} total={couponTotal}
+                                                        onChange={(value: number) => setCurrentPage(value)}
+                                                        showSizeChanger={false} />}
+                                    </div>
+                                </>
+                            )
+                        }
                     })()}
                 </div>
             </div>

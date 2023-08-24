@@ -22,6 +22,7 @@ const ListHooks: any = (): any => {
     const [brandList, setBrandList] = useState<Array<Brand>>([])
     const [productList, setProductList] = useState<Array<Product>>([])
     const [productTotal, setProductTotal] = useState<number>(0)
+    const [currentPage, setCurrentPage] = useState<number>(1)
     const [currentSort, setCurrentSort] = useState<string>('product_id')
     const sortOptions = useRef<any>([
         {key: 'product_id', label: '综合'},
@@ -67,7 +68,7 @@ const ListHooks: any = (): any => {
     useEffect(() => {
         let node: string = currentCategory?.node ? currentCategory?.node : location.state.node
         // 根据传入的关键词搜索对应的商品、品牌、分类
-        keywordSearchApi(location.state.keyword, currentSort, node, location.state.brandId).then((res) => {
+        keywordSearchApi(location.state.keyword, currentSort, node, location.state.brandId, currentPage).then((res) => {
             // 设置品牌列表
             setBrandList(res.data.brandList)
             // 清除原商品列表
@@ -98,6 +99,7 @@ const ListHooks: any = (): any => {
         productTotal,
         sortOptions,
         currentSort,
+        setCurrentPage,
         setCurrentCategory,
         setCurrentBrand,
         setCurrentSort
@@ -115,6 +117,7 @@ const ListPage: React.FC = (): JSX.Element => {
         productTotal,
         sortOptions,
         currentSort,
+        setCurrentPage,
         setCurrentCategory,
         setCurrentBrand,
         setCurrentSort
@@ -205,7 +208,9 @@ const ListPage: React.FC = (): JSX.Element => {
                             </div>
                             <div className={style.pagination}>
                                 {productTotal !== 0 &&
-                                    <Pagination pageSize={20} total={productTotal} showSizeChanger={false} />}
+                                    <Pagination pageSize={20} total={productTotal}
+                                                onChange={(value: number) => setCurrentPage(value)}
+                                                showSizeChanger={false} />}
                             </div>
                         </div>
                     )

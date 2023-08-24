@@ -16,6 +16,7 @@ const DiscountHooks: any = (): any => {
     const [bannerList, setBannerList] = useState<Array<Banner>>([])
     const [discountProductList, setDiscountProductList] = useState<Array<Product>>([])
     const [discountProductTotal, setDiscountProductTotal] = useState<number>(0)
+    const [currentPage, setCurrentPage] = useState<number>(1)
 
     useEffect(() => {
         // 获取轮播图列表
@@ -26,7 +27,7 @@ const DiscountHooks: any = (): any => {
         })
 
         // 获取折扣商品列表
-        getProductPagesApi(1, 20, true, false, undefined).then((res) => {
+        getProductPagesApi(currentPage, 20, true, false, undefined).then((res) => {
             setDiscountProductList(res.data.list)
             setDiscountProductTotal(res.data.total)
         }).catch((err) => {
@@ -34,11 +35,11 @@ const DiscountHooks: any = (): any => {
         })
     }, [])
 
-    return {bannerList, discountProductList, discountProductTotal}
+    return {bannerList, discountProductList, discountProductTotal, setCurrentPage}
 }
 
 const DiscountPage: React.FC = (): JSX.Element => {
-    const {bannerList, discountProductList, discountProductTotal} = DiscountHooks()
+    const {bannerList, discountProductList, discountProductTotal, setCurrentPage} = DiscountHooks()
 
     return (
         <div className={style.main}>
@@ -55,33 +56,36 @@ const DiscountPage: React.FC = (): JSX.Element => {
                         <div style={{marginLeft: '10px'}}><img src={TitleCircle} alt='' /></div>
                     </div>
                     {(() => {
-                       if (isEmpty(discountProductList) || discountProductList.length === 0) {
-                           return (
-                               <div className={style.productListIsEmpty}>
-                                   <div className={style.productIsEmpty}>
-                                       <img src={ProductEmpty} alt='' />
-                                       <div><span>暂无商品</span></div>
-                                   </div>
-                               </div>
-                           )
-                       } else {
-                           return (
-                               <>
-                                   <div className={style.discount}>
-                                       {discountProductList.map((item: Product, index: number) => {
-                                           return (
-                                               <div key={index} className={style.discountItem}>
-                                                   <ProductCard product={item} />
-                                               </div>
-                                           )
-                                       })}
-                                   </div>
-                                   <div className={style.pagination}>
-                                       {discountProductTotal !== 0 && <Pagination pageSize={20} total={discountProductTotal} showSizeChanger={false} />}
-                                   </div>
-                               </>
-                           )
-                       }
+                        if (isEmpty(discountProductList) || discountProductList.length === 0) {
+                            return (
+                                <div className={style.productListIsEmpty}>
+                                    <div className={style.productIsEmpty}>
+                                        <img src={ProductEmpty} alt='' />
+                                        <div><span>暂无商品</span></div>
+                                    </div>
+                                </div>
+                            )
+                        } else {
+                            return (
+                                <>
+                                    <div className={style.discount}>
+                                        {discountProductList.map((item: Product, index: number) => {
+                                            return (
+                                                <div key={index} className={style.discountItem}>
+                                                    <ProductCard product={item} />
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                    <div className={style.pagination}>
+                                        {discountProductTotal !== 0 &&
+                                            <Pagination pageSize={20} total={discountProductTotal}
+                                                        onChange={(value: number) => setCurrentPage(value)}
+                                                        showSizeChanger={false} />}
+                                    </div>
+                                </>
+                            )
+                        }
                     })()}
                 </div>
             </div>

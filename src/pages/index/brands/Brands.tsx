@@ -80,7 +80,7 @@ const BrandsPage: React.FC = (): JSX.Element => {
                                     </div>
                                     <div className={style.pagination}>
                                         <Pagination pageSize={10} total={brandTotal} showSizeChanger={false}
-                                                    onChange={(value) => setCurrentPage(value)} />
+                                                    onChange={(value: number) => setCurrentPage(value)} />
                                     </div>
                                 </>
                             )
