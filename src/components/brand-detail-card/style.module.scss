@@ -1,0 +1,35 @@
+.main {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  box-shadow: 0 3px 8px #f2f2f2;
+  border: #f2f2f2 solid 1px;
+  cursor: pointer;
+
+  &:hover {
+    border: #f13a3a solid 1px;
+  }
+}
+
+.brandImg {
+  height: 100%;
+
+  img {
+    width: 160px;
+    height: 160px;
+    border: #d9d9d9 solid 1px;
+  }
+}
+
+.brandDetail {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.brandName {
+  font-size: 22px;
+  margin-bottom: 10px;
+}

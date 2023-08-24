@@ -6,26 +6,31 @@ import { Location, useLocation } from 'react-router-dom'
 import { getCategoryByNodeApi, getCategoryListApi } from '@/api/product/category-api'
 import { isEmpty } from '@/utils'
 import { Pagination, Tag } from 'antd'
-import { getProductPagesApi } from '@/api/product/product-api'
 import ProductCard from '@/components/product-card/ProductCard'
-import { Category, Product } from '@/interface/product'
+import { Brand, Category, Product } from '@/interface/product'
+import { keywordSearchApi } from '@/api/search/search-api'
+import BrandCard from '@/components/brand-card/BrandCard'
+import { getBrandListApi } from '@/api/product/brand-api'
 
 const ListHooks: any = (): any => {
     const location: Location = useLocation()
     const [topCategory, setTopCategory] = useState<Category>()
     const [secondCategory, setSecondCategory] = useState<Category>()
     const [currentCategory, setCurrentCategory] = useState<Category>()
+    const [currentBrand, setCurrentBrand] = useState<Brand>()
     const [categoryList, setCategoryList] = useState<Array<Category>>([])
+    const [brandList, setBrandList] = useState<Array<Brand>>([])
     const [productList, setProductList] = useState<Array<Product>>([])
     const [productTotal, setProductTotal] = useState<number>(0)
     const [currentSort, setCurrentSort] = useState<string>('product_id')
     const sortOptions = useRef<any>([
         {key: 'product_id', label: '综合'},
-        {key: 'hot', label: '热度'},
-        {key: 'rate_count', label: '评论数'},
+        {key: 'recommended', label: '推荐'},
+        {key: 'is_discount', label: '折扣'},
         {key: 'price', label: '价格'}
     ])
 
+    // 监听分类节点
     useEffect(() => {
         // 根据传入分类节点获取分类
         if (!isEmpty(location.state) && !isEmpty(location.state.node)) {
@@ -36,42 +41,65 @@ const ListHooks: any = (): any => {
                 setSecondCategory(res.data.children[0])
                 // 三级分类
                 setCurrentCategory(res.data.children[0].children[0])
+
+                // 获取父分类
+                if (!isEmpty(res.data.children[0].children[0])) {
+                    getCategoryListApi(res.data.children[0].children[0].parentId).then((res) => {
+                        setCategoryList(res.data)
+                    }).catch((err) => {
+                        console.log(err)
+                    })
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+
+            // 获取品牌列表
+            getBrandListApi(location.state.node).then((res) => {
+                setBrandList(res.data)
             }).catch((err) => {
                 console.log(err)
             })
         }
     }, [location.state?.node])
 
+    // 监听关键词、品牌、排序字段的变化
     useEffect(() => {
-        // 获取子分类列表
-        if (!isEmpty(location.state) && !isEmpty(location.state.parentId)) {
-            getCategoryListApi(location.state.parentId).then((res) => {
-                setCategoryList(res.data)
-            }).catch((err) => {
-                console.log(err)
-            })
-        }
-    }, [location.state?.parentId])
+        let node: string = currentCategory?.node ? currentCategory?.node : location.state.node
+        // 根据传入的关键词搜索对应的商品、品牌、分类
+        keywordSearchApi(location.state.keyword, currentSort, node, location.state.brandId).then((res) => {
+            // 设置品牌列表
+            setBrandList(res.data.brandList)
+            // 清除原商品列表
+            setProductList([])
+            setProductTotal(0)
+            // 设置商品分页
+            if (!isEmpty(res.data.productPage)) {
+                setProductTotal(res.data.productPage.total)
+                setProductList(res.data.productPage.list)
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
+    }, [location.state.keyword, currentSort, currentCategory])
 
+    // 监听当前品牌变化
     useEffect(() => {
-        if (!isEmpty(currentCategory)) {
-            getProductPagesApi(1, 10, undefined, undefined, currentCategory?.node).then((res) => {
-                setProductTotal(res.data.total)
-                setProductList(res.data.list)
-            })
-        }
-    }, [currentCategory])
+
+    }, [currentBrand])
 
     return {
         topCategory,
         secondCategory,
         currentCategory,
         categoryList,
+        brandList,
         productList,
         productTotal,
         sortOptions,
         currentSort,
         setCurrentCategory,
+        setCurrentBrand,
         setCurrentSort
     }
 }
@@ -82,11 +110,13 @@ const ListPage: React.FC = (): JSX.Element => {
         secondCategory,
         currentCategory,
         categoryList,
+        brandList,
         productList,
         productTotal,
         sortOptions,
         currentSort,
         setCurrentCategory,
+        setCurrentBrand,
         setCurrentSort
     } = ListHooks()
 
@@ -97,7 +127,25 @@ const ListPage: React.FC = (): JSX.Element => {
                 <div className={style.screenBarTitle}>
                     <span>品牌</span>
                 </div>
-                <span className={style.empty}>暂无相关品牌</span>
+                {(() => {
+                    if (isEmpty(brandList)) {
+                        return <span className={style.empty}>暂无相关品牌</span>
+                    } else {
+                        return (
+                            <div className={style.screenBarContent}>
+                                {brandList.map((item: Brand, index: number) => {
+                                    return (
+                                        <div key={index}
+                                             onClick={() => setCurrentBrand(item)}
+                                             className={style.brand}>
+                                            <BrandCard brand={item} />
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        )
+                    }
+                })()}
             </div>
         </div>
     )

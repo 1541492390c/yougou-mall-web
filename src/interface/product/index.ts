@@ -65,4 +65,13 @@ interface SecKill {
     endTime: string
 }
 
-export type { Product, Category, Attr, AttrValue, Sku, Favorite, SecKill }
+// 品牌
+interface Brand {
+    brandId: number,
+    name: string,
+    categoryNode: string,
+    description: string,
+    img: string
+}
+
+export type { Product, Category, Attr, AttrValue, Sku, Favorite, SecKill, Brand }

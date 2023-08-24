@@ -77,6 +77,7 @@ const NavigationComponent: React.FC = (): JSX.Element => {
         handleCategoryMenuOpen
     } = NavigationHooks()
 
+    // 分类二级菜单
     const subCategoryMenu = currentChildren.map((item: Category, index: number) => {
         return (
             <div key={index} className={style.currentCategories}>
@@ -86,7 +87,7 @@ const NavigationComponent: React.FC = (): JSX.Element => {
                 </div>
                 <div className={style.childrenCategory}>
                     {item.children?.map((item, index) => {
-                        return <NavLink key={index} to='list' state={{node: item.node, parentId: item.parentId}}
+                        return <NavLink key={index} to='list' state={{node: item.node}}
                                         onClick={handleCategoryMenuOpen}>{item.name}</NavLink>
                     })}
                 </div>
@@ -94,6 +95,7 @@ const NavigationComponent: React.FC = (): JSX.Element => {
         )
     })
 
+    // 分类菜单
     const categoryMenu: JSX.Element = (
         <div onMouseLeave={handleCategoryMenuOpen} className={style.category}>
             <div className={style.categoryMenu}>
@@ -110,7 +112,7 @@ const NavigationComponent: React.FC = (): JSX.Element => {
                     })}
                 </ul>
             </div>
-            {currentChildren.length === 0 ? <></> : <div className={style.subMenu}>{subCategoryMenu}</div>}
+            {currentChildren.length === 0 ? <div className={style.subMenu} /> : <div className={style.subMenu}>{subCategoryMenu}</div>}
         </div>
     )
 

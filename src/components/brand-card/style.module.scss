@@ -1,0 +1,15 @@
+.cardBody {
+  padding: 12px;
+  background-color: white;
+  border: white solid 1px;
+  cursor: pointer;
+
+  &:hover {
+    border: #f13a3a solid 1px;
+  }
+}
+
+.brandName {
+  text-align: center;
+  color: #f13a3a;
+}

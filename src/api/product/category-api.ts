@@ -11,7 +11,7 @@ const getCategoryListApi = (parentId: number = 0): Promise<AxiosResponse> => {
 }
 
 // 根据分类节点获取分类列表
-const getCategoryByNodeApi = (node: string): Promise<AxiosResponse> => {
+const getCategoryByNodeApi = (node: string | undefined): Promise<AxiosResponse> => {
     return request({
         url: '/product/category/by_node',
         method: 'GET',

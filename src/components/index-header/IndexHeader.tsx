@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ServiceZhengpin from '@/assets/img/index/service-zhengpin.png'
 import ServiceShandian from '@/assets/img/index/service-shandian.png'
 import ServiceShouhou from '@/assets/img/index/service-shouhou.png'
@@ -6,8 +6,11 @@ import style from './style.module.scss'
 import logo from '@/assets/img/yougou.png'
 import { Button, Input } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
+import { Location, NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
 
 const IndexHeaderHooks: any = (): any => {
+    const navigate: NavigateFunction = useNavigate()
+    const location: Location = useLocation()
     const [keyword, setKeyword] = useState<string>('')
     const serviceList = useRef<any>([
         {img: ServiceZhengpin, ch: '正品保障', en: 'Genuine'},
@@ -15,8 +18,14 @@ const IndexHeaderHooks: any = (): any => {
         {img: ServiceShouhou, ch: '安心售后', en: 'AfterSale '}
     ])
 
+    useEffect(() => {
+        if (location.pathname != '/list') {
+            setKeyword('')
+        }
+    }, [location])
+
     const search = (): void => {
-        console.log(keyword)
+        navigate('/list', {state: {keyword: keyword}})
     }
 
     return {keyword, setKeyword, serviceList, search}
@@ -25,6 +34,7 @@ const IndexHeaderHooks: any = (): any => {
 const IndexHeaderComponent: React.FC = (): JSX.Element => {
     const {keyword, setKeyword, serviceList, search} = IndexHeaderHooks()
 
+    // 解析服务列表
     const transformServiceList: JSX.Element = (
         <div className={style.service}>
             {serviceList.current.map((item: any, index: number) => {
@@ -56,7 +66,8 @@ const IndexHeaderComponent: React.FC = (): JSX.Element => {
                         <Button icon={<SearchOutlined />} type='primary' onClick={search}>搜索</Button>
                     </div>
                 </div>
-                <>{transformServiceList}</>
+                {/*服务列表*/}
+                {transformServiceList}
             </div>
         </div>
     )
