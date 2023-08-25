@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
-import { getOrderPagesApi } from '@/api/order/order-api'
-import { Table, TablePaginationConfig } from 'antd'
+import { deleteOrderApi, getOrderPagesApi } from '@/api/order/order-api'
+import { message, Modal, Table, TablePaginationConfig } from 'antd'
 import Column from 'antd/es/table/Column'
 import { NavLink } from 'react-router-dom'
 import { Order, OrderItem } from '@/interface/order'
@@ -10,11 +10,15 @@ const OrdersHooks: any = (): any => {
     const [total, setTotal] = useState<number>(0)
     const [orderList, setOrderList] = useState<Array<Order>>([])
     const [currentPage, setCurrentPage] = useState<number>(1)
+    const [modal, modalContextHolder] = Modal.useModal()
+    const [messageApi, messageContextHolder] = message.useMessage()
 
     useEffect(() => {
         getOrderPagesApi(currentPage, 5).then((res) => {
             setTotal(res.data.total)
             setOrderList(res.data.list)
+        }).catch((err) => {
+            console.log(err)
         })
     }, [currentPage])
 
@@ -46,11 +50,51 @@ const OrdersHooks: any = (): any => {
         return specs.substring(0, specs.length - 2)
     }
 
-    return {total, orderList, setCurrentPage, transformOrderState, transformSpecs}
+    // 删除订单
+    const deleteOrder = (id: string, index: number): void => {
+        modal.confirm({
+            title: '删除订单',
+            content: '此操作将删除订单,是否继续?',
+            okType: 'danger',
+            onOk: () => {
+                deleteOrderApi(id).then((res) => {
+                    if (res) {
+                        messageApi.success('删除订单成功').then()
+                        // 更新订单列表
+                        let list: Array<Order> = [...orderList]
+                        list.splice(index, 1)
+                        setOrderList(list)
+                    }
+                }).catch((err) => {
+                    console.log(err)
+                })
+            }
+        })
+    }
+
+    return {
+        total,
+        orderList,
+        modalContextHolder,
+        messageContextHolder,
+        setCurrentPage,
+        transformOrderState,
+        transformSpecs,
+        deleteOrder
+    }
 }
 
 const MyOrderPage: React.FC = (): JSX.Element => {
-    const {total, orderList, setCurrentPage, transformOrderState, transformSpecs} = OrdersHooks()
+    const {
+        total,
+        orderList,
+        modalContextHolder,
+        messageContextHolder,
+        setCurrentPage,
+        transformOrderState,
+        transformSpecs,
+        deleteOrder
+    } = OrdersHooks()
 
     return (
         <div className={style.card}>
@@ -87,8 +131,7 @@ const MyOrderPage: React.FC = (): JSX.Element => {
                                                 if (record.state !== 4) {
                                                     return <span />
                                                 } else if (!item.isComment) {
-                                                    return <NavLink to='/comment'
-                                                                    state={{orderItem: item}}>去评价</NavLink>
+                                                    return <NavLink to='/comment' state={{orderItem: item}}>去评价</NavLink>
                                                 } else {
                                                     return <span className={style.orderSuccess}>已评价</span>
                                                 }
@@ -111,11 +154,11 @@ const MyOrderPage: React.FC = (): JSX.Element => {
                 <Column title='订单状态' align='center' width={90} dataIndex='state'
                         render={(value: number) => (
                             <span style={{fontSize: '12px'}}>{transformOrderState(value)}</span>)} />
-                <Column title='操作' align='center' width={120} fixed={'right'} render={(record: Order) => (
+                <Column title='操作' align='center' width={120} fixed={'right'} render={(record: Order, index: number) => (
                     <div className={style.edit}>
                         {(() => {
                             if (record.state === 0) {
-                                return <span>删除订单</span>
+                                return <span onClick={() => deleteOrder(record.orderId, index)}>删除订单</span>
                             } else if (record.state === 1) {
                                 return (
                                     <div>
@@ -123,7 +166,8 @@ const MyOrderPage: React.FC = (): JSX.Element => {
                                             <NavLink to='/payment' state={{orderId: record.orderId}}>前往付款</NavLink>
                                         </div>
                                         <div>
-                                            <span className={style.cancel}>取消订单</span>
+                                            <span onClick={() => deleteOrder(record.orderId, index)}
+                                                  className={style.cancel}>取消订单</span>
                                         </div>
                                     </div>
                                 )
@@ -138,6 +182,10 @@ const MyOrderPage: React.FC = (): JSX.Element => {
                     </div>
                 )} />
             </Table>
+            {/*对话框*/}
+            {modalContextHolder}
+            {/*全局消息提醒*/}
+            {messageContextHolder}
         </div>
     )
 }

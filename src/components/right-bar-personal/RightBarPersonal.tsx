@@ -14,8 +14,9 @@ import { User } from '@/interface/user'
 const RightBarPersonalHooks: any = (): any => {
     const navigate: NavigateFunction = useNavigate()
     const dispatch: Dispatch = useDispatch()
-    const [modal, contextHolder] = Modal.useModal()
     const userinfo: User = useSelector((state: any) => state.userinfo)
+    const [modal, modalContextHolder] = Modal.useModal()
+    const [messageApi, messageContextHolder] = message.useMessage()
 
     // 退出登录
     const logout = () => {
@@ -26,7 +27,7 @@ const RightBarPersonalHooks: any = (): any => {
             onOk: () => {
                 logoutApi().then((res) => {
                     if (res) {
-                        message.success('退出登录成功').then()
+                        messageApi.success('退出登录成功').then()
                         localStorage.removeItem('token')
                         dispatch(setIsLogin(false))
                         dispatch(setUserinfo({}))
@@ -38,11 +39,11 @@ const RightBarPersonalHooks: any = (): any => {
         })
     }
 
-    return {navigate, userinfo, contextHolder, logout}
+    return {navigate, userinfo, modalContextHolder, messageContextHolder, logout}
 }
 
 const RightBarPersonalComponent: React.FC = (): JSX.Element => {
-    const {navigate, userinfo, contextHolder, logout} = RightBarPersonalHooks()
+    const {navigate, userinfo, modalContextHolder, messageContextHolder, logout} = RightBarPersonalHooks()
 
     return (
         <div className={style.main}>
@@ -82,7 +83,10 @@ const RightBarPersonalComponent: React.FC = (): JSX.Element => {
                     )
                 })()}
             </div>
-            {contextHolder}
+            {/*对话框*/}
+            {modalContextHolder}
+            {/*全局消息提醒*/}
+            {messageContextHolder}
         </div>
     )
 }

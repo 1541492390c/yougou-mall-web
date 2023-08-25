@@ -24,11 +24,22 @@ const getOrderPagesApi = (pageNum: number = 1, pageSize: number = 10): Promise<A
 }
 
 // 根据ID获取订单信息
-const getOrderByIdApi = (id: number | undefined) => {
+const getOrderByIdApi = (id: number | undefined): Promise<AxiosResponse> => {
     return request({
         url: `/order/${id}`,
         method: 'GET'
     }, true)
 }
 
-export { submitOrderApi, getOrderPagesApi, getOrderByIdApi }
+// 删除订单
+const deleteOrderApi = (id: string | undefined): Promise<AxiosResponse> => {
+    return request({
+        url: '/order/delete',
+        method: 'DELETE',
+        params: {
+            order_id: id
+        }
+    }, true)
+}
+
+export { submitOrderApi, getOrderPagesApi, getOrderByIdApi, deleteOrderApi }
