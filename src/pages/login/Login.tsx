@@ -14,7 +14,7 @@ import { Dispatch } from '@reduxjs/toolkit'
 const LoginHooks: any = (): any => {
     const navigate: NavigateFunction = useNavigate()
     const dispatch: Dispatch = useDispatch()
-    const captchaUrl: string = baseUrl + '/biz/captcha/image'
+    const captchaUrl: string = baseUrl + '/extra/captcha/image'
     const [random, setRandom] = useState(Math.random())
     const [messageApi, messageContextHolder] = message.useMessage()
     const [buttonDisabled, setButtonDisabled] = useState<boolean>(false)

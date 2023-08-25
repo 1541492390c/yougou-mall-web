@@ -64,12 +64,24 @@
 }
 
 .amountText {
+  padding-top: 10px;
+  font-size: 8px;
+  margin-right: 10px;
+}
+
+.payAmountText {
   margin-right: 10px;
 }
 
 .amount {
   color: #f13a3a;
-  font-size: 18px;
+  font-size: 8px;
+  margin-left: 5px;
+}
+
+.payAmount {
+  color: #f13a3a;
+  font-size: 22px;
   margin-left: 5px;
 }
 
@@ -137,4 +149,10 @@
     cursor: pointer;
     text-decoration: underline solid 1px;
   }
+}
+
+.couponSelect {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
 }

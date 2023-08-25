@@ -41,6 +41,15 @@ const CouponsHooks: any = (): any => {
 const CouponsPage: React.FC = (): JSX.Element => {
     const {bannerList, couponTotal, couponList, setCurrentPage} = CouponsHooks()
 
+    // 解析优惠券列表
+    const transformCouponList = couponList.map((item: Coupon, index: number) => {
+        return (
+            <div key={index} className={style.couponItem}>
+                <CouponCard coupon={item} />
+            </div>
+        )
+    })
+
     return (
         <div className={style.main}>
             <div className={style.banner}>
@@ -69,13 +78,7 @@ const CouponsPage: React.FC = (): JSX.Element => {
                             return (
                                 <>
                                     <div className={style.coupons}>
-                                        {couponList.map((item: Coupon, index: number) => {
-                                            return (
-                                                <div key={index} className={style.couponItem}>
-                                                    <CouponCard coupon={item} />
-                                                </div>
-                                            )
-                                        })}
+                                        {transformCouponList}
                                     </div>
                                     <div className={style.pagination}>
                                         {couponTotal !== 0 &&

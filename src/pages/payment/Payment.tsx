@@ -72,7 +72,7 @@ const PaymentPage: React.FC = (): JSX.Element => {
                         <div style={{marginLeft: '20px'}}>
                             <div><span style={{fontSize: '18px'}}>您的订单提交成功,请尽快看支付</span></div>
                             <div><span style={{fontSize: '18px'}}>金额: <span
-                                className={style.orderAmount}>{order?.totalAmount.toFixed(2)}</span></span></div>
+                                className={style.orderAmount}>{order?.payAmount.toFixed(2)}</span></span></div>
                         </div>
                     </div>
                     <div>

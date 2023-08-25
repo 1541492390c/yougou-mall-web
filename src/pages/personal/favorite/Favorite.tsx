@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
-import { message, Table } from 'antd'
+import { message, Table, TablePaginationConfig } from 'antd'
 import Column from 'antd/es/table/Column'
 import { NavLink } from 'react-router-dom'
 import { deleteFavoriteApi, getFavoritePagesApi } from '@/api/product/favorite-api'
@@ -8,17 +8,19 @@ import { Favorite } from '@/interface/product'
 
 const FavoriteHooks: any = (): any => {
     const [total, setTotal] = useState<number>(0)
+    const [currentPage, setCurrentPage] = useState<number>(1)
     const [favoriteList, setFavoriteList] = useState<Array<Favorite>>([])
     const [messageApi, messageContextHolder] = message.useMessage()
 
     useEffect(() => {
+        // 获取收藏信息
         getFavoritePagesApi().then((res) => {
             setTotal(res.data.total)
             setFavoriteList(res.data.list)
         }).catch((err) => {
             console.log(err)
         })
-    }, [])
+    }, [currentPage])
 
     // 取消收藏
     const deleteFavorite = (favoriteId: number, index: number): void => {
@@ -33,16 +35,19 @@ const FavoriteHooks: any = (): any => {
         })
     }
 
-    return {total, favoriteList, messageContextHolder, deleteFavorite}
+    return {total, favoriteList, messageContextHolder, setCurrentPage, deleteFavorite}
 }
 
 const FavoritePage: React.FC = (): JSX.Element => {
-    const {total, favoriteList, messageContextHolder, deleteFavorite} = FavoriteHooks()
+    const {total, favoriteList, messageContextHolder, setCurrentPage, deleteFavorite} = FavoriteHooks()
 
     return (
         <div className={style.main}>
             <div className={style.card}>
-                <Table pagination={{pageSize: 10, total: total}} dataSource={favoriteList} rowKey='favoriteId' size='middle'>
+                <Table dataSource={favoriteList}
+                       pagination={{pageSize: 10, total: total}}
+                       onChange={(pagination: TablePaginationConfig) => setCurrentPage(pagination.current)}
+                       rowKey='favoriteId' size='middle'>
                     <Column title='商品图片' align='center' dataIndex='cover' render={(value: string) => {
                         return <img src={value} alt='' className={style.favoriteItemImg} />
                     }} />

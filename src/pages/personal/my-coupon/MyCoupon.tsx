@@ -18,6 +18,15 @@ const MyCouponHooks: any = (): any => {
 const MyCouponPage: React.FC = (): JSX.Element => {
     const {navigate, couponUserList} = MyCouponHooks()
 
+    // 解析用户优惠券列表
+    const transformCouponUserList = couponUserList.map((item: CouponUser, index: number) => {
+        return (
+            <div key={index} className={style.couponUserItem}>
+                <CouponUserCard couponUser={item} />
+            </div>
+        )
+    })
+
     return (
         <div className={style.main}>
             <div className={style.card}>
@@ -36,13 +45,7 @@ const MyCouponPage: React.FC = (): JSX.Element => {
                    } else {
                        return (
                            <div className={style.couponsCardList}>
-                               {couponUserList.map((item: CouponUser, index: number) => {
-                                   return (
-                                       <div key={index} className={style.couponUserItem}>
-                                           <CouponUserCard couponUser={item} />
-                                       </div>
-                                   )
-                               })}
+                               {transformCouponUserList}
                            </div>
                        )
                    }

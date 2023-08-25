@@ -13,14 +13,6 @@ const getCouponPagesApi = (pageNum: number = 1, pageSize: number = 10): Promise<
     })
 }
 
-// 获取用户优惠券信息列表
-const getCouponUserListApi = (): Promise<AxiosResponse> => {
-    return request({
-        url: '/payment/coupon_user/list',
-        method: 'GET'
-    }, true)
-}
-
 // 领取优惠券
 const receiveCouponApi = (couponId: string | undefined): Promise<AxiosResponse> => {
     return request({
@@ -30,4 +22,4 @@ const receiveCouponApi = (couponId: string | undefined): Promise<AxiosResponse> 
     }, true)
 }
 
-export { getCouponPagesApi, getCouponUserListApi, receiveCouponApi }
+export { getCouponPagesApi, receiveCouponApi }

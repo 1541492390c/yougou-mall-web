@@ -16,7 +16,7 @@ import Footer from '@/components/footer/Footer'
 import { registerApi } from '@/api/user/user-api'
 import { StepProps } from 'antd/es/steps'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
-import { sendSmsApi, validateMobileApi } from '@/api/biz/sms-api'
+import { sendSmsApi, validateMobileApi } from '@/api/extra/sms-api'
 
 const RegisterHooks: any = (): any => {
     const navigate: NavigateFunction = useNavigate()

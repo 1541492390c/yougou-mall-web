@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
 import Header from '@/components/header/Header'
-import { Button, message, Modal, Radio, RadioChangeEvent, Table } from 'antd'
+import { Button, message, Modal, Radio, RadioChangeEvent, Select, Table } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import Footer from '@/components/footer/Footer'
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,9 +16,11 @@ import Cookies from 'js-cookie'
 import { setShopCar } from '@/store/slice'
 import { Dispatch } from '@reduxjs/toolkit'
 import { Addr } from '@/interface/user'
-import { Order, OrderAddr, OrderItem } from '@/interface/order'
+import { OrderAddr, OrderItem } from '@/interface/order'
 import { ShopCarItem } from 'src/interface/extension'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { queryAvailableCouponApi } from '@/api/payment/coupon-user-api'
+import { CouponUser } from '@/interface/payment'
 
 const SettlementHooks: any = (): any => {
     const navigate: NavigateFunction = useNavigate()
@@ -26,7 +28,12 @@ const SettlementHooks: any = (): any => {
     const shopCar: Array<ShopCarItem> = useSelector((state: any) => state.shopCar)
     const [buttonDisabled, setButtonDisabled] = useState<boolean>(false)
     const [addrList, setAddrList] = useState<Array<Addr>>([])
+    const [couponUserList, setCouponUserList] = useState<Array<CouponUser>>([])
+    const [options, setOptions] = useState<Array<any>>([])
     const [currentAddr, setCurrentAddr] = useState<number>()
+    const [currentCouponUser, setCurrentCouponUser] = useState<CouponUser>()
+    const [shopCarAmount, setShopCarAmount] = useState<number>(0)
+    const [payAmount, setPayAmount] = useState<number>(0)
     const [modal, modalContextHolder] = Modal.useModal()
     const [messageApi, messageContextHolder] = message.useMessage()
 
@@ -37,6 +44,7 @@ const SettlementHooks: any = (): any => {
         if (isEmpty(shopCar) || shopCar.length === 0) {
             navigate('/')
         }
+
         // 获取收获地址列表
         getAddrListApi().then((res) => {
             if (!!res.data && res.data.length !== 0) {
@@ -48,10 +56,40 @@ const SettlementHooks: any = (): any => {
             }
             setAddrList(res.data)
         })
+
         return () => {
             document.title = '优购商城'
         }
     }, [])
+
+    // 监听购物车变化
+    useEffect(() => {
+        let amount = 0
+        let categoryNodeList: Array<string> = []
+        shopCar.forEach((item: ShopCarItem) => {
+            amount += item.totalAmount
+            categoryNodeList.push(item.categoryNode as string)
+        })
+        // 购物车总额
+        setShopCarAmount(amount)
+        // 实付金额
+        setPayAmount(amount)
+
+        // 获取可用优惠券
+        queryAvailableCouponApi({totalAmount: amount, categoryNodeList}).then((res) => {
+            setCouponUserList(res.data)
+            if (!isEmpty(res.data)) {
+                let options: Array<any> = []
+                for (let index in res.data) {
+                    let option: any = {label: res.data[index].coupon.description, value: res.data[index].couponUserId}
+                    options.push(option)
+                }
+                setOptions(options)
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
+    }, [shopCar])
 
     // 监听列表更新
     event.on('addrListUpdate', () => {
@@ -60,15 +98,6 @@ const SettlementHooks: any = (): any => {
             setAddrList(res.data)
         })
     })
-
-    // 计算购物车总价
-    const shopCarAmount = (): number => {
-        let amount = 0
-        shopCar.forEach((item: ShopCarItem) => {
-            amount += item.totalAmount
-        })
-        return amount
-    }
 
     // 解析规格
     const transformSpecs = (specs: string): string => {
@@ -122,6 +151,18 @@ const SettlementHooks: any = (): any => {
         setCurrentAddr(event.target.value)
     }
 
+    // 选择优惠券
+    const selectCoupon = (value: number): void => {
+        for (let index in couponUserList) {
+            if (couponUserList[index].couponUserId === value) {
+                setCurrentCouponUser(couponUserList[index])
+                // 计算实付金额
+                let payAmount: number = shopCarAmount - couponUserList[index].coupon.discountAmount
+                setPayAmount(payAmount)
+            }
+        }
+    }
+
     // 提交订单
     const submitOrder = (): void => {
         setButtonDisabled(true)
@@ -141,11 +182,13 @@ const SettlementHooks: any = (): any => {
             }
             orderItemList.push(orderItem)
         })
-        let order: Order = {
+        // 订单信息
+        let orderInfo = {
             orderAddr: orderAddr,
-            orderItemList: orderItemList
+            orderItemList: orderItemList,
+            couponUserId: currentCouponUser?.couponUserId
         }
-        submitOrderApi(order).then((res) => {
+        submitOrderApi(orderInfo).then((res) => {
             if (res) {
                 message.success('订单提交成功').then()
                 Cookies.remove('shop_car')
@@ -163,14 +206,20 @@ const SettlementHooks: any = (): any => {
         buttonDisabled,
         shopCar,
         addrList,
+        couponUserList,
+        options,
         currentAddr,
+        currentCouponUser,
         modalContextHolder,
         messageContextHolder,
         shopCarAmount,
+        payAmount,
+        setCurrentCouponUser,
         transformSpecs,
         openAddrModal,
         deleteAddr,
         selectAddr,
+        selectCoupon,
         submitOrder
     }
 }
@@ -180,38 +229,19 @@ const SettlementPage: React.FC = (): JSX.Element => {
         buttonDisabled,
         shopCar,
         addrList,
+        options,
         currentAddr,
         modalContextHolder,
         messageContextHolder,
         shopCarAmount,
+        payAmount,
         transformSpecs,
         openAddrModal,
-        selectAddr,
         deleteAddr,
+        selectAddr,
+        selectCoupon,
         submitOrder
     } = SettlementHooks()
-
-    // 购物车项
-    const shopCarItems: JSX.Element = (
-        <div className={style.card}>
-            <div className={style.cardTitle}>
-                <span className={style.cardTitleText}>送货清单</span>
-            </div>
-            <div style={{padding: '10px'}}>
-                <Table showHeader={false} rowKey='skuId' dataSource={shopCar}>
-                    <Column align='center' title='商品图片' dataIndex='img' render={(img: string) => (
-                        <img src={img} alt='' className={style.shopCarItemImg} />
-                    )} />
-                    <Column dataIndex='productName' />
-                    <Column dataIndex='specs' render={(specs: string) => (
-                        <span className={style.specs}>{transformSpecs(specs)}</span>)} />
-                    <Column dataIndex='quantity' render={(quantity: number) => (<span>x {quantity}</span>)} />
-                    <Column dataIndex='totalAmount' render={(totalAmount: number) => (
-                        <span style={{color: '#f13a3a'}}>￥{totalAmount.toFixed(2)}</span>)} />
-                </Table>
-            </div>
-        </div>
-    )
 
     // 收货人项
     const addrItems: JSX.Element = (
@@ -258,6 +288,33 @@ const SettlementPage: React.FC = (): JSX.Element => {
         </div>
     )
 
+    // 购物车项
+    const shopCarItems: JSX.Element = (
+        <div className={style.card}>
+            <div className={style.cardTitle}>
+                <span className={style.cardTitleText}>送货清单</span>
+            </div>
+            <Table showHeader={false} rowKey='skuId' dataSource={shopCar} pagination={false}>
+                <Column align='center' dataIndex='img' render={(img: string) => (
+                    <img src={img} alt='' className={style.shopCarItemImg} />
+                )} />
+                <Column dataIndex='productName' />
+                <Column dataIndex='specs' render={(specs: string) => (
+                    <span className={style.specs}>{transformSpecs(specs)}</span>
+                )} />
+                <Column dataIndex='quantity' render={(quantity: number) => (<span>x {quantity}</span>)} />
+                <Column dataIndex='totalAmount' render={(totalAmount: number) => (
+                    <span style={{color: '#f13a3a'}}>￥{totalAmount.toFixed(2)}</span>
+                )} />
+            </Table>
+            <div className={style.couponSelect}>
+                <Select options={options} onSelect={(value: number) => selectCoupon(value)}
+                        placeholder='请选择可用优惠券' />
+            </div>
+        </div>
+    )
+
+
     return (
         <>
             <Header />
@@ -272,7 +329,11 @@ const SettlementPage: React.FC = (): JSX.Element => {
                         <div className={style.addOrder}>
                             <div className={style.amountText}>
                                 <span>总计:</span>
-                                <span className={style.amount}>￥{shopCarAmount().toFixed(2)}</span>
+                                <span className={style.amount}>￥{shopCarAmount.toFixed(2)}</span>
+                            </div>
+                            <div className={style.payAmountText}>
+                                <span>实付:</span>
+                                <span className={style.payAmount}>￥{payAmount.toFixed(2)}</span>
                             </div>
                             <Button disabled={!currentAddr || buttonDisabled} onClick={submitOrder}
                                     type='primary'>提交订单</Button>

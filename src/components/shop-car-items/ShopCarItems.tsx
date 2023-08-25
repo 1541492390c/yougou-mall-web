@@ -74,7 +74,8 @@ const ShopCarItemsComponent: React.FC<Props> = ({shopCarItem}): JSX.Element => {
             </div>
             <div>
                 <div className={style.shopCarItemName}>
-                    <NavLink to={`/detail/${shopCarItem.productId}`} onClick={closeShopCarTooltip}>{shopCarItem.productName}</NavLink>
+                    <NavLink to={`/detail/${shopCarItem.productId}`}
+                             onClick={closeShopCarTooltip}>{shopCarItem.productName}</NavLink>
                 </div>
                 <div className={style.specsAndPrice}>
                     <div className={style.specs}><span>{transformSpecs(shopCarItem.specs)}</span></div>
@@ -82,7 +83,8 @@ const ShopCarItemsComponent: React.FC<Props> = ({shopCarItem}): JSX.Element => {
                 </div>
             </div>
             <div>
-                <InputNumber value={shopCarItem.quantity} min={1} max={shopCarItem.maxStock} onStep={(value: number) => updateShopCarItem(shopCarItem.skuId, value)} />
+                <InputNumber value={shopCarItem.quantity} min={1} max={shopCarItem.maxStock}
+                             onStep={(value: number) => updateShopCarItem(shopCarItem.skuId, value)} />
             </div>
             <div onClick={() => deleteShopCarItem(shopCarItem.skuId)} className={style.delete}><span>删除</span></div>
         </div>

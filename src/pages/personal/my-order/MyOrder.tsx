@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
 import { getOrderPagesApi } from '@/api/order/order-api'
-import { Table } from 'antd'
+import { Table, TablePaginationConfig } from 'antd'
 import Column from 'antd/es/table/Column'
 import { NavLink } from 'react-router-dom'
 import { Order, OrderItem } from '@/interface/order'
@@ -9,13 +9,14 @@ import { Order, OrderItem } from '@/interface/order'
 const OrdersHooks: any = (): any => {
     const [total, setTotal] = useState<number>(0)
     const [orderList, setOrderList] = useState<Array<Order>>([])
+    const [currentPage, setCurrentPage] = useState<number>(1)
 
     useEffect(() => {
-        getOrderPagesApi(1, 5).then((res) => {
+        getOrderPagesApi(currentPage, 5).then((res) => {
             setTotal(res.data.total)
             setOrderList(res.data.list)
         })
-    }, [])
+    }, [currentPage])
 
     // 解析订单状态
     const transformOrderState = (value: number): string => {
@@ -45,16 +46,19 @@ const OrdersHooks: any = (): any => {
         return specs.substring(0, specs.length - 2)
     }
 
-    return {total, orderList, transformOrderState, transformSpecs}
+    return {total, orderList, setCurrentPage, transformOrderState, transformSpecs}
 }
 
 const MyOrderPage: React.FC = (): JSX.Element => {
-    const {total, orderList, transformOrderState, transformSpecs} = OrdersHooks()
+    const {total, orderList, setCurrentPage, transformOrderState, transformSpecs} = OrdersHooks()
 
     return (
         <div className={style.card}>
-            <Table pagination={{pageSize: 5, total: total}} dataSource={orderList} rowKey='orderId'
-                   scroll={{x: '600px', y: '520px'}} style={{width: '100%', height: '100%'}}>
+            <Table dataSource={orderList}
+                   pagination={{pageSize: 5, total: total}}
+                   onChange={(pagination: TablePaginationConfig) => setCurrentPage(pagination.current)}
+                   rowKey='orderId'
+                   scroll={{x: '600px', y: '600px'}} style={{width: '100%', height: '100%'}}>
                 <Column title='订单号' align='center' width={200} dataIndex='orderNo' />
                 <Column title='订单详情' align='center' width={600} dataIndex='orderItemList'
                         render={(value: Array<OrderItem>, record: Order) => (

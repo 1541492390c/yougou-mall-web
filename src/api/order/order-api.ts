@@ -1,9 +1,9 @@
 import { AxiosResponse } from 'axios'
 import request from '@/request'
-import { Order } from '@/interface/order'
+import { OrderAddr, OrderItem } from '@/interface/order'
 
 // 提交订单接口
-const submitOrderApi = (order: Order): Promise<AxiosResponse> => {
+const submitOrderApi = (order: {orderAddr: OrderAddr, orderItemList: Array<OrderItem>, couponUserId: number | undefined}): Promise<AxiosResponse> => {
     return request({
         url: '/order/submit',
         method: 'POST',

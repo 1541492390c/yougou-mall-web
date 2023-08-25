@@ -7,6 +7,7 @@ interface ShopCarItem {
     price: number,
     maxStock: number,
     productName?: string,
+    categoryNode?: string,
     img?: string,
     specs: string
 }

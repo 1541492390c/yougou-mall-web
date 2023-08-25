@@ -4,7 +4,7 @@ import request from '@/request'
 // 上传文件接口
 const uploadFileApi = (data: FormData): Promise<AxiosResponse> => {
     return request({
-        url: '/biz/resource/upload',
+        url: '/extra/resource/upload',
         method: 'POST',
         headers: {'content-type': 'multipart/form-data'},
         data: data
@@ -14,7 +14,7 @@ const uploadFileApi = (data: FormData): Promise<AxiosResponse> => {
 // 删除文件接口
 const deleteFileApi = (value: string, type: number): Promise<AxiosResponse> => {
     return request({
-        url: '/biz/resource/delete',
+        url: '/extra/resource/delete',
         method: 'DELETE',
         params: {
             file_name: value,

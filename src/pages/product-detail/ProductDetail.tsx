@@ -184,10 +184,10 @@ const ProductDetailHooks: any = (): any => {
                             // 判断当前商品是否特价
                             if (product?.isDiscount) {
                                 item.price = currentSku.discountPrice
-                                item.totalAmount = quantity * currentSku.discountPrice
+                                item.totalAmount += quantity * currentSku.discountPrice
                             } else {
                                 item.price = currentSku.price
-                                item.totalAmount = quantity * currentSku.price
+                                item.totalAmount += quantity * currentSku.price
                             }
                         }
                     })
@@ -213,7 +213,8 @@ const ProductDetailHooks: any = (): any => {
             maxStock: currentSku?.skuStock,
             productName: product?.name,
             specs: currentSku.specs,
-            img: product?.cover
+            img: product?.cover,
+            categoryNode: product?.categoryNode
         }
         // 判断当前商品是否特价
         if (product?.isDiscount) {
