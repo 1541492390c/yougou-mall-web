@@ -23,6 +23,7 @@ import moment from 'moment'
 import locale from 'antd/lib/date-picker/locale/zh_CN'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
+import { isEmpty } from '@/utils'
 
 const PersonalHooks: any = (): any => {
     const location: Location = useLocation()
@@ -148,7 +149,7 @@ const PersonalPage: React.FC = (): JSX.Element => {
     // 个人简介
     const personalDocumentCard: JSX.Element = (
         <div className={style.personalDocumentCard}>
-            <img src={!!userinfo.avatar ? userinfo.avatar : AvatarEmpty} alt='' />
+            <img src={!isEmpty(userinfo) && !!userinfo.avatar ? userinfo.avatar : AvatarEmpty} alt='' />
             <div className={style.myInfo}>
                 <div className={style.username}>
                     <span><SmileOutlined style={{marginRight: '5px'}} /></span>

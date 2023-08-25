@@ -3,6 +3,8 @@ import style from './style.module.scss'
 import { Product } from '@/interface/product'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { FireFilled } from '@ant-design/icons'
+import { isEmpty } from '@/utils'
+import DefaultImage from '@/assets/img/common/default-image.png'
 
 interface Props {
     product: Product
@@ -20,7 +22,7 @@ const HotProductCardComponent: React.FC<Props> = ({product}): JSX.Element => {
     return (
         <div onClick={() => navigate(`/detail/${product.productId}`)} className={style.cardBody}>
             <div className={style.cover}>
-                <img src={product.cover} alt='' />
+                <img src={!isEmpty(product) && !! product.cover ? product.cover : DefaultImage} alt='' />
             </div>
             <div className={style.productName}>
                 <span><FireFilled className={style.hotIcon} /></span>

@@ -48,7 +48,7 @@ const RightBarPersonalComponent: React.FC = (): JSX.Element => {
         <div className={style.main}>
             <div className={style.personalTitle}><span>个人中心</span></div>
             <div className={style.avatar}>
-                {isEmpty(userinfo) && !userinfo.avatar ? <img src={AvatarEmpty} alt='' /> : <img src={userinfo.avatar} alt='' />}
+                <img src={!isEmpty(userinfo) && !!userinfo.avatar ? userinfo.avatar : AvatarEmpty} alt='' />
             </div>
             <div className={style.username}>
                 {(() => {
