@@ -40,7 +40,7 @@ const IndexFooterComponent: React.FC = (): JSX.Element => {
                 </div>
             </div>
             <div className={style.copyright}>
-                <div>&copy; Copyright 2022 CCM</div>
+                <div>&copy; Copyright 2022-2023 CCM</div>
             </div>
         </div>
     )

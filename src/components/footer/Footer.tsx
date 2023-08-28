@@ -4,7 +4,7 @@ import style from './style.module.scss'
 const FooterComponent: React.FC = (): JSX.Element => {
     return (
         <div className={style.footer}>
-            <div>&copy; Copyright 2022 CCM</div>
+            <div>&copy; Copyright 2022-2023 CCM</div>
         </div>
     )
 }
