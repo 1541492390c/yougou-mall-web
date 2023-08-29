@@ -6,7 +6,7 @@ const keywordSearchApi = (
     keyword: string | undefined,
     sort: string, categoryNode: string | undefined,
     brandId: number | undefined,
-    pageNum: number = 1, pageSize: number = 20
+    pageNum: number = 1, pageSize: number = 1
 ): Promise<AxiosResponse> => {
     return request({
         url: '/search/product/keyword',

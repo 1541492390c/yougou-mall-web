@@ -104,7 +104,6 @@ const ProductDetailHooks: any = (): any => {
         getCommentPagesApi(params.id).then((res) => {
             setCommentList(res.data.list)
             setCommentTotal(res.data.total)
-            console.log(res.data)
         }).catch((err) => {
             console.log(err)
         })

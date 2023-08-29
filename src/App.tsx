@@ -14,7 +14,7 @@ import { getCouponUserListApi } from '@/api/payment/coupon-user-api'
 const AppHooks: any = (): any => {
     const dispatch: Dispatch = useDispatch()
     const isLogin: boolean = useSelector((state: any) => state.isLogin)
-    const transformRoutes = useRoutes(routes)
+    const transformRoutes: React.ReactElement | null = useRoutes(routes)
 
     useEffect(() => {
         if (isLogin) {

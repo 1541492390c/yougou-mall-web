@@ -2,7 +2,12 @@ import { AxiosResponse } from 'axios'
 import request from '@/request'
 
 // 注册接口
-const registerApi = (value: { username: string, password: string, email: string, mobile: string }): Promise<AxiosResponse> => {
+const registerApi = (value: {
+    username: string,
+    password: string,
+    email: string,
+    mobile: string
+}): Promise<AxiosResponse> => {
     return request({
         url: '/user/register',
         method: 'POST',
@@ -19,7 +24,7 @@ const getUserinfoApi = (): Promise<AxiosResponse> => {
 }
 
 // 更新用户信息接口
-const updateUserApi = (value: {gender: number, nickname: string, birthday: string}): Promise<AxiosResponse> => {
+const updateUserApi = (value: { gender: number, nickname: string, birthday: string }): Promise<AxiosResponse> => {
     return request({
         url: '/user/update',
         method: 'PUT',
@@ -27,4 +32,13 @@ const updateUserApi = (value: {gender: number, nickname: string, birthday: strin
     }, true)
 }
 
-export { registerApi, getUserinfoApi, updateUserApi }
+// 更新头像
+const updateAvatarApi = (value: { avatar: string }): Promise<AxiosResponse> => {
+    return request({
+        url: '/user/update',
+        method: 'PUT',
+        data: value
+    }, true)
+}
+
+export { registerApi, getUserinfoApi, updateUserApi, updateAvatarApi }

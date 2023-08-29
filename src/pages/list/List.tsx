@@ -23,6 +23,7 @@ const ListHooks: any = (): any => {
     const [productList, setProductList] = useState<Array<Product>>([])
     const [productTotal, setProductTotal] = useState<number>(0)
     const [currentPage, setCurrentPage] = useState<number>(1)
+    const [currentSize] = useState<number>(20)
     const [currentSort, setCurrentSort] = useState<string>('product_id')
     const sortOptions = useRef<any>([
         {key: 'product_id', label: '综合'},
@@ -67,8 +68,9 @@ const ListHooks: any = (): any => {
     // 监听关键词、品牌、排序字段的变化
     useEffect(() => {
         let node: string = currentCategory?.node ? currentCategory?.node : location.state.node
+        let brandId: number = currentBrand?.brandId ? currentBrand?.brandId : location.state.brandId
         // 根据传入的关键词搜索对应的商品、品牌、分类
-        keywordSearchApi(location.state.keyword, currentSort, node, location.state.brandId, currentPage).then((res) => {
+        keywordSearchApi(location.state.keyword, currentSort, node, brandId, currentPage, currentSize).then((res) => {
             // 设置品牌列表
             setBrandList(res.data.brandList)
             // 清除原商品列表
@@ -82,23 +84,20 @@ const ListHooks: any = (): any => {
         }).catch((err) => {
             console.log(err)
         })
-    }, [location.state.keyword, currentSort, currentCategory])
-
-    // 监听当前品牌变化
-    useEffect(() => {
-
-    }, [currentBrand])
+    }, [location.state.keyword, currentSort, currentCategory, currentBrand, currentPage])
 
     return {
         topCategory,
         secondCategory,
         currentCategory,
+        currentBrand,
         categoryList,
         brandList,
         productList,
         productTotal,
         sortOptions,
         currentSort,
+        currentSize,
         setCurrentPage,
         setCurrentCategory,
         setCurrentBrand,
@@ -117,6 +116,7 @@ const ListPage: React.FC = (): JSX.Element => {
         productTotal,
         sortOptions,
         currentSort,
+        currentSize,
         setCurrentPage,
         setCurrentCategory,
         setCurrentBrand,
@@ -208,7 +208,7 @@ const ListPage: React.FC = (): JSX.Element => {
                             </div>
                             <div className={style.pagination}>
                                 {productTotal !== 0 &&
-                                    <Pagination pageSize={20} total={productTotal}
+                                    <Pagination pageSize={currentSize} total={productTotal}
                                                 onChange={(value: number) => setCurrentPage(value)}
                                                 showSizeChanger={false} />}
                             </div>

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import style from './style.module.scss'
 import Header from '@/components/header/Header'
 import { Location, NavigateFunction, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Footer from '@/components/footer/Footer'
-import { Button, DatePicker, Form, Input, Menu, MenuProps, message, Modal, Radio } from 'antd'
+import { Button, DatePicker, Form, Input, Menu, MenuProps, message, Modal, Radio, Upload } from 'antd'
 import {
     ContainerOutlined,
     FormOutlined,
@@ -18,30 +18,37 @@ import {
 import AvatarEmpty from '@/assets/img/empty/avatar-empty.png'
 import { User } from '@/interface/user'
 import { useSelector } from 'react-redux'
-import { updateUserApi } from '@/api/user/user-api'
+import { updateAvatarApi, updateUserApi } from '@/api/user/user-api'
 import moment from 'moment'
 import locale from 'antd/lib/date-picker/locale/zh_CN'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import { isEmpty } from '@/utils'
+import { Cropper, ReactCropperElement } from 'react-cropper'
+import { ResourceTypeEnum } from '@/enums'
+import { uploadFileApi } from '@/api/extra/resource-api'
 
 const PersonalHooks: any = (): any => {
     const location: Location = useLocation()
     const navigate: NavigateFunction = useNavigate()
     const userinfo: User = useSelector((state: any) => state.userinfo)
     const [updateUserinfoForm] = Form.useForm()
+    const [reader] = useState<FileReader>(new FileReader())
     const [selectKey, setSelectKey] = useState<string>('')
+    const [avatarFile, setAvatarFile] = useState<string>('')
     const [updateUserinfoOpen, setUpdateUserinfoOpen] = useState<boolean>(false)
+    const [cropperOpen, setCropperOpen] = useState<boolean>(false)
     const [buttonDisabled, setButtonDisabled] = useState<boolean>(false)
     const [messageApi, messageContextHolder] = message.useMessage()
-    const menuItems: MenuProps['items'] = [
+    const cropperRef = useRef<ReactCropperElement>()
+    const menuItems = useRef<MenuProps['items']>([
         {label: '账号安全', key: '', icon: <KeyOutlined />},
         {label: '我的订单', key: 'my_order', icon: <ContainerOutlined />},
         {label: '我的收藏', key: 'favorite', icon: <StarOutlined />},
         {label: '我的反馈', key: 'my_feedback', icon: <ContainerOutlined />},
         {label: '我的优惠券', key: 'my_coupon', icon: <WalletOutlined />},
         {label: '收货人信息', key: 'addr', icon: <WhatsAppOutlined />}
-    ]
+    ])
 
     useEffect(() => {
         document.title = '优购商城,个人中心'
@@ -84,6 +91,49 @@ const PersonalHooks: any = (): any => {
         navigate(value.key)
     }
 
+    // 处理关闭头像上传
+    const handleCloseUploadAvatar = (): void => {
+        setCropperOpen(false)
+    }
+
+    // 选择头像
+    const handleSelectAvatar = (option: any): void => {
+        reader.readAsDataURL(option.file)
+        reader.onloadend = (ev): void => {
+            setAvatarFile(ev.target?.result as string)
+            setCropperOpen(true)
+        }
+    }
+
+    // 上传头像
+    const uploadAvatar = (): void => {
+        cropperRef.current?.cropper.getCroppedCanvas().toBlob((e) => {
+            let formData: FormData = new FormData()
+            formData.append('resourceType', ResourceTypeEnum.AVATAR.toString())
+            formData.append('file', new File([e as Blob], 'file.png', {}))
+            // 上传图片
+            uploadFileApi(formData).then((res) => {
+                if (res) {
+                    // 更新用户信息
+                    updateAvatarApi({avatar: res.data}).then((res) => {
+                        if (res) {
+                            messageApi.success({
+                                content: '上传成功',
+                                duration: 0.5,
+                                onClose: () => {
+                                    setCropperOpen(false)
+                                    window.location.reload()
+                                }
+                            }).then()
+                        }
+                    })
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+        })
+    }
+
     const validateNickname = (_: any, value: string) => {
         if (!value) {
             return Promise.reject(new Error('请输入用户昵称'))
@@ -113,18 +163,24 @@ const PersonalHooks: any = (): any => {
             console.log(err)
         })
     }
-    ``
+
     return {
         userinfo,
         updateUserinfoForm,
         menuItems,
+        cropperRef,
         selectKey,
+        avatarFile,
         updateUserinfoOpen,
+        cropperOpen,
         buttonDisabled,
         messageContextHolder,
         setUpdateUserinfoOpen,
         transformGender,
         handleSelect,
+        handleCloseUploadAvatar,
+        handleSelectAvatar,
+        uploadAvatar,
         validateNickname,
         updateUserinfo
     }
@@ -135,21 +191,50 @@ const PersonalPage: React.FC = (): JSX.Element => {
         userinfo,
         updateUserinfoForm,
         menuItems,
+        cropperRef,
         selectKey,
+        avatarFile,
         updateUserinfoOpen,
+        cropperOpen,
         buttonDisabled,
         messageContextHolder,
         setUpdateUserinfoOpen,
         transformGender,
         handleSelect,
+        handleCloseUploadAvatar,
+        handleSelectAvatar,
+        uploadAvatar,
         validateNickname,
         updateUserinfo
     } = PersonalHooks()
 
+    // 上传头像
+    const avatarUploadModal: JSX.Element = (
+        <Modal title='上传头像'
+               width={600}
+               maskClosable={false}
+               open={cropperOpen}
+               onCancel={handleCloseUploadAvatar}
+               onOk={uploadAvatar}>
+            <Cropper src={avatarFile ? avatarFile : ''}
+                     ref={cropperRef}
+                     center
+                     viewMode={1} aspectRatio={1}
+                     zoomable={false} guides={false} background={false}
+                     cropBoxMovable={true} scalable={true}
+                     style={{height: '300px', width: '100%'}} />
+        </Modal>
+    )
+
     // 个人简介
     const personalDocumentCard: JSX.Element = (
         <div className={style.personalDocumentCard}>
-            <img src={!isEmpty(userinfo) && !!userinfo.avatar ? userinfo.avatar : AvatarEmpty} alt='' />
+            <Upload customRequest={handleSelectAvatar} showUploadList={false}>
+                <img src={!isEmpty(userinfo) && !!userinfo.avatar ? userinfo.avatar : AvatarEmpty} alt='' />
+                <div className={style.uploadAvatarText}>
+                    <span>(点击上传头像)</span>
+                </div>
+            </Upload>
             <div className={style.myInfo}>
                 <div className={style.username}>
                     <span><SmileOutlined style={{marginRight: '5px'}} /></span>
@@ -177,7 +262,7 @@ const PersonalPage: React.FC = (): JSX.Element => {
             <div className={style.personalTitle}>
                 <span>个人中心</span>
             </div>
-            <Menu defaultSelectedKeys={['']} selectedKeys={[selectKey]} items={menuItems}
+            <Menu defaultSelectedKeys={['']} selectedKeys={[selectKey]} items={menuItems.current}
                   onSelect={handleSelect} />
         </div>
     )
@@ -234,6 +319,8 @@ const PersonalPage: React.FC = (): JSX.Element => {
             {updateUserinfoModal}
             {/*全局消息提醒*/}
             {messageContextHolder}
+            {/*头像上传*/}
+            {avatarUploadModal}
         </>
     )
 }

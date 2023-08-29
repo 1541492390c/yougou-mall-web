@@ -1,37 +1,50 @@
 # 优购商城-web端
+<div align='center'>
+    <img src='https://gitee.com/chi-congmin/yougou-mall/raw/master/readme/img/yougou.png' alt='logo'>
+</div>
 
-#### 介绍
-毕业设计
+## 介绍
+毕业设计，一个基于React、AntDesign的前后端分离、包含了完整的购物流程的Web商城前端项目。
 
-#### 软件架构
+## 目录结构
 软件架构说明
 
+## 技术选型
 
-#### 安装教程
+|     技术      |       说明       |                            版本号                            |
+| :-----------: | :--------------: | :----------------------------------------------------------: |
+|     React     |     前端框架     |                 https://react.docschina.org                  |
+| React-Router  |     路由框架     |               https://reactrouter.com/en/main                |
+| Redux Toolkit | 全局状态管理框架 |                 https://redux-toolkit.js.org                 |
+|   AntDesign   |    前端UI框架    |           https://ant-design.antgroup.com/index-cn           |
+|     Axios     |     HTTP框架     | [https://github.com/axios/axios](https://gitee.com/link?target=https%3A%2F%2Fgithub.com%2Faxios%2Faxios) |
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+## 环境搭建
 
-#### 使用说明
+### 开发环境
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+| 工具 | 说明 | 版本号  |
+| :--: | :--: | :-----: |
+| Node | Node | 18.16.1 |
 
-#### 参与贡献
+### 开发工具
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+|   工具   |    说明    |                  下载地址                   |
+| :------: | :--------: | :-----------------------------------------: |
+| WebStorm | Web开发IDE | https://www.jetbrains.com/webstorm/download |
 
+## 部署
 
-#### 特技
+- ### 安装node模块
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+```
+npm install
+```
+
+- ### 运行
+
+```
+npm run dev
+```
+
+## 运行截图
