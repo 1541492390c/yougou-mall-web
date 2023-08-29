@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios'
 import request from '@/request'
 
 // 支付接口
-const payApi = (orderId: string | undefined, paymentType: number): Promise<AxiosResponse> => {
+const payApi = (orderId: number | undefined, paymentType: number): Promise<AxiosResponse> => {
     return request({
         url: '/payment/pay',
         method: 'POST',

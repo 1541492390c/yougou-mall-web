@@ -100,20 +100,20 @@ const AddrModalHooks: any = (): any => {
     }
 
     // 选择省份
-    const selectProvince = (value: string, option: District): void => {
+    const selectProvince = (option: District): void => {
         setCurrentProvince(option)
         setCurrentCity(undefined)
         setCurrentDistrict(undefined)
     }
 
     // 选择所在城市
-    const selectCity = (value: string, option: District): void => {
+    const selectCity = (option: District): void => {
         setCurrentCity(option)
         setCurrentDistrict(undefined)
     }
 
     // 选择所在区县
-    const selectDistrict = (value: string, option: District): void => {
+    const selectDistrict = (option: District): void => {
         setCurrentDistrict(option)
     }
 

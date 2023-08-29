@@ -30,8 +30,8 @@ interface OrderAddr {
 
 // 订单项
 interface OrderItem {
-    orderId?: string,
-    productId?: string,
+    orderId?: number,
+    productId?: number,
     orderItemId?: number,
     skuId: number,
     quantity: number,
