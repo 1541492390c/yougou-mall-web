@@ -14,7 +14,7 @@ const getCouponPagesApi = (pageNum: number = 1, pageSize: number = 10): Promise<
 }
 
 // 领取优惠券
-const receiveCouponApi = (couponId: string | undefined): Promise<AxiosResponse> => {
+const receiveCouponApi = (couponId: number | undefined): Promise<AxiosResponse> => {
     return request({
         url: '/payment/coupon/receive',
         method: 'POST',

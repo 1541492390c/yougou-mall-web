@@ -1,6 +1,6 @@
 // 商品
 interface Product {
-    productId: string,
+    productId: number,
     brandId?: number,
     state: number,
     price: number,
@@ -16,7 +16,7 @@ interface Product {
 // 商品分类
 interface Category {
     categoryId: number,
-    parentId: string,
+    parentId: number,
     level: number,
     name: string,
     node: string,
@@ -41,7 +41,7 @@ interface Attr {
 // 商品sku
 interface Sku {
     skuId: number,
-    productId: string,
+    productId: number,
     skuStock: number,
     price: number,
     discount: number,

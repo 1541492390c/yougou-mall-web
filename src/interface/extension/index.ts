@@ -1,6 +1,6 @@
 // 购物车
 interface ShopCarItem {
-    productId?: string,
+    productId?: number,
     skuId: number,
     quantity: number,
     totalAmount: number,

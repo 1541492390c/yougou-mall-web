@@ -1,7 +1,7 @@
 // 订单
 interface Order {
-    orderId?: string,
-    userId?: string,
+    orderId?: number,
+    userId?: number,
     state?: number,
     totalAmount?: number,
     payAmount?: number,

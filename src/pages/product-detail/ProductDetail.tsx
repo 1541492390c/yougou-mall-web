@@ -49,6 +49,7 @@ const ProductDetailHooks: any = (): any => {
         getProductByProductIdApi(params.id).then((res) => {
             document.title = res.data.name
             setProduct(res.data)
+            // 解析商品图片
             if (!!res.data.imgList) {
                 setImgList(JSON.parse(res.data.imgList))
                 setCurrentImg(JSON.parse(res.data.imgList)[0])

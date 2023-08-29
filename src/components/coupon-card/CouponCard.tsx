@@ -41,8 +41,7 @@ const CouponCardHooks: any = (coupon: Coupon): any => {
         receiveCouponApi(coupon.couponId).then((res) => {
             if (res) {
                 messageApi.success('领取成功').then()
-                let couponUserListTemp: Array<CouponUser> = []
-                Object.assign(couponUserListTemp, couponUserList)
+                let couponUserListTemp: Array<CouponUser> = [...couponUserList]
                 couponUserListTemp.push(res.data)
                 dispatch(setCouponUserList(couponUserListTemp))
             }
@@ -59,14 +58,14 @@ const CouponCardComponent: React.FC<Props> = ({coupon}): JSX.Element => {
 
     // 优惠券左边部分
     const couponLeft: JSX.Element = (
-        <div className={isEmpty() ? style.isEmptyCouponLeft : style.couponLeft}>
+        <div onClick={receive} className={isEmpty() ? style.isEmptyCouponLeft : style.couponLeft}>
             {(() => {
                 if (isEmpty()) {
                     return <span className={style.receiveText}><span>已抢光</span></span>
                 } else if (!isEmpty() && isReceive) {
                     return <span className={style.receiveText}><span>已领取</span></span>
                 } else {
-                    return <span onClick={receive} className={style.receiveText}><span>立即领取</span></span>
+                    return <span className={style.receiveText}><span>立即领取</span></span>
                 }
             })()}
         </div>
@@ -81,13 +80,17 @@ const CouponCardComponent: React.FC<Props> = ({coupon}): JSX.Element => {
                     <span className={style.withAmount}>{coupon.discountAmount}</span>
                 </div>
                 <div className={style.flex}>
-                    <div><Tag className={isEmpty() ? style.isEmptyUsedAmount : style.usedAmount}>满{coupon.usedAmount}元可用</Tag></div>
+                    <div><Tag
+                        className={isEmpty() ? style.isEmptyUsedAmount : style.usedAmount}>满{coupon.usedAmount}元可用</Tag>
+                    </div>
                     <div className={style.desc}><span>{coupon.description}</span></div>
                 </div>
             </div>
             <div style={{width: '88%'}}>
-                <Progress percent={percent()} success={{strokeColor: 'black'}} strokeColor='#f13a3a'
-                          format={percent => percent === 100 ? '已抢光' : `已抢${percent}%`} className={style.percent} />
+                <Progress status='active'
+                          percent={percent()} strokeColor={percent() === 100 ? 'gray' : '#f13a3a'}
+                          format={percent => percent === 100 ? '已抢光' : `已抢${percent}%`}
+                          rootClassName={style.percent} />
             </div>
         </div>
     )

@@ -1,6 +1,6 @@
 // 优惠券
 interface Coupon {
-    couponId: string,
+    couponId: number,
     quota: number,
     takeCount: number,
     expired: number,
@@ -13,7 +13,7 @@ interface Coupon {
 // 用户优惠券信息
 interface CouponUser {
     couponUserId: number,
-    couponId: string,
+    couponId: number,
     state: number,
     receiveTime: Date,
     expiredTime: Date,

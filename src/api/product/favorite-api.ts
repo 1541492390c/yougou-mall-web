@@ -11,7 +11,7 @@ const isFavoriteApi = (productId: string | undefined): Promise<AxiosResponse> =>
 }
 
 // 保存用户搜藏
-const saveFavoriteApi = (productId: string | undefined): Promise<AxiosResponse> => {
+const saveFavoriteApi = (productId: number | undefined): Promise<AxiosResponse> => {
     return request({
         url: '/product/favorite/save',
         method: 'POST',

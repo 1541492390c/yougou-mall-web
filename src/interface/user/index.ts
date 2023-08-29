@@ -1,6 +1,6 @@
 // 用户信息
 interface User {
-    userId?: string,
+    userId?: number,
     nickname?: string,
     avatar?: string,
     age?: number,
@@ -11,7 +11,7 @@ interface User {
 // 收获地址
 interface Addr {
     addrId?: number,
-    userId?: string,
+    userId?: number,
     consignee: string,
     telephone: string,
     province?: string,
@@ -33,7 +33,7 @@ interface RateStatistics {
 
 // 用户反馈
 interface Feedback {
-    feedbackId?: string,
+    feedbackId?: number,
     feedbackTypeId?: number,
     feedbackTypeName?: string,
     content?: string,
@@ -44,9 +44,9 @@ interface Feedback {
 // 用户评论
 interface IComment {
     commentId?: number,
-    userId?: string,
-    productId?: string,
-    orderId?: string,
+    userId?: number,
+    productId?: number,
+    orderId?: number,
     orderItemId?: number,
     rate?: number,
     imgList?: string,
