@@ -101,8 +101,7 @@ const MyOrderPage: React.FC = (): JSX.Element => {
             <Table dataSource={orderList}
                    pagination={{pageSize: 5, total: total}}
                    onChange={(pagination: TablePaginationConfig) => setCurrentPage(pagination.current)}
-                   rowKey='orderId'
-                   scroll={{x: '600px', y: '600px'}} style={{width: '100%', height: '100%'}}>
+                   rowKey='orderId' scroll={{x: 'max-content', y: 'max-content'}}>
                 <Column title='订单号' align='center' width={200} dataIndex='orderNo' />
                 <Column title='订单详情' align='center' width={600} dataIndex='orderItemList'
                         render={(value: Array<OrderItem>, record: Order) => (

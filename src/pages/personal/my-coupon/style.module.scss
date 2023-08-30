@@ -1,4 +1,5 @@
 .card {
+  height: 650px;
   display: flex;
   flex-direction: column;
   background-color: white;
@@ -43,13 +44,13 @@
 }
 
 .couponsIsEmpty {
+  height: 650px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   color: gray;
   font-size: 14px;
-  margin-bottom: 50px;
 
   img {
     height: 150px;
