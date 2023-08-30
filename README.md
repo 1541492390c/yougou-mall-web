@@ -74,7 +74,7 @@ yougou-mall-web
 
 ## 技术选型
 
-|     技术      |       说明       |                            版本号                            |
+|     技术      |       说明       |                            官网                            |
 | :-----------: | :--------------: | :----------------------------------------------------------: |
 |     React     |     前端框架     |                 https://react.docschina.org                  |
 | React-Router  |     路由框架     |               https://reactrouter.com/en/main                |
