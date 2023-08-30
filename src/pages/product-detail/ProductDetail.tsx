@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import style from './style.module.scss'
 import CommentEmpty from '@/assets/img/empty/comment-empty.png'
+import AvatarEmpty from '@/assets/img/empty/avatar-empty.png'
 import Cookies from 'js-cookie'
 import { NavigateFunction, Params, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -512,7 +513,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                                 return (
                                     <div key={index} className={style.commentValue}>
                                         <div className={style.avatarAndNickname}>
-                                            <Avatar src={item.avatar} size={55} />
+                                            <Avatar src={item.avatar ? item.avatar : AvatarEmpty} size={55} />
                                             <div className={style.nickname}><span>{item.nickname}</span></div>
                                         </div>
                                         <div className={style.commentDetails}>

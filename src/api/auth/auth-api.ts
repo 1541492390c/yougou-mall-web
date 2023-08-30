@@ -1,6 +1,7 @@
 import request from '@/request'
 import { AxiosResponse } from 'axios'
 
+// 登录接口
 const loginApi = (username: string, password: string, code: string): Promise<AxiosResponse> => {
     return request({
         url: '/auth/login',
@@ -13,6 +14,7 @@ const loginApi = (username: string, password: string, code: string): Promise<Axi
     })
 }
 
+// 退出登录接口
 const logoutApi = (): Promise<AxiosResponse> => {
     return request({
         url: '/auth/logout',

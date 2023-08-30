@@ -58,6 +58,15 @@ const CommentHooks: any = (): any => {
         return specs.substring(0, specs.length - 1)
     }
 
+    // 图片上传之前钩子
+    const beforeUploadFile = (file: UploadFile): boolean => {
+        if (file.type !== 'image/jpeg') {
+            messageApi.error('请选择png、jpg格式文件').then()
+            return false
+        }
+        return true
+    }
+
     // 上传图片
     const uploadFile = (option: any): void => {
         let formData: FormData = new FormData()
@@ -143,6 +152,7 @@ const CommentHooks: any = (): any => {
         setCommentContent,
         setEditor,
         transformSpecs,
+        beforeUploadFile,
         uploadFile,
         removeFile,
         submit
@@ -164,6 +174,7 @@ const CommentPage: React.FC = (): JSX.Element => {
         setCommentContent,
         setEditor,
         transformSpecs,
+        beforeUploadFile,
         uploadFile,
         removeFile,
         submit
@@ -208,8 +219,8 @@ const CommentPage: React.FC = (): JSX.Element => {
                             <span>上传图片</span>
                         </div>
                         <div className={style.flex}>
-                            <Upload listType='picture-card' fileList={fileList} customRequest={uploadFile}
-                                    onRemove={removeFile}>
+                            <Upload listType='picture-card' fileList={fileList}
+                                    customRequest={uploadFile} beforeUpload={beforeUploadFile} onRemove={removeFile}>
                                 {fileList.length >= 6 ? null : <PlusOutlined />}
                             </Upload>
                         </div>

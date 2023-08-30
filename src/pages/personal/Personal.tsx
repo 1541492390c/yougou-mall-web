@@ -3,7 +3,7 @@ import style from './style.module.scss'
 import Header from '@/components/header/Header'
 import { Location, NavigateFunction, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Footer from '@/components/footer/Footer'
-import { Button, DatePicker, Form, Input, Menu, MenuProps, message, Modal, Radio, Upload } from 'antd'
+import { Button, DatePicker, Form, Input, Menu, MenuProps, message, Modal, Radio, Upload, UploadFile } from 'antd'
 import {
     ContainerOutlined,
     FormOutlined,
@@ -105,6 +105,15 @@ const PersonalHooks: any = (): any => {
         }
     }
 
+    // 图片上传之前钩子
+    const beforeUploadAvatar = (file: UploadFile): boolean => {
+        if (file.type !== 'image/jpeg') {
+            messageApi.error('请选择png、jpg格式文件').then()
+            return false
+        }
+        return true
+    }
+
     // 上传头像
     const uploadAvatar = (): void => {
         cropperRef.current?.cropper.getCroppedCanvas().toBlob((e) => {
@@ -180,6 +189,7 @@ const PersonalHooks: any = (): any => {
         handleSelect,
         handleCloseUploadAvatar,
         handleSelectAvatar,
+        beforeUploadAvatar,
         uploadAvatar,
         validateNickname,
         updateUserinfo
@@ -203,6 +213,7 @@ const PersonalPage: React.FC = (): JSX.Element => {
         handleSelect,
         handleCloseUploadAvatar,
         handleSelectAvatar,
+        beforeUploadAvatar,
         uploadAvatar,
         validateNickname,
         updateUserinfo
@@ -229,7 +240,7 @@ const PersonalPage: React.FC = (): JSX.Element => {
     // 个人简介
     const personalDocumentCard: JSX.Element = (
         <div className={style.personalDocumentCard}>
-            <Upload customRequest={handleSelectAvatar} showUploadList={false}>
+            <Upload customRequest={handleSelectAvatar} beforeUpload={beforeUploadAvatar} showUploadList={false}>
                 <img src={!isEmpty(userinfo) && !!userinfo.avatar ? userinfo.avatar : AvatarEmpty} alt='' />
                 <div className={style.uploadAvatarText}>
                     <span>(点击上传头像)</span>

@@ -95,7 +95,7 @@ const HomePage: React.FC = (): JSX.Element => {
             <div>
                 <div className={style.productIsEmpty}>
                     <img src={SecKillEmpty} alt='' />
-                    <div><span>该功能尚未开发</span></div>
+                    <div><span>暂无秒杀活动</span></div>
                 </div>
             </div>
         </div>

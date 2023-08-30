@@ -77,8 +77,8 @@ const SettlementHooks: any = (): any => {
 
         // 获取可用优惠券
         queryAvailableCouponApi({totalAmount: amount, categoryNodeList}).then((res) => {
-            setCouponUserList(res.data)
             if (!isEmpty(res.data)) {
+                setCouponUserList(res.data)
                 let options: Array<any> = []
                 for (let index in res.data) {
                     let option: any = {label: res.data[index].coupon.description, value: res.data[index].couponUserId}
@@ -141,6 +141,8 @@ const SettlementHooks: any = (): any => {
                             return pre.slice()
                         })
                     }
+                }).catch((err) => {
+                    console.log(err)
                 })
             }
         })

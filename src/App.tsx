@@ -47,9 +47,7 @@ const App: React.FC = (): JSX.Element => {
 
     return (
         <ConfigProvider locale={zhCN} theme={{token: {colorPrimary: '#f13a3a', borderRadius: 0}}}>
-            <AppScrollTop>
-                {transformRoutes}
-            </AppScrollTop>
+            <AppScrollTop>{transformRoutes}</AppScrollTop>
         </ConfigProvider>
     )
 }
