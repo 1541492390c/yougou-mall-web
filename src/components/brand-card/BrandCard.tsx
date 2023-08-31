@@ -5,7 +5,8 @@ import { isEmpty } from '@/utils'
 import DefaultImage from '@/assets/img/common/default-image.png'
 
 interface Props {
-    brand: Brand
+    brand: Brand,
+    currentId: number | undefined
 }
 
 const BrandCardHooks: any = (): any => {
@@ -18,13 +19,12 @@ const BrandCardHooks: any = (): any => {
     return {showImg, handleShow}
 }
 
-const BrandCardComponent: React.FC<Props> = ({brand}): JSX.Element => {
+const BrandCardComponent: React.FC<Props> = ({brand, currentId}): JSX.Element => {
     const {showImg, handleShow} = BrandCardHooks()
     
     return (
-        <div onMouseOver={() => handleShow(false)}
-             onMouseOut={() => handleShow(true)}
-             className={style.cardBody}>
+        <div onMouseOver={() => handleShow(false)} onMouseOut={() => handleShow(true)}
+             className={currentId === brand.brandId ? style.activeCardBody : style.cardBody}>
             {showImg && <div><img src={!isEmpty(brand) && !!brand.img ? brand.img : DefaultImage} alt='' /></div>}
             {!showImg && <div className={style.brandName}><span>{brand.name}</span></div>}
         </div>

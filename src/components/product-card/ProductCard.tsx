@@ -17,24 +17,26 @@ const ProductCardComponent: React.FC<Props> = ({product}): JSX.Element => {
             <div className={style.cover} onClick={() => console.log(product)}>
                 <img src={!isEmpty(product) && !! product.cover ? product.cover : DefaultImage} alt='' />
             </div>
-            <div className={style.productName}>
-                <span>{product.name}</span>
-            </div>
-            <div>
-                {(() => {
-                   if (!product.price) {
-                       return <span className={style.productPrice}>此商品暂无规格</span>
-                   } else if (product.isDiscount) {
-                       return (
-                           <div>
-                               <span className={style.productPrice}>{product.discountPrice.toFixed(2)}</span>
-                               <span className={style.costPrice}>{product.price.toFixed(2)}</span>
-                           </div>
-                       )
-                   } else {
-                       return <span className={style.productPrice}>{product.price.toFixed(2)}</span>
-                   }
-                })()}
+            <div className={style.productNameAndPrice}>
+                <div className={style.productName}>
+                    <span>{product.name}</span>
+                </div>
+                <div className={style.price}>
+                    {(() => {
+                        if (!product.price) {
+                            return <span className={style.productPrice}>此商品暂无规格</span>
+                        } else if (product.isDiscount) {
+                            return (
+                                <div>
+                                    <span className={style.productPrice}>{product.discountPrice.toFixed(2)}</span>
+                                    <span className={style.costPrice}>{product.price.toFixed(2)}</span>
+                                </div>
+                            )
+                        } else {
+                            return <span className={style.productPrice}>{product.price.toFixed(2)}</span>
+                        }
+                    })()}
+                </div>
             </div>
         </div>
     )

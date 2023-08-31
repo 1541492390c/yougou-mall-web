@@ -11,6 +11,7 @@ import { Brand, Category, Product } from '@/interface/product'
 import { keywordSearchApi } from '@/api/search/search-api'
 import BrandCard from '@/components/brand-card/BrandCard'
 import { getBrandListApi } from '@/api/product/brand-api'
+import { ProductSearchTypeEnum } from '@/enums'
 
 const ListHooks: any = (): any => {
     const location: Location = useLocation()
@@ -68,9 +69,9 @@ const ListHooks: any = (): any => {
     // 监听关键词、品牌、排序字段的变化
     useEffect(() => {
         let node: string = currentCategory?.node ? currentCategory?.node : location.state.node
-        let brandId: number = currentBrand?.brandId ? currentBrand?.brandId : location.state.brandId
+        let brandId: number = location.state.brandId
         // 根据传入的关键词搜索对应的商品、品牌、分类
-        keywordSearchApi(location.state.keyword, currentSort, node, brandId, currentPage, currentSize).then((res) => {
+        keywordSearchApi(location.state.keyword, currentSort, node, brandId, ProductSearchTypeEnum.ALL, currentPage, currentSize).then((res) => {
             // 设置品牌列表
             setBrandList(res.data.brandList)
             // 清除原商品列表
@@ -84,7 +85,26 @@ const ListHooks: any = (): any => {
         }).catch((err) => {
             console.log(err)
         })
-    }, [location.state.keyword, currentSort, currentCategory, currentBrand, currentPage])
+    }, [location.state.keyword, location.state.brandId, currentSort, currentCategory, currentPage])
+
+    // 监听品牌变化
+    useEffect(() => {
+        let node: string = currentCategory?.node ? currentCategory?.node : location.state.node
+        let brandId: number | undefined = currentBrand?.brandId
+        // 根据传入的关键词搜索对应的商品、品牌、分类
+        keywordSearchApi(location.state.keyword, currentSort, node, brandId, ProductSearchTypeEnum.PRODUCT, currentPage, currentSize).then((res) => {
+            // 清除原商品列表
+            setProductList([])
+            setProductTotal(0)
+            // 设置商品分页
+            if (!isEmpty(res.data)) {
+                setProductTotal(res.data.total)
+                setProductList(res.data.list)
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
+    }, [currentBrand])
 
     return {
         topCategory,
@@ -110,6 +130,7 @@ const ListPage: React.FC = (): JSX.Element => {
         topCategory,
         secondCategory,
         currentCategory,
+        currentBrand,
         categoryList,
         brandList,
         productList,
@@ -123,6 +144,15 @@ const ListPage: React.FC = (): JSX.Element => {
         setCurrentSort
     } = ListHooks()
 
+    // 解析品牌列表
+    const transformBrandList = brandList.map((item: Brand, index: number) => {
+        return (
+            <div key={index} onClick={() => setCurrentBrand(item)} className={style.brand}>
+                <BrandCard brand={item} currentId={currentBrand?.brandId} />
+            </div>
+        )
+    })
+
     // 品牌栏
     const brandsScreen: JSX.Element = (
         <div className={style.screen}>
@@ -134,19 +164,7 @@ const ListPage: React.FC = (): JSX.Element => {
                     if (isEmpty(brandList)) {
                         return <span className={style.empty}>暂无相关品牌</span>
                     } else {
-                        return (
-                            <div className={style.screenBarContent}>
-                                {brandList.map((item: Brand, index: number) => {
-                                    return (
-                                        <div key={index}
-                                             onClick={() => setCurrentBrand(item)}
-                                             className={style.brand}>
-                                            <BrandCard brand={item} />
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        )
+                        return <div className={style.screenBarContent}>{transformBrandList}</div>
                     }
                 })()}
             </div>

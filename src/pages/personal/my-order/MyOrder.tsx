@@ -98,8 +98,7 @@ const MyOrderPage: React.FC = (): JSX.Element => {
 
     return (
         <div className={style.card}>
-            <Table dataSource={orderList}
-                   pagination={{pageSize: 5, total: total}}
+            <Table dataSource={orderList} pagination={{pageSize: 5, total: total}}
                    onChange={(pagination: TablePaginationConfig) => setCurrentPage(pagination.current)}
                    rowKey='orderId' scroll={{x: 'max-content', y: 'max-content'}}>
                 <Column title='订单号' align='center' width={200} dataIndex='orderNo' />
@@ -140,7 +139,7 @@ const MyOrderPage: React.FC = (): JSX.Element => {
                                 )
                             })
                         )} />
-                <Column title='金额' align='center' width={100} dataIndex='totalAmount'
+                <Column title='实付款' align='center' width={100} dataIndex='payAmount'
                         render={(value: number) => (<span>￥{value.toFixed(2)}</span>)} />
                 <Column title='时间' align='center' width={250} render={(record: Order) => (
                     <div className={style.time}>

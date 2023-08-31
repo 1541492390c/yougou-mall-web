@@ -4,7 +4,7 @@ import request from '@/request'
 // 发送验证码接口
 const sendSmsApi = (mobile: string): Promise<AxiosResponse> => {
     return request({
-        url: '/biz/sms/send',
+        url: '/extra/sms/send',
         method: 'POST',
         params: {
             mobile: mobile
@@ -15,7 +15,7 @@ const sendSmsApi = (mobile: string): Promise<AxiosResponse> => {
 // 验证手机号接口
 const validateMobileApi = (mobile: string, code: string): Promise<AxiosResponse> => {
     return request({
-        url: '/biz/sms/validate',
+        url: '/extra/sms/validate',
         method: 'POST',
         params: {
             mobile: mobile,

@@ -116,6 +116,7 @@ const PersonalHooks: any = (): any => {
 
     // 上传头像
     const uploadAvatar = (): void => {
+        setButtonDisabled(true)
         cropperRef.current?.cropper.getCroppedCanvas().toBlob((e) => {
             let formData: FormData = new FormData()
             formData.append('resourceType', ResourceTypeEnum.AVATAR.toString())
@@ -135,6 +136,10 @@ const PersonalHooks: any = (): any => {
                                 }
                             }).then()
                         }
+                    }).catch((err) => {
+                        console.log(err)
+                    }).finally(() => {
+                        setButtonDisabled(false)
                     })
                 }
             }).catch((err) => {

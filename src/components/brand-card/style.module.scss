@@ -9,7 +9,14 @@
   }
 }
 
+.activeCardBody {
+  @extend .cardBody;
+  padding: 12px;
+  border: #f13a3a solid 1px;
+}
+
 .brandName {
+  padding: 1px;
   text-align: center;
   color: #f13a3a;
 }

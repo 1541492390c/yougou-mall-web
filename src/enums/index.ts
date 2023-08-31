@@ -25,4 +25,10 @@ enum ResourceTypeEnum {
     COMMENT
 }
 
-export { ResponseCodeEnum, BannerTypeEnum, AddrModalTypeEnum, ResourceTypeEnum }
+// 商品搜索类型
+enum ProductSearchTypeEnum {
+    ALL = 1,
+    PRODUCT
+}
+
+export { ResponseCodeEnum, BannerTypeEnum, AddrModalTypeEnum, ResourceTypeEnum, ProductSearchTypeEnum }

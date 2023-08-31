@@ -80,10 +80,9 @@ const MyFeedbackPage: React.FC = (): JSX.Element => {
     return (
         <div className={style.main}>
             <div className={style.card}>
-                <Table dataSource={feedbackList}
-                       pagination={{pageSize: 10, total: total}}
+                <Table dataSource={feedbackList} pagination={{pageSize: 10, total: total}}
                        onChange={(pagination: TablePaginationConfig) => setCurrentPage(pagination.current)}
-                       rowKey='feedbackId' size='middle'>
+                       rowKey='feedbackId'>
                     <Column title='反馈类型' align='center' dataIndex='feedbackTypeName' />
                     <Column title='联系方式' align='center' dataIndex='contactWay' />
                     <Column title='操作' align='center' render={(record: Feedback) => {

@@ -26,7 +26,7 @@ const RegisterHooks: any = (): any => {
     const [sendCodeButtonActive, setSendCodeButtonActive] = useState<boolean>(false)
     const [sendCodeButtonText, setSendCodeButtonText] = useState<string>('发送验证码')
     const [mobile, setMobile] = useState<string>('')
-    const [currentStep, setCurrentStep] = useState<number>(2)
+    const [currentStep, setCurrentStep] = useState<number>(0)
     const [emailSuffix, setEmailSuffix] = useState<string>('@qq.com')
     const stepItems = useRef<Array<StepProps>>([
         {title: '手机验证', icon: <MobileOutlined style={{fontSize: '25px'}} />},

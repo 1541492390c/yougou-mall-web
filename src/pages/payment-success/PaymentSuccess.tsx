@@ -20,7 +20,7 @@ const PaymentSuccessPage: React.FC = (): JSX.Element => {
             <div className={style.main}>
                 <div className={style.paymentSuccess}>
                     <div className={style.result}>
-                        <Result status='success' title='订单支付成功,修改成功!'
+                        <Result status='success' title='订单支付成功!'
                                 extra={[
                                     <Button onClick={() => navigate('/')} type='primary'>返回首页</Button>
                                 ]}

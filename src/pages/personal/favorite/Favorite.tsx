@@ -27,10 +27,9 @@ const FavoriteHooks: any = (): any => {
         deleteFavoriteApi(favoriteId).then((res) => {
             if (res) {
                 messageApi.success('取消收藏成功').then()
-                setFavoriteList((pre) => {
-                    pre.splice(index, 1)
-                    return pre.slice()
-                })
+                let tempFavoriteList: Array<Favorite> = [...favoriteList]
+                tempFavoriteList.splice(index, 1)
+                setFavoriteList(tempFavoriteList)
             }
         })
     }
@@ -44,10 +43,9 @@ const FavoritePage: React.FC = (): JSX.Element => {
     return (
         <div className={style.main}>
             <div className={style.card}>
-                <Table dataSource={favoriteList}
-                       pagination={{pageSize: 10, total: total}}
+                <Table dataSource={favoriteList} pagination={{pageSize: 10, total: total}}
                        onChange={(pagination: TablePaginationConfig) => setCurrentPage(pagination.current)}
-                       rowKey='favoriteId' size='middle'>
+                       rowKey='favoriteId'>
                     <Column title='商品图片' align='center' dataIndex='cover' render={(value: string) => {
                         return <img src={value} alt='' className={style.favoriteItemImg} />
                     }} />
@@ -59,7 +57,7 @@ const FavoritePage: React.FC = (): JSX.Element => {
                                     </div>
                                 )
                             }} />
-                    <Column title='操作' align='center' render={(record: Favorite, index: number) => {
+                    <Column title='操作' align='center' render={(_: any, record: Favorite, index: number) => {
                         return (
                             <div className={style.edit}>
                                 <span onClick={() => deleteFavorite(record.favoriteId, index)}>取消收藏</span>
