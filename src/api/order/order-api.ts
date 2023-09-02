@@ -3,11 +3,11 @@ import request from '@/request'
 import { OrderAddr, OrderItem } from '@/interface/order'
 
 // 提交订单接口
-const submitOrderApi = (order: {orderAddr: OrderAddr, orderItemList: Array<OrderItem>, couponUserId: number | undefined}): Promise<AxiosResponse> => {
+const submitOrderApi = (value: {orderAddr: OrderAddr, orderItemList: Array<OrderItem>, couponUserId: number | undefined}): Promise<AxiosResponse> => {
     return request({
         url: '/order/submit',
         method: 'POST',
-        data: order
+        data: value
     }, true)
 }
 

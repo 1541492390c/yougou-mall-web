@@ -1,6 +1,7 @@
 // 用户信息
 interface User {
     userId?: number,
+    userType?: number,
     nickname?: string,
     avatar?: string,
     age?: number,
