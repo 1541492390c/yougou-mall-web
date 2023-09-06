@@ -13,9 +13,8 @@ import {
 import { AddrModalTypeEnum } from '@/enums'
 import event from '@/event'
 import { message, Modal } from 'antd'
-import { getAddrListApi, deleteAddrApi } from '@/api/user/addr-api'
+import { deleteAddrApi, getAddrListApi } from '@/api/user/addr-api'
 import { Addr } from '@/interface/user'
-import { isEmpty } from '@/utils'
 import AddrEmpty from '@/assets/img/empty/addr-empty.png'
 
 const AddrHooks: any = (): any => {
@@ -75,6 +74,7 @@ const AddrHooks: any = (): any => {
 const AddrPage: React.FC = (): JSX.Element => {
     const {addrList, modalContextHolder, messageContextHolder, openAddrModal, deleteAddr} = AddrHooks()
 
+    // 解析收货地址
     const transformAddr = (addr: Addr, key: number): JSX.Element => {
         return (
             <div key={key} className={style.addrCard}>
@@ -104,6 +104,11 @@ const AddrPage: React.FC = (): JSX.Element => {
         )
     }
 
+    // 解析收货地址列表
+    const transformAddrList = addrList.map((item: Addr, index: number): JSX.Element => {
+        return transformAddr(item, index)
+    })
+
     return (
         <>
             <AddrModal />
@@ -114,24 +119,14 @@ const AddrPage: React.FC = (): JSX.Element => {
                         <span className={style.plusIcon}
                               onClick={() => openAddrModal(AddrModalTypeEnum.ADD, undefined)}><PlusCircleOutlined /></span>
                     </div>
-                    {(() => {
-                       if (isEmpty(addrList) || addrList.length === 0) {
-                           return (
-                               <div className={style.addrIsEmpty}>
-                                   <img src={AddrEmpty} alt='' />
-                                   <div><span>暂无收货地址</span></div>
-                               </div>
-                           )
-                       }  else {
-                           return (
-                               <div className={style.addrCardList}>
-                                   {addrList.map((item: Addr, index: number) => {
-                                       return transformAddr(item, index)
-                                   })}
-                               </div>
-                           )
-                       }
-                    })()}
+                    {addrList.length === 0 ? (
+                        <div className={style.addrIsEmpty}>
+                            <img src={AddrEmpty} alt='' />
+                            <div><span>暂无收货地址</span></div>
+                        </div>
+                    ) : (
+                        <div className={style.addrCardList}>{transformAddrList}</div>
+                    )}
                 </div>
             </div>
             {/*对话框*/}

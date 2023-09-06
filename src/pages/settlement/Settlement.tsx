@@ -193,6 +193,7 @@ const SettlementHooks: any = (): any => {
         submitOrderApi(orderInfo).then((res) => {
             if (res) {
                 message.success('订单提交成功').then()
+                // 移除购物车
                 Cookies.remove('shop_car')
                 dispatch(setShopCar([]))
                 navigate('/payment', {state: {orderId: res.data}})
@@ -245,6 +246,26 @@ const SettlementPage: React.FC = (): JSX.Element => {
         submitOrder
     } = SettlementHooks()
 
+    // 解析收货地址列表
+    const transformAddrList = addrList.map((item: Addr, index: number): JSX.Element => {
+        return (
+            <div key={index} className={style.addrInfo}>
+                <div style={{width: '92%'}}>
+                    <Radio value={item.addrId} />
+                    <div>
+                        <span>姓名: {item.consignee},</span>
+                        <span>联系电话: {item.telephone},</span>
+                        <span>所在地址: {item.province} - {item.city} - {item.detailedAddr}</span>
+                    </div>
+                </div>
+                <div style={{width: '8%'}}>
+                    <span onClick={() => openAddrModal(AddrModalTypeEnum.UPDATE, item)} className={style.edit}>编辑</span>
+                    <span onClick={() => deleteAddr(item.addrId, index)} className={style.edit}>删除</span>
+                </div>
+            </div>
+        )
+    })
+
     // 收货人项
     const addrItems: JSX.Element = (
         <div className={style.card}>
@@ -253,40 +274,15 @@ const SettlementPage: React.FC = (): JSX.Element => {
                 <span onClick={() => openAddrModal(AddrModalTypeEnum.ADD, undefined)}
                       className={style.plusIcon}><PlusCircleOutlined /></span>
             </div>
-            {(() => {
-                if (isEmpty(addrList) || addrList.length === 0) {
-                    return (
-                        <div className={style.addrListIsEmpty}>
-                            <div><span>暂无信息</span></div>
-                        </div>
-                    )
-                } else {
-                    return (
-                        <Radio.Group defaultValue={currentAddr} onChange={selectAddr} style={{width: '100%'}}>
-                            {addrList.map((item: Addr, index: number) => {
-                                return (
-                                    <div key={index} className={style.addrInfo}>
-                                        <div style={{width: '92%'}}>
-                                            <Radio value={item.addrId} />
-                                            <div>
-                                                <span>姓名: {item.consignee},</span>
-                                                <span>联系电话: {item.telephone},</span>
-                                                <span>所在地址: {item.province} - {item.city} - {item.detailedAddr}</span>
-                                            </div>
-                                        </div>
-                                        <div style={{width: '8%'}}>
-                                            <span onClick={() => openAddrModal(AddrModalTypeEnum.UPDATE, item)}
-                                                  className={style.edit}>编辑</span>
-                                            <span onClick={() => deleteAddr(item.addrId, index)}
-                                                  className={style.edit}>删除</span>
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </Radio.Group>
-                    )
-                }
-            })()}
+            {addrList.length === 0 ? (
+                <div className={style.addrListIsEmpty}>
+                    <div><span>暂无信息</span></div>
+                </div>
+            ) : (
+                <Radio.Group defaultValue={currentAddr} onChange={selectAddr} style={{width: '100%'}}>
+                    {transformAddrList}
+                </Radio.Group>
+            )}
         </div>
     )
 
@@ -310,8 +306,7 @@ const SettlementPage: React.FC = (): JSX.Element => {
                 )} />
             </Table>
             <div className={style.couponSelect}>
-                <Select options={options} onSelect={(value: number) => selectCoupon(value)}
-                        placeholder='请选择可用优惠券' />
+                <Select options={options} onSelect={(value: number) => selectCoupon(value)} placeholder='请选择可用优惠券' />
             </div>
         </div>
     )

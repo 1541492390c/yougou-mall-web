@@ -29,13 +29,7 @@ const HotProductCardComponent: React.FC<Props> = ({product}): JSX.Element => {
                 <span>{product.name}</span>
             </div>
             <div>
-                {(() => {
-                    if (!product.price) {
-                        return <span className={style.productPrice}>此商品暂无规格</span>
-                    } else {
-                        return <span className={style.productPrice}>{product.price.toFixed(2)}</span>
-                    }
-                })()}
+                {!product.price ? <span className={style.productPrice}>此商品暂无规格</span> : <span className={style.productPrice}>{product.price.toFixed(2)}</span>}
             </div>
         </div>
     )

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import style from './style.module.scss'
 import CommentEmpty from '@/assets/img/empty/comment-empty.png'
-import AvatarEmpty from '@/assets/img/empty/avatar-empty.png'
+import AvatarEmpty from '@/assets/img/common/default-avatar.png'
 import Cookies from 'js-cookie'
 import { NavigateFunction, Params, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -329,8 +329,7 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
             )
         } else {
             return (
-                <div key={index}
-                     onClick={() => selectAttrValue(attrName, item.name)}
+                <div key={index} onClick={() => selectAttrValue(attrName, item.name)}
                      className={isCurrentAttrValue(attrName, item.name) ? style.attrBoxSelect : style.attrBox}>
                     <span>{item.name}</span>
                 </div>
@@ -351,9 +350,19 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
     // 解析图片列表
     const transformImgList = imgList?.slice(startPage(), endPage()).map((item: string, index: number): JSX.Element => {
         return (
-            <div key={index}
-                 className={currentImg === item ? style.listImgSelect : style.listImg}>
+            <div key={index} className={currentImg === item ? style.listImgSelect : style.listImg}>
                 <img onMouseEnter={() => setCurrentImg(item)} src={item} alt='' />
+            </div>
+        )
+    })
+
+    // 解析评分
+    const transformRateStars = rateStars.current.map((item: any, index: number): JSX.Element => {
+        return (
+            <div key={index}>
+                <span>{item.label.toFixed(1)}</span>
+                <Rate defaultValue={item.label} disabled className={style.rateCountStar} />
+                <span>({!rateStatistics ? 0 : rateStatistics[item.value]})</span>
             </div>
         )
     })
@@ -373,14 +382,11 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                     {transformImgList}
                 </div>
                 <div style={{marginLeft: '10px'}}>
-                    {(() => {
-                        if (imgPage * imgPageSize.current >= imgList?.length || !imgList) {
-                            return <div className={style.arrowDisable}><RightOutlined /></div>
-                        } else {
-                            return <div onClick={() => imgPageChange(imgPage + 1)} className={style.arrow}>
-                                <RightOutlined /></div>
-                        }
-                    })()}
+                    {imgPage * imgPageSize.current >= imgList?.length || !imgList ? (
+                        <div className={style.arrowDisable}><RightOutlined /></div>
+                    ) : (
+                        <div onClick={() => imgPageChange(imgPage + 1)} className={style.arrow}><RightOutlined /></div>
+                    )}
                 </div>
             </div>
         </div>
@@ -425,47 +431,37 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
                 })()}
             </div>
             <>
-                {(() => {
-                    if (!skuList || skuList.length === 0) {
-                        return (
-                            <div className={style.noSku}>
-                                <div><span>此商品暂未填写规格, 请查看其他商品</span></div>
+                {!skuList || skuList.length === 0 ? (
+                    <div className={style.noSku}>
+                        <div><span>此商品暂未填写规格, 请查看其他商品</span></div>
+                    </div>
+                ) : (
+                    <>
+                        <div>{transformAttrList}</div>
+                        <div className={style.number}>
+                            <div className={style.text}><span>数量</span></div>
+                            <div>
+                                <InputNumber value={quantity}
+                                             min={1}
+                                             max={currentSku?.skuStock >= 1 ? currentSku?.skuStock : 1}
+                                             onStep={(value: number) => setQuantity(value)}
+                                             className={style.numberInput} />
                             </div>
-                        )
-                    } else {
-                        return (
-                            <>
-                                <div>{transformAttrList}</div>
-                                <div className={style.number}>
-                                    <div className={style.text}><span>数量</span></div>
-                                    <div>
-                                        <InputNumber value={quantity}
-                                                     min={1}
-                                                     max={currentSku?.skuStock >= 1 ? currentSku?.skuStock : 1}
-                                                     onStep={(value: number) => setQuantity(value)}
-                                                     className={style.numberInput} />
-                                    </div>
-                                    <div className={style.stockText}>
-                                        <span>库存:</span>
-                                        <span
-                                            className={style.stockNumber}>{currentSku?.skuStock}件</span>
-                                    </div>
-                                </div>
-                                <div className={style.buttonList}>
-                                    <Button icon={<ShoppingCartOutlined />}
-                                            disabled={isEmpty(currentSku) || currentSku?.skuStock === 0}
-                                            onClick={addShopCar}
-                                            type='primary'>加入购物车</Button>
-                                    <Button icon={<StarOutlined />}
-                                            disabled={isFavorite}
-                                            onClick={saveFavorite}
-                                            className={style.favoriteButton}>{isFavorite ? '您已收藏该商品' : '收藏商品'}</Button>
-                                </div>
-                            </>
-                        )
-
-                    }
-                })()}
+                            <div className={style.stockText}>
+                                <span>库存:</span>
+                                <span className={style.stockNumber}>{currentSku?.skuStock}件</span>
+                            </div>
+                        </div>
+                        <div className={style.buttonList}>
+                            <Button icon={<ShoppingCartOutlined />}
+                                    disabled={isEmpty(currentSku) || currentSku?.skuStock === 0}
+                                    onClick={addShopCar}
+                                    type='primary'>加入购物车</Button>
+                            <Button icon={<StarOutlined />} disabled={isFavorite} onClick={saveFavorite}
+                                    className={style.favoriteButton}>{isFavorite ? '您已收藏该商品' : '收藏商品'}</Button>
+                        </div>
+                    </>
+                )}
             </>
         </div>
     )
@@ -475,79 +471,57 @@ const ProductDetailPages: React.FC = (): JSX.Element => {
         <div className={style.productRate}>
             <div className={style.rateBox}>
                 <div className={style.rateText}>
-                    <span>{!!rateStatistics && !!rateStatistics.average ? rateStatistics.average.toFixed(1) : 0.0}</span>
+                    <span>{!isEmpty(rateStatistics) && !!rateStatistics.average ? rateStatistics.average.toFixed(1) : 0.0}</span>
                 </div>
-                {!!rateStatistics && !!rateStatistics.average ?
+                {!isEmpty(rateStatistics) && !!rateStatistics.average ?
                     <Rate value={rateStatistics?.average} disabled allowHalf className={style.rateStar} /> :
                     <span>暂无评分</span>}
             </div>
-            <div className={style.rateCount}>
-                {rateStars.current.map((item: any) => {
-                    return (
-                        <div key={item.label}>
-                            <span>{item.label.toFixed(1)}</span>
-                            <Rate defaultValue={item.label} disabled className={style.rateCountStar} />
-                            <span>({!rateStatistics ? 0 : rateStatistics[item.value]})</span>
-                        </div>
-                    )
-                })}
-            </div>
+            <div className={style.rateCount}>{transformRateStars}</div>
         </div>
     )
 
     // 商品评论列表
     const transformCommentList: JSX.Element = (
         <>
-            {(() => {
-                if (isEmpty(commentList) || commentList.length === 0) {
-                    return (
-                        <div className={style.commentIsEmpty}>
-                            <img src={CommentEmpty} alt='' />
-                            <div><span>暂无商品评论</span></div>
-                        </div>
-                    )
-                } else {
-                    return (
-                        <div className={style.commentArea}>
-                            {commentList.map((item: IComment, index: number) => {
-                                return (
-                                    <div key={index} className={style.commentValue}>
-                                        <div className={style.avatarAndNickname}>
-                                            <Avatar src={item.avatar ? item.avatar : AvatarEmpty} size={55} />
-                                            <div className={style.nickname}><span>{item.nickname}</span></div>
-                                        </div>
-                                        <div className={style.commentDetails}>
-                                            <Rate value={item.rate} disabled className={style.commentRate} />
-                                            <div className={style.commentContent}>
-                                                <div dangerouslySetInnerHTML={{__html: item.content}} />
+            {commentList.length === 0 ? (
+                <div className={style.commentIsEmpty}>
+                    <img src={CommentEmpty} alt='' />
+                    <div><span>暂无商品评论</span></div>
+                </div>
+            ) : (
+                <div className={style.commentArea}>
+                    {commentList.map((item: IComment, index: number) => {
+                        return (
+                            <div key={index} className={style.commentValue}>
+                                <div className={style.avatarAndNickname}>
+                                    <Avatar src={item.avatar ? item.avatar : AvatarEmpty} size={55} />
+                                    <div className={style.nickname}><span>{item.nickname}</span></div>
+                                </div>
+                                <div className={style.commentDetails}>
+                                    <Rate value={item.rate} disabled className={style.commentRate} />
+                                    <div className={style.commentContent}>
+                                        <div dangerouslySetInnerHTML={{__html: item.content}} />
+                                        <>
+                                            {!isEmpty(item.imgList) && (
                                                 <>
-                                                    {(() => {
-                                                        if (isEmpty(item.imgList)) {
-                                                            return <></>
-                                                        } else {
-                                                            return (
-                                                                <>
-                                                                    {JSON.parse(item.imgList as string).map((item: string, index: number) => {
-                                                                        return <img src={item} key={index} alt='' />
-                                                                    })}
-                                                                </>
-                                                            )
-                                                        }
-                                                    })()}
+                                                    {JSON.parse(item.imgList as string).map((item: string, index: number) => {
+                                                        return <img src={item} key={index} alt='' />
+                                                    })}
                                                 </>
-                                            </div>
-                                            <div className={style.creatTime}>{item.commentTime}</div>
-                                        </div>
+                                            )}
+                                        </>
                                     </div>
-                                )
-                            })}
-                            <div className={style.pagination}>
-                                <Pagination total={commentTotal} pageSize={10} showSizeChanger={false} />
+                                    <div className={style.creatTime}>{item.commentTime}</div>
+                                </div>
                             </div>
-                        </div>
-                    )
-                }
-            })()}
+                        )
+                    })}
+                    <div className={style.pagination}>
+                        <Pagination total={commentTotal} pageSize={10} showSizeChanger={false} />
+                    </div>
+                </div>
+            )}
         </>
     )
 

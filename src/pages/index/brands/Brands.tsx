@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import style from './style.module.scss'
 import { getBannerListApi } from '@/api/platform/platform-api'
 import { BannerTypeEnum } from '@/enums'
@@ -8,7 +8,6 @@ import TitleCircle from '@/assets/img/common/title-circle.png'
 import BrandsEmpty from '@/assets/img/empty/brand-empty.png'
 import { getBrandPagesApi } from '@/api/product/brand-api'
 import { Brand } from '@/interface/product'
-import { isEmpty } from '@/utils'
 import BrandDetailCard from '@/components/brand-detail-card/BrandDetailCard'
 import { Pagination } from 'antd'
 
@@ -17,6 +16,7 @@ const BrandsHooks: any = (): any => {
     const [brandList, setBrandList] = useState<Array<Brand>>([])
     const [brandTotal, setBrandTotal] = useState<number>(0)
     const [currentPage, setCurrentPage] = useState<number>(1)
+    const currentSize = useRef<number>(10)
 
     useEffect(() => {
         // 获取轮播图列表
@@ -27,20 +27,20 @@ const BrandsHooks: any = (): any => {
         })
 
         // 获取品牌分页信息
-        getBrandPagesApi(currentPage).then((res) => {
+        getBrandPagesApi(currentPage, currentSize.current).then((res) => {
             setBrandList(res.data.list)
             setBrandTotal(res.data.total)
         })
     }, [currentPage])
 
-    return {bannerList, brandList, brandTotal, currentPage, setCurrentPage}
+    return {bannerList, brandList, brandTotal, currentPage, currentSize, setCurrentPage}
 }
 
 const BrandsPage: React.FC = (): JSX.Element => {
-    const {bannerList, brandList, brandTotal, setCurrentPage} = BrandsHooks()
+    const {bannerList, brandList, brandTotal, currentPage, currentSize, setCurrentPage} = BrandsHooks()
 
     // 解析品牌列表
-    const transformBradList: JSX.Element = brandList.map((item: Brand, index: number) => {
+    const transformBradList: JSX.Element = brandList.map((item: Brand, index: number): JSX.Element => {
         return (
             <div key={index} className={style.brandItem}>
                 <BrandDetailCard brand={item} />
@@ -62,30 +62,24 @@ const BrandsPage: React.FC = (): JSX.Element => {
                         <div><span>品牌中心</span></div>
                         <div style={{marginLeft: '10px'}}><img src={TitleCircle} alt='' /></div>
                     </div>
-                    {(() => {
-                        if (isEmpty(brandList)) {
-                            return (
-                                <div className={style.brandsListIsEmpty}>
-                                    <div className={style.brandsIsEmpty}>
-                                        <img src={BrandsEmpty} alt='' />
-                                        <div><span>暂无品牌</span></div>
-                                    </div>
-                                </div>
-                            )
-                        } else {
-                            return (
-                                <>
-                                    <div className={style.brands}>
-                                        {transformBradList}
-                                    </div>
-                                    <div className={style.pagination}>
-                                        <Pagination pageSize={10} total={brandTotal} showSizeChanger={false}
-                                                    onChange={(value: number) => setCurrentPage(value)} />
-                                    </div>
-                                </>
-                            )
-                        }
-                    })()}
+                    {brandList.length === 0 ? (
+                        <div className={style.brandsListIsEmpty}>
+                            <div className={style.brandsIsEmpty}>
+                                <img src={BrandsEmpty} alt='' />
+                                <div><span>暂无品牌</span></div>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            <div className={style.brands}>
+                                {transformBradList}
+                            </div>
+                            <div className={style.pagination}>
+                                <Pagination total={brandTotal} current={currentPage} pageSize={currentSize.current}
+                                            onChange={(value: number) => setCurrentPage(value)} showSizeChanger={false} />
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

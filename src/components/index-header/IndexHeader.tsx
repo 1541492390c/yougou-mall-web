@@ -35,23 +35,19 @@ const IndexHeaderComponent: React.FC = (): JSX.Element => {
     const {keyword, setKeyword, serviceList, search} = IndexHeaderHooks()
 
     // 解析服务列表
-    const transformServiceList: JSX.Element = (
-        <div className={style.service}>
-            {serviceList.current.map((item: any, index: number) => {
-                return (
-                    <div key={index} className={style.serviceCard}>
-                        <div>
-                            <img src={item.img} alt='' />
-                        </div>
-                        <div className={style.serviceCardTitle}>
-                            <div><span>{item.ch}</span></div>
-                            <div><span className={style.serviceEnglish}>{item.en}</span></div>
-                        </div>
-                    </div>
-                )
-            })}
-        </div>
-    )
+    const transformServiceList = serviceList.current.map((item: any, index: number): JSX.Element => {
+        return (
+            <div key={index} className={style.serviceCard}>
+                <div>
+                    <img src={item.img} alt='' />
+                </div>
+                <div className={style.serviceCardTitle}>
+                    <div><span>{item.ch}</span></div>
+                    <div><span className={style.serviceEnglish}>{item.en}</span></div>
+                </div>
+            </div>
+        )
+    })
 
     return (
         <div className={style.main}>
@@ -67,7 +63,7 @@ const IndexHeaderComponent: React.FC = (): JSX.Element => {
                     </div>
                 </div>
                 {/*服务列表*/}
-                {transformServiceList}
+                <div className={style.service}>{transformServiceList}</div>
             </div>
         </div>
     )

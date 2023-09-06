@@ -40,6 +40,7 @@ const CouponCardHooks: any = (coupon: Coupon): any => {
     const receive = (): void => {
         receiveCouponApi(coupon.couponId).then((res) => {
             if (res) {
+                console.log(res.data)
                 messageApi.success('领取成功').then()
                 let couponUserListTemp: Array<CouponUser> = [...couponUserList]
                 couponUserListTemp.push(res.data)
@@ -86,7 +87,7 @@ const CouponCardComponent: React.FC<Props> = ({coupon}): JSX.Element => {
                     <div className={style.desc}><span>{coupon.description}</span></div>
                 </div>
             </div>
-            <div style={{width: '88%'}}>
+            <div style={{width: '80%'}}>
                 <Progress status='active'
                           percent={percent()} strokeColor={percent() === 100 ? 'gray' : '#f13a3a'}
                           format={percent => percent === 100 ? '已抢光' : `已抢${percent}%`}

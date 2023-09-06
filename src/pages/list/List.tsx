@@ -24,8 +24,8 @@ const ListHooks: any = (): any => {
     const [productList, setProductList] = useState<Array<Product>>([])
     const [productTotal, setProductTotal] = useState<number>(0)
     const [currentPage, setCurrentPage] = useState<number>(1)
-    const [currentSize] = useState<number>(20)
     const [currentSort, setCurrentSort] = useState<string>('product_id')
+    const currentSize = useRef<number>(20)
     const sortOptions = useRef<any>([
         {key: 'product_id', label: '综合'},
         {key: 'recommended', label: '推荐'},
@@ -71,7 +71,7 @@ const ListHooks: any = (): any => {
         let node: string = currentCategory?.node ? currentCategory?.node : location.state.node
         let brandId: number = location.state.brandId
         // 根据传入的关键词搜索对应的商品、品牌、分类
-        keywordSearchApi(location.state.keyword, currentSort, node, brandId, ProductSearchTypeEnum.ALL, currentPage, currentSize).then((res) => {
+        keywordSearchApi(location.state.keyword, currentSort, node, brandId, ProductSearchTypeEnum.ALL, currentPage, currentSize.current).then((res) => {
             // 设置品牌列表
             setBrandList(res.data.brandList)
             // 清除原商品列表
@@ -92,7 +92,7 @@ const ListHooks: any = (): any => {
         let node: string = currentCategory?.node ? currentCategory?.node : location.state.node
         let brandId: number | undefined = currentBrand?.brandId
         // 根据传入的关键词搜索对应的商品、品牌、分类
-        keywordSearchApi(location.state.keyword, currentSort, node, brandId, ProductSearchTypeEnum.PRODUCT, currentPage, currentSize).then((res) => {
+        keywordSearchApi(location.state.keyword, currentSort, node, brandId, ProductSearchTypeEnum.PRODUCT, currentPage, currentSize.current).then((res) => {
             // 清除原商品列表
             setProductList([])
             setProductTotal(0)
@@ -117,6 +117,7 @@ const ListHooks: any = (): any => {
         productTotal,
         sortOptions,
         currentSort,
+        currentPage,
         currentSize,
         setCurrentPage,
         setCurrentCategory,
@@ -137,6 +138,7 @@ const ListPage: React.FC = (): JSX.Element => {
         productTotal,
         sortOptions,
         currentSort,
+        currentPage,
         currentSize,
         setCurrentPage,
         setCurrentCategory,
@@ -145,10 +147,31 @@ const ListPage: React.FC = (): JSX.Element => {
     } = ListHooks()
 
     // 解析品牌列表
-    const transformBrandList = brandList.map((item: Brand, index: number) => {
+    const transformBrandList = brandList.map((item: Brand, index: number): JSX.Element => {
         return (
             <div key={index} onClick={() => setCurrentBrand(item)} className={style.brand}>
                 <BrandCard brand={item} currentId={currentBrand?.brandId} />
+            </div>
+        )
+    })
+
+    // 解析分类列表
+    const transformCategoryList = categoryList.map((item: Category, index: number): JSX.Element => {
+        return (
+            <div key={index} onClick={() => setCurrentCategory(item)}
+                 className={currentCategory?.categoryId === item.categoryId ? style.currentCategoryItem : style.categoryItem}>
+                <span>{item.name}</span>
+            </div>
+        )
+    })
+
+    // 解析排序选项
+    const transformSortOptions = sortOptions.current.map((item: any, index: number): JSX.Element => {
+        return (
+            <div key={index} onClick={() => setCurrentSort(item.key)}
+                 className={currentSort === item.key ? style.sortBoxSelect : style.sortBox}>
+                <span><CaretDownFilled /></span>
+                <span>{item.label}</span>
             </div>
         )
     })
@@ -160,13 +183,8 @@ const ListPage: React.FC = (): JSX.Element => {
                 <div className={style.screenBarTitle}>
                     <span>品牌</span>
                 </div>
-                {(() => {
-                    if (isEmpty(brandList)) {
-                        return <span className={style.empty}>暂无相关品牌</span>
-                    } else {
-                        return <div className={style.screenBarContent}>{transformBrandList}</div>
-                    }
-                })()}
+                {brandList.length === 0 ? <span className={style.empty}>暂无相关品牌</span> :
+                    <div className={style.screenBarContent}>{transformBrandList}</div>}
             </div>
         </div>
     )
@@ -178,25 +196,8 @@ const ListPage: React.FC = (): JSX.Element => {
                 <div className={style.screenBarTitle}>
                     <span>分类</span>
                 </div>
-                {(() => {
-                    if (isEmpty(currentCategory)) {
-                        return <span className={style.empty}>暂无相关分类</span>
-                    } else {
-                        return (
-                            <div className={style.category}>
-                                {categoryList.map((item: Category, index: number) => {
-                                    return (
-                                        <div key={index}
-                                             onClick={() => setCurrentCategory(item)}
-                                             className={currentCategory?.categoryId === item.categoryId ? style.currentCategoryItem : style.categoryItem}>
-                                            <span>{item.name}</span>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        )
-                    }
-                })()}
+                {isEmpty(currentCategory) ? <span className={style.empty}>暂无相关分类</span> :
+                    <div>{transformCategoryList}</div>}
             </div>
         </div>
     )
@@ -204,36 +205,29 @@ const ListPage: React.FC = (): JSX.Element => {
     // 商品列表
     const products: JSX.Element = (
         <>
-            {(() => {
-                if (isEmpty(productList)) {
-                    return (
-                        <div className={style.productIsEmpty}>
-                            <img src={SearchEmpty} alt='' />
-                            <div><span>暂无相关商品</span></div>
-                        </div>
-                    )
-                } else {
-                    return (
-                        <div>
-                            <div className={style.productItems}>
-                                {productList.map((item: Product, index: number) => {
-                                    return (
-                                        <div key={index} className={style.productItem}>
-                                            <ProductCard product={item} />
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                            <div className={style.pagination}>
-                                {productTotal !== 0 &&
-                                    <Pagination pageSize={currentSize} total={productTotal}
-                                                onChange={(value: number) => setCurrentPage(value)}
-                                                showSizeChanger={false} />}
-                            </div>
-                        </div>
-                    )
-                }
-            })()}
+            {productList.length === 0 ? (
+                <div className={style.productIsEmpty}>
+                    <img src={SearchEmpty} alt='' />
+                    <div><span>暂无相关商品</span></div>
+                </div>
+            ) : (
+                <div>
+                    <div className={style.productItems}>
+                        {productList.map((item: Product, index: number) => {
+                            return (
+                                <div key={index} className={style.productItem}>
+                                    <ProductCard product={item} />
+                                </div>
+                            )
+                        })}
+                    </div>
+                    <div className={style.pagination}>
+                        {productTotal !== 0 &&
+                            <Pagination total={productTotal} current={currentPage} pageSize={currentSize.current}
+                                        onChange={(value: number) => setCurrentPage(value)} showSizeChanger={false} />}
+                    </div>
+                </div>
+            )}
         </>
     )
 
@@ -241,18 +235,7 @@ const ListPage: React.FC = (): JSX.Element => {
     const productSort: JSX.Element = (
         <div className={style.productArea}>
             <div className={style.sortCard}>
-                <div className={style.sortCardTitle}>
-                    {sortOptions.current.map((item: any, index: number) => {
-                        return (
-                            <div key={index}
-                                 onClick={() => setCurrentSort(item.key)}
-                                 className={currentSort === item.key ? style.sortBoxSelect : style.sortBox}>
-                                <span><CaretDownFilled /></span>
-                                <span>{item.label}</span>
-                            </div>
-                        )
-                    })}
-                </div>
+                <div className={style.sortCardTitle}>{transformSortOptions}</div>
             </div>
         </div>
     )

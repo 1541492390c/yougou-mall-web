@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import style from './style.module.scss'
 import { getBannerListApi } from '@/api/platform/platform-api'
 import { BannerTypeEnum } from '@/enums'
@@ -7,7 +7,6 @@ import TitleCircle from '@/assets/img/common/title-circle.png'
 import CouponsEmpty from '@/assets/img/empty/coupons-empty.png'
 import { getCouponPagesApi } from '@/api/payment/coupon-api'
 import { Coupon } from '@/interface/payment'
-import { isEmpty } from '@/utils'
 import CouponCard from '@/components/coupon-card/CouponCard'
 import { Pagination } from 'antd'
 import { Banner } from '@/interface/platform'
@@ -17,6 +16,7 @@ const CouponsHooks: any = (): any => {
     const [couponList, setCouponList] = useState<Array<Coupon>>([])
     const [couponTotal, setCouponTotal] = useState<number>(0)
     const [currentPage, setCurrentPage] = useState<number>(1)
+    const currentSize = useRef<number>(20)
 
     useEffect(() => {
         // 获取轮播图列表
@@ -27,7 +27,7 @@ const CouponsHooks: any = (): any => {
         })
 
         // 获取优惠券列表
-        getCouponPagesApi(currentPage, 20).then((res) => {
+        getCouponPagesApi(currentPage, currentSize.current).then((res) => {
             setCouponList(res.data.list)
             setCouponTotal(res.data.total)
         }).catch((err) => {
@@ -35,14 +35,14 @@ const CouponsHooks: any = (): any => {
         })
     }, [])
 
-    return {bannerList, couponTotal, couponList, setCurrentPage}
+    return {bannerList, couponTotal, couponList, currentPage, currentSize, setCurrentPage}
 }
 
 const CouponsPage: React.FC = (): JSX.Element => {
-    const {bannerList, couponTotal, couponList, setCurrentPage} = CouponsHooks()
+    const {bannerList, couponTotal, couponList, currentPage, currentSize, setCurrentPage} = CouponsHooks()
 
     // 解析优惠券列表
-    const transformCouponList = couponList.map((item: Coupon, index: number) => {
+    const transformCouponList = couponList.map((item: Coupon, index: number): JSX.Element => {
         return (
             <div key={index} className={style.couponItem}>
                 <CouponCard coupon={item} />
@@ -64,32 +64,25 @@ const CouponsPage: React.FC = (): JSX.Element => {
                         <div><span>领券中心</span></div>
                         <div style={{marginLeft: '10px'}}><img src={TitleCircle} alt='' /></div>
                     </div>
-                    {(() => {
-                        if (isEmpty(couponList) || couponList.length === 0) {
-                            return (
-                                <div className={style.couponsListIsEmpty}>
-                                    <div className={style.couponsIsEmpty}>
-                                        <img src={CouponsEmpty} alt='' />
-                                        <div><span>暂无优惠券</span></div>
-                                    </div>
-                                </div>
-                            )
-                        } else {
-                            return (
-                                <>
-                                    <div className={style.coupons}>
-                                        {transformCouponList}
-                                    </div>
-                                    <div className={style.pagination}>
-                                        {couponTotal !== 0 &&
-                                            <Pagination pageSize={20} total={couponTotal}
-                                                        onChange={(value: number) => setCurrentPage(value)}
-                                                        showSizeChanger={false} />}
-                                    </div>
-                                </>
-                            )
-                        }
-                    })()}
+                    {couponList.length === 0 ? (
+                        <div className={style.couponsListIsEmpty}>
+                            <div className={style.couponsIsEmpty}>
+                                <img src={CouponsEmpty} alt='' />
+                                <div><span>暂无优惠券</span></div>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            <div className={style.coupons}>
+                                {transformCouponList}
+                            </div>
+                            <div className={style.pagination}>
+                                {couponTotal !== 0 &&
+                                    <Pagination total={couponTotal} current={currentPage} pageSize={currentSize.current}
+                                                onChange={(value: number) => setCurrentPage(value)} showSizeChanger={false} />}
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

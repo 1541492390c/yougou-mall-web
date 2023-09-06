@@ -71,9 +71,7 @@ const MyFeedbackPage: React.FC = (): JSX.Element => {
         <Modal title='反馈详情' centered open={feedbackDetailModalOpen} footer={null}
                onCancel={closeFeedbackDetailModal}>
             {!!currentFeedback && <div dangerouslySetInnerHTML={{__html: currentFeedback.content}} />}
-            {(() => {
-                return  currentFeedbackImgList.length === 0  ? <span>暂未上传图片</span> : <>{transformCurrentFeedbackImgList}</>
-            })()}
+            {currentFeedbackImgList.length === 0  ? <span>暂未上传图片</span> : <>{transformCurrentFeedbackImgList}</>}
         </Modal>
     )
 

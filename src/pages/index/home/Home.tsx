@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import style from './style.module.scss'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { RightCircleOutlined, ThunderboltFilled } from '@ant-design/icons'
@@ -16,17 +16,20 @@ import { Coupon } from '@/interface/payment'
 import { Banner } from '@/interface/platform'
 import { getCouponPagesApi } from '@/api/payment/coupon-api'
 import CouponCard from '@/components/coupon-card/CouponCard'
-import { isEmpty } from '@/utils'
 import HotProductCard from '@/components/hot-product-card/HotProductCard'
 
 const HomeHooks: any = (): any => {
     const navigate: NavigateFunction = useNavigate()
-    const [secKillTime, setSecKillTime] = useState<number>(0)
-    const [secKillTimeout, setSecKillTimeout] = useState<number>(0)
+    const [secKillTime] = useState<number>(0)
+    const [secKillTimeout] = useState<number>(0)
     const [hotProductList, setHotProductList] = useState<Array<Product>>([])
     const [recommendProductList, setRecommendProductList] = useState<Array<Product>>([])
     const [couponList, setCouponList] = useState<Array<Coupon>>([])
     const [bannerList, setBannerList] = useState<Array<Banner>>([])
+    const couponPageNum = useRef<number>(1)
+    const hotProductPageNum = useRef<number>(1)
+    const couponPageSize = useRef<number>(3)
+    const hotProductPageSize = useRef<number>(10)
 
     useEffect(() => {
         // 获取轮播图列表
@@ -37,7 +40,7 @@ const HomeHooks: any = (): any => {
         })
 
         // 获取优惠券分页信息(首页展示3张优惠券)
-        getCouponPagesApi(1, 3).then((res) => {
+        getCouponPagesApi(couponPageNum.current, couponPageSize.current).then((res) => {
             setCouponList(res.data.list)
         }).catch((err) => {
             console.log(err)
@@ -51,7 +54,7 @@ const HomeHooks: any = (): any => {
         })
 
         // 获取热门商品
-        getProductPagesApi(1, 10, false, false,undefined).then((res) => {
+        getProductPagesApi(hotProductPageNum.current, hotProductPageSize.current, false, false, undefined).then((res) => {
             setHotProductList(res.data.list)
         }).catch((err) => {
             console.log(err)
@@ -63,6 +66,33 @@ const HomeHooks: any = (): any => {
 
 const HomePage: React.FC = (): JSX.Element => {
     const {navigate, secKillTimeout, hotProductList, recommendProductList, couponList, bannerList} = HomeHooks()
+
+    // 解析热门商品列表
+    const transformHotProductList = hotProductList.map((item: Product, index: number): JSX.Element => {
+        return (
+            <div key={index}>
+                <HotProductCard product={item} />
+            </div>
+        )
+    })
+
+    // 解析优惠券列表
+    const transformCouponList = couponList.map((item: Coupon, index: number): JSX.Element => {
+        return (
+            <div key={index} className={style.couponItem}>
+                <CouponCard coupon={item} />
+            </div>
+        )
+    })
+
+    // 解析推荐商品列表
+    const transformRecommendedProductList = recommendProductList.map((item: Product, index: number): JSX.Element => {
+        return (
+            <div key={index} className={style.recommendItem}>
+                <ProductCard product={item} />
+            </div>
+        )
+    })
 
     // 秒杀活动
     const secKill: JSX.Element = (
@@ -117,23 +147,14 @@ const HomePage: React.FC = (): JSX.Element => {
                     </div>
                 </div>
                 <div>
-                    {(() => {
-                        if (!hotProductList || hotProductList.length <= 0) {
-                            return (
-                                <div className={style.notHotProduct}>
-                                    <img src={ProductEmpty} alt='' />
-                                    <div><span>暂无商品</span></div>
-                                </div>
-                            )
-                        }
-                        return (
-                            <div className={style.hotProductItems}>
-                                {hotProductList.map((item: Product, index: number) => {
-                                    return <div key={index}><HotProductCard product={item} /></div>
-                                })}
-                            </div>
-                        )
-                    })()}
+                    {hotProductList.length === 0 ? (
+                        <div className={style.notHotProduct}>
+                            <img src={ProductEmpty} alt='' />
+                            <div><span>暂无商品</span></div>
+                        </div>
+                    ) : (
+                        <div className={style.hotProductItems}>{transformHotProductList}</div>
+                    )}
                 </div>
             </div>
         </div>
@@ -150,30 +171,16 @@ const HomePage: React.FC = (): JSX.Element => {
                     </div>
                 </div>
                 <div>
-                    {(() => {
-                        if (isEmpty(couponList) || couponList.length === 0) {
-                            return (
-                                <div className={style.couponsIsEmpty}>
-                                    <div>
-                                        <img src={CouponsEmpty} alt='' />
-                                        <div><span>暂无优惠券</span></div>
-                                    </div>
-                                </div>
-                            )
-                        } else {
-                            return (
-                                <div className={style.couponsList}>
-                                    {couponList.map((item: Coupon, index: number) => {
-                                        return (
-                                            <div key={index} className={style.couponItem}>
-                                                <CouponCard coupon={item} />
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                            )
-                        }
-                    })()}
+                    {couponList.length === 0 ? (
+                        <div className={style.couponsIsEmpty}>
+                            <div>
+                                <img src={CouponsEmpty} alt='' />
+                                <div><span>暂无优惠券</span></div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className={style.couponsList}>{transformCouponList}</div>
+                    )}
                 </div>
             </div>
         </div>
@@ -203,30 +210,16 @@ const HomePage: React.FC = (): JSX.Element => {
                         <div><span>为你推荐</span></div>
                         <div style={{marginLeft: '10px'}}><img src={TitleCircle} alt='' /></div>
                     </div>
-                    {(() => {
-                        if (!recommendProductList || recommendProductList.length <= 0) {
-                            return (
-                                <div className={style.recommendProductIsEmpty}>
-                                    <div className={style.productIsEmpty}>
-                                        <img src={ProductEmpty} alt='' />
-                                        <div><span>暂无推荐商品</span></div>
-                                    </div>
-                                </div>
-                            )
-                        } else {
-                            return (
-                                <div className={style.recommend}>
-                                    {recommendProductList.map((item: Product, index: number) => {
-                                        return (
-                                            <div key={index} className={style.recommendItem}>
-                                                <ProductCard product={item} />
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                            )
-                        }
-                    })()}
+                    {recommendProductList.length === 0 ? (
+                        <div className={style.recommendProductIsEmpty}>
+                            <div className={style.productIsEmpty}>
+                                <img src={ProductEmpty} alt='' />
+                                <div><span>暂无推荐商品</span></div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className={style.recommend}>{transformRecommendedProductList}</div>
+                    )}
                 </div>
             </div>
         </>

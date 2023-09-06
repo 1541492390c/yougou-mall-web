@@ -47,59 +47,55 @@ const RightShopCarHooks: any = (): any => {
 }
 
 const RightBarShopCarComponent: React.FC = (): JSX.Element => {
-    const {navigate, shopCar, modalContextHolder, messageContextHolder, shopCarAmount, clearShopCar} = RightShopCarHooks()
+    const {
+        navigate,
+        shopCar,
+        modalContextHolder,
+        messageContextHolder,
+        shopCarAmount,
+        clearShopCar
+    } = RightShopCarHooks()
+
+    // 解析购物车
+    const transformShopCar = shopCar.map((item: ShopCarItem, index: number): JSX.Element => {
+        return (<div key={index}>
+                <ShopCarItems shopCarItem={item} />
+            </div>
+        )
+    })
 
     return (
         <div className={style.main}>
             <div className={style.shopCarTitle}><span>购物车</span></div>
             <div style={{height: '75%'}}>
-                {(() => {
-                    if (!shopCar || shopCar.length === 0) {
-                        return (
-                            <div className={style.shopCarIsEmpty}>
-                                <img src={ShopCarItemEmpty} alt='' />
-                                <div><span>购物车为空</span></div>
-                            </div>
-                        )
-                    } else {
-                        return (
-                            <div className={style.shopCarItemList}>
-                                {shopCar.map((item: ShopCarItem, index: number) => {
-                                    return (
-                                        <div key={index}>
-                                            <ShopCarItems shopCarItem={item} />
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        )
-                    }
-                })()}
+                {!shopCar || shopCar.length === 0 ? (
+                    <div className={style.shopCarIsEmpty}>
+                        <img src={ShopCarItemEmpty} alt='' />
+                        <div><span>购物车为空</span></div>
+                    </div>
+                ) : (
+                    <div className={style.shopCarItemList}>{transformShopCar}</div>
+                )}
             </div>
             <div className={style.shopCarBottom}>
                 <div>
-                    {(() => {
-                        if (shopCarAmount() !== 0) {
-                            return (
-                                <div>
-                                    <div className={style.amountText}>
-                                        <span>总计:</span>
-                                        <span className={style.amount}>{shopCarAmount().toFixed(2)}</span>
-                                    </div>
-                                    <div>
+                    {shopCarAmount() !== 0 && (
+                        <div>
+                            <div className={style.amountText}>
+                                <span>总计:</span>
+                                <span className={style.amount}>{shopCarAmount().toFixed(2)}</span>
+                            </div>
+                            <div>
                                 <span onClick={clearShopCar} className={style.clear}>
                                     <span><DeleteOutlined /></span>
                                     <span>清空购物车</span>
                                 </span>
-                                        <span>
-                                    <Button onClick={() => navigate('settlement')} type='primary'
-                                            style={{width: '85px'}}>结算</Button>
+                                <span>
+                                    <Button onClick={() => navigate('settlement')} type='primary' style={{width: '85px'}}>结算</Button>
                                 </span>
-                                    </div>
-                                </div>
-                            )
-                        }
-                    })()}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
             {/*对话框*/}

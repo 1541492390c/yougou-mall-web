@@ -5,7 +5,7 @@ import { ExportOutlined, LockOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import style from './style.module.scss'
 import { isEmpty } from '@/utils'
-import AvatarEmpty from '@/assets/img/empty/avatar-empty.png'
+import DefaultAvatar from '@/assets/img/common/default-avatar.png'
 import { logoutApi } from '@/api/auth/auth-api'
 import { setIsLogin, setUserinfo } from '@/store/slice'
 import { Dispatch } from '@reduxjs/toolkit'
@@ -49,39 +49,33 @@ const RightBarPersonalComponent: React.FC = (): JSX.Element => {
         <div className={style.main}>
             <div className={style.personalTitle}><span>个人中心</span></div>
             <div className={style.avatar}>
-                <img src={!isEmpty(userinfo) && !!userinfo.avatar ? userinfo.avatar : AvatarEmpty} alt='' />
+                <img src={!isEmpty(userinfo) && !!userinfo.avatar ? userinfo.avatar : DefaultAvatar} alt='' />
             </div>
             <div className={style.username}>
-                {(() => {
-                    if (isEmpty(userinfo)) {
-                        return <NavLink to='/login'>立即登录</NavLink>
-                    }
-                    return (
-                        <NavLink to='/personal'>
-                            <div style={{textAlign: 'center'}}>{userinfo.nickname}</div>
-                        </NavLink>
-                    )
-                })()}
+                {isEmpty(userinfo) ? (
+                    <NavLink to='/login'>立即登录</NavLink>
+                ) : (
+                    <NavLink to='/personal'>
+                        <div style={{textAlign: 'center'}}>{userinfo.nickname}</div>
+                    </NavLink>
+                )}
             </div>
             <div>
-                {(() => {
-                    if (isEmpty(userinfo)) {
-                        return (
-                            <div className={style.unLoginBottom}>
-                                <div className={style.forgePassword}><NavLink to='/update_password'>忘记密码?</NavLink></div>
-                                <div className={style.toRegister}><NavLink to='/register'>免费注册</NavLink></div>
-                            </div>
-                        )
-                    }
-                    return (
-                        <div className={style.isLoginBottom}>
-                            <div><Button icon={<LockOutlined />}
-                                         type='primary'
-                                         onClick={() => navigate('/update_password')}>修改密码</Button></div>
-                            <div><Button onClick={logout} icon={<ExportOutlined />} type='primary'>退出登录</Button></div>
+                {isEmpty(userinfo) ? (
+                    <div className={style.unLoginBottom}>
+                        <div className={style.forgePassword}><NavLink to='/update_password'>忘记密码?</NavLink></div>
+                        <div className={style.toRegister}><NavLink to='/register'>免费注册</NavLink></div>
+                    </div>
+                ) : (
+                    <div className={style.isLoginBottom}>
+                        <div>
+                            <Button icon={<LockOutlined />} type='primary' onClick={() => navigate('/update_password')}>修改密码</Button>
                         </div>
-                    )
-                })()}
+                        <div>
+                            <Button onClick={logout} icon={<ExportOutlined />} type='primary'>退出登录</Button>
+                        </div>
+                    </div>
+                )}
             </div>
             {/*对话框*/}
             {modalContextHolder}

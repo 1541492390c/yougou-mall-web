@@ -40,6 +40,16 @@ const SecKillsHooks: any = (): any => {
 const SecKillPage: React.FC = (): JSX.Element => {
     const {bannerList, secKillList, currentSecKill, setCurrentSecKill} = SecKillsHooks()
 
+    // 解析秒杀活动列表
+    const transformSecKillList = secKillList.map((item: SecKill, index: number): JSX.Element => {
+        return (
+            <div key={index} onClick={() => setCurrentSecKill(item)}
+                 className={currentSecKill?.secKillId === item.secKillId ? style.secKillBox : style.secKillBoxUnSelect}>
+                <span>{item.startTime} - {item.endTime}</span>
+            </div>
+        )
+    })
+
     return (
         <div className={style.main}>
             <div className={style.banner}>
@@ -48,7 +58,7 @@ const SecKillPage: React.FC = (): JSX.Element => {
                 </div>
             </div>
             <div className={style.flex}>
-                <div style={{width: '1200px'}}>
+                <div className={style.body}>
                     <div className={style.secKillTitle}>
                         <div style={{marginRight: '10px'}}><img src={TitleCircle} alt='' /></div>
                         <div><span>秒杀专场</span></div>
@@ -56,13 +66,7 @@ const SecKillPage: React.FC = (): JSX.Element => {
                     </div>
                     <div className={style.secKillCard}>
                         <div className={style.secKillCardTitle}>
-                            {secKillList.map((item: SecKill, index: number) => {
-                                return (
-                                    <div key={index} onClick={() => setCurrentSecKill(item)} className={currentSecKill?.secKillId === item.secKillId ? style.secKillBox : style.secKillBoxUnSelect}>
-                                        <span>{item.startTime} - {item.endTime}</span>
-                                    </div>
-                                )
-                            })}
+                            {transformSecKillList}
                         </div>
                         <div className={style.secKillEmpty}>
                             <img src={SecKillEmpty} alt='' />

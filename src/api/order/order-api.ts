@@ -31,8 +31,19 @@ const getOrderByIdApi = (id: number | undefined): Promise<AxiosResponse> => {
     }, true)
 }
 
+// 确认收货接口
+const confirmOrderApi = (id: number | undefined): Promise<AxiosResponse> => {
+    return request({
+        url: '/order/confirm',
+        method: 'PUT',
+        params: {
+            order_id: id
+        }
+    }, true)
+}
+
 // 删除订单
-const deleteOrderApi = (id: string | undefined): Promise<AxiosResponse> => {
+const deleteOrderApi = (id: number | undefined): Promise<AxiosResponse> => {
     return request({
         url: '/order/delete',
         method: 'DELETE',
@@ -42,4 +53,4 @@ const deleteOrderApi = (id: string | undefined): Promise<AxiosResponse> => {
     }, true)
 }
 
-export { submitOrderApi, getOrderPagesApi, getOrderByIdApi, deleteOrderApi }
+export { submitOrderApi, getOrderPagesApi, getOrderByIdApi, confirmOrderApi, deleteOrderApi }

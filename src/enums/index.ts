@@ -25,10 +25,19 @@ enum ResourceTypeEnum {
     COMMENT
 }
 
+// 订单状态
+enum OrderStateEnum {
+    CANCEL,
+    WAIT_PAY,
+    WAIT_DELIVERY,
+    DELIVERING,
+    FINISHED
+}
+
 // 商品搜索类型
 enum ProductSearchTypeEnum {
     ALL = 1,
     PRODUCT
 }
 
-export { ResponseCodeEnum, BannerTypeEnum, AddrModalTypeEnum, ResourceTypeEnum, ProductSearchTypeEnum }
+export { ResponseCodeEnum, BannerTypeEnum, AddrModalTypeEnum, ResourceTypeEnum, OrderStateEnum, ProductSearchTypeEnum }

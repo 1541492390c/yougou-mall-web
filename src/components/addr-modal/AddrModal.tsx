@@ -50,6 +50,8 @@ const AddrModalHooks: any = (): any => {
             }
             setDistricts(districtList)
         })
+
+        console.log(districts)
     } , [])
 
     event.on('addrModalOpenAdd', () => {
@@ -290,19 +292,19 @@ const AddrModalComponent: React.FC = (): JSX.Element => {
                             <Col span={8}>
                                 <Select placeholder='请选择所在省份'
                                         value={!!currentProvince ? currentProvince.name : undefined}
-                                        onSelect={(value: any, option: any) => selectProvince(value, option)}
+                                        onSelect={(_: string, option: any) => selectProvince(option)}
                                         fieldNames={{label: 'name', value: 'name'}} options={districts} />
                             </Col>
                             <Col span={8}>
                                 <Select disabled={!currentProvince} placeholder='请选择所在城市'
-                                        onSelect={selectCity}
+                                        onSelect={(_: string, option: any) => selectCity(option)}
                                         value={!!currentCity ? currentCity.name : undefined}
                                         options={!!currentProvince ? currentProvince.districts : []}
                                         fieldNames={{label: 'name', value: 'name'}} />
                             </Col>
                             <Col span={8}>
                                 <Select disabled={!currentCity} placeholder='请选择所在区县'
-                                        onSelect={selectDistrict}
+                                        onSelect={(_: string, option: any) => selectDistrict(option)}
                                         value={!!currentDistrict ? currentDistrict.name : undefined}
                                         options={!!currentCity ? currentCity.districts : []}
                                         fieldNames={{label: 'name', value: 'name'}} />
@@ -313,15 +315,11 @@ const AddrModalComponent: React.FC = (): JSX.Element => {
                         <Input placeholder='请输入详细地址' />
                     </Form.Item>
                     {/*类型为更新时,可设置是否默认*/}
-                    {(() => {
-                        if (type === AddrModalTypeEnum.UPDATE) {
-                            return (
-                                <Form.Item name='isDefault' label='是否默认地址'>
-                                    <Switch checked={isDefault} onChange={isDefaultChange} />
-                                </Form.Item>
-                            )
-                        }
-                    })()}
+                    {type === AddrModalTypeEnum.UPDATE && (
+                        <Form.Item name='isDefault' label='是否默认地址'>
+                            <Switch checked={isDefault} onChange={isDefaultChange} />
+                        </Form.Item>
+                    )}
                 </Form>
             </div>
         </Modal>

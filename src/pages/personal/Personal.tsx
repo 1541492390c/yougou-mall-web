@@ -15,7 +15,7 @@ import {
     WhatsAppOutlined,
     WomanOutlined
 } from '@ant-design/icons'
-import AvatarEmpty from '@/assets/img/empty/avatar-empty.png'
+import DefaultAvatar from '@/assets/img/common/default-avatar.png'
 import { User } from '@/interface/user'
 import { useSelector } from 'react-redux'
 import { updateAvatarApi, updateUserApi } from '@/api/user/user-api'
@@ -246,7 +246,7 @@ const PersonalPage: React.FC = (): JSX.Element => {
     const personalDocumentCard: JSX.Element = (
         <div className={style.personalDocumentCard}>
             <Upload customRequest={handleSelectAvatar} beforeUpload={beforeUploadAvatar} showUploadList={false}>
-                <img src={!isEmpty(userinfo) && !!userinfo.avatar ? userinfo.avatar : AvatarEmpty} alt='' />
+                <img src={!isEmpty(userinfo) && !!userinfo.avatar ? userinfo.avatar : DefaultAvatar} alt='' />
                 <div className={style.uploadAvatarText}>
                     <span>(点击上传头像)</span>
                 </div>

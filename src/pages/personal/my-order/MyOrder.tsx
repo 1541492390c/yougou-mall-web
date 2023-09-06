@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import style from './style.module.scss'
-import { deleteOrderApi, getOrderPagesApi } from '@/api/order/order-api'
+import { confirmOrderApi, deleteOrderApi, getOrderPagesApi } from '@/api/order/order-api'
 import { message, Modal, Table, TablePaginationConfig } from 'antd'
 import Column from 'antd/es/table/Column'
 import { NavLink } from 'react-router-dom'
 import { Order, OrderItem } from '@/interface/order'
+import { OrderStateEnum } from '@/enums'
 
 const OrdersHooks: any = (): any => {
     const [total, setTotal] = useState<number>(0)
@@ -50,8 +51,34 @@ const OrdersHooks: any = (): any => {
         return specs.substring(0, specs.length - 2)
     }
 
+    const confirmOrder = (id: number): void => {
+        modal.confirm({
+            title: '确认收货',
+            content: '请确认您已经收货',
+            okType: 'danger',
+            onOk: () => {
+                confirmOrderApi(id).then((res) => {
+                    if (res) {
+                        messageApi.success('已确认收货').then()
+                        // 更新订单列表
+                        let list: Array<Order> = [...orderList]
+                        // 更新订单状态
+                        list.forEach((item: Order) => {
+                            if (item.orderId === id) {
+                                item.state = OrderStateEnum.FINISHED
+                            }
+                        })
+                        setOrderList(list)
+                    }
+                }).catch((err) => {
+                    console.log(err)
+                })
+            }
+        })
+    }
+
     // 删除订单
-    const deleteOrder = (id: string, index: number): void => {
+    const deleteOrder = (id: number, index: number): void => {
         modal.confirm({
             title: '删除订单',
             content: '此操作将删除订单,是否继续?',
@@ -80,6 +107,7 @@ const OrdersHooks: any = (): any => {
         setCurrentPage,
         transformOrderState,
         transformSpecs,
+        confirmOrder,
         deleteOrder
     }
 }
@@ -93,6 +121,7 @@ const MyOrderPage: React.FC = (): JSX.Element => {
         setCurrentPage,
         transformOrderState,
         transformSpecs,
+        confirmOrder,
         deleteOrder
     } = OrdersHooks()
 
@@ -154,29 +183,25 @@ const MyOrderPage: React.FC = (): JSX.Element => {
                             <span style={{fontSize: '12px'}}>{transformOrderState(value)}</span>)} />
                 <Column title='操作' align='center' width={120} fixed={'right'} render={(record: Order, index: number) => (
                     <div className={style.edit}>
-                        {(() => {
-                            if (record.state === 0) {
-                                return <span onClick={() => deleteOrder(record.orderId, index)}>删除订单</span>
-                            } else if (record.state === 1) {
-                                return (
-                                    <div>
-                                        <div>
-                                            <NavLink to='/payment' state={{orderId: record.orderId}}>前往付款</NavLink>
-                                        </div>
-                                        <div>
-                                            <span onClick={() => deleteOrder(record.orderId, index)}
-                                                  className={style.cancel}>取消订单</span>
-                                        </div>
-                                    </div>
-                                )
-                            } else if (record.state === 2) {
-                                return <span className={style.notEdit}>等待商家发货</span>
-                            } else if (record.state === 3) {
-                                return <span>确认收货</span>
-                            } else if (record.state === 4) {
-                                return <span className={style.orderSuccess}>该订单已完成</span>
-                            }
-                        })()}
+                        {/*已取消*/}
+                        {record.state === OrderStateEnum.CANCEL && <span onClick={() => deleteOrder(record.orderId, index)}>删除订单</span>}
+                        {/*待付款*/}
+                        {record.state === OrderStateEnum.WAIT_PAY && (
+                            <div>
+                                <div>
+                                    <NavLink to='/payment' state={{orderId: record.orderId}}>前往付款</NavLink>
+                                </div>
+                                <div>
+                                    <span onClick={() => deleteOrder(record.orderId, index)} className={style.cancel}>取消订单</span>
+                                </div>
+                            </div>
+                        )}
+                        {/*待发货*/}
+                        {record.state === OrderStateEnum.WAIT_DELIVERY && <span className={style.notEdit}>等待商家发货</span>}
+                        {/*配送中*/}
+                        {record.state === OrderStateEnum.DELIVERING && <span onClick={() => confirmOrder(record.orderId)}>确认收货</span>}
+                        {/*已完成*/}
+                        {record.state === OrderStateEnum.FINISHED && <span className={style.orderSuccess}>该订单已完成</span>}
                     </div>
                 )} />
             </Table>
