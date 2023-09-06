@@ -7,7 +7,8 @@ const userinfo: User = {}
 const couponUserList: Array<CouponUser> = []
 const shopCar: Array<ShopCarItem> = []
 const isLogin: boolean = !!localStorage.getItem('token')
-const aMapKey: string = '7bba558979c7e30aceceb8ff471d93a1'
+// 高德地图amapKey
+const aMapKey: string = ''
 
 const slice = createSlice({
     name: 'slice',
