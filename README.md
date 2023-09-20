@@ -12,14 +12,6 @@ yougou-mall-web
 ├─public --公开目录
 └─src --源码
     ├─api --Api接口
-    │  ├─auth --认证授权相关Api接口
-    │  ├─extra --扩展相关Api接口（包含短信、文件上传）
-    │  ├─order --订单相关Api接口
-    │  ├─payment --支付相关Api接口
-    │  ├─platform --平台相关Api接口
-    │  ├─product --商品相关Api接口
-    │  ├─search --搜索相关Api接口
-    │  └─user --用户相关Api接口
     ├─assets --静态资源
     │  ├─font --字体
     │  ├─img --图片
@@ -33,37 +25,7 @@ yougou-mall-web
     ├─enums --枚举
     ├─event --事件监听器
     ├─interface --接口
-    │  ├─auth -- 认证授权相关接口
-    │  ├─extension --扩展接口
-    │  ├─order --订单相关接口
-    │  ├─payment --支付相关接口
-    │  ├─platform --平台相关接口
-    │  ├─product --商品相关接口
-    │  └─user --用户相关接口
     ├─pages --页面
-    │  ├─comment --商品评论页面
-    │  ├─feedback --反馈页面
-    │  ├─index --主页
-    │  │  ├─brands --品牌中心
-    │  │  ├─coupons --领券中心
-    │  │  ├─discount --限时特惠
-    │  │  ├─home --首页
-    │  │  └─sec-kills --秒杀专场
-    │  ├─list --商品搜索页面
-    │  ├─login --登录页面
-    │  ├─payment --收银台
-    │  ├─payment-success --支付成功返回页面
-    │  ├─personal --个人中心
-    │  │  ├─account-security --账号安全
-    │  │  ├─addr --收货地址
-    │  │  ├─favorite --我的收藏
-    │  │  ├─my-coupon --我的优惠券
-    │  │  ├─my-feedback --我的反馈
-    │  │  └─my-order --我的订单
-    │  ├─product-detail --商品详情
-    │  ├─register --注册页面
-    │  ├─settlement --购物车结算
-    │  └─update-password --修改密码
     ├─request --http网络请求
     ├─router --路由
     ├─store --公共仓库 
