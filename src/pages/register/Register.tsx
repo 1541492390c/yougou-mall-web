@@ -127,7 +127,7 @@ const RegisterHooks: any = (): any => {
     // 验证手机号
     const validate = (value: { mobile: string, code: string }): void => {
         validateMobileApi(value.mobile, value.code).then((res) => {
-            if (res.data) {
+            if (res) {
                 messageApi.success('验证成功').then()
                 setMobile(value.mobile)
                 setCurrentStep(1)
