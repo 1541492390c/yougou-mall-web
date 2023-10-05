@@ -1,16 +1,7 @@
 import React, { useRef, useState } from 'react'
 import style from './style.module.scss'
 import { Button, Form, Input, message, Result, Select, Steps } from 'antd'
-import {
-    CaretDownOutlined,
-    CheckOutlined,
-    FormOutlined,
-    LockOutlined,
-    MailOutlined,
-    MobileOutlined,
-    SmileOutlined,
-    UserOutlined
-} from '@ant-design/icons'
+import { CaretDownOutlined, CheckOutlined, FormOutlined, LockOutlined, MailOutlined, MobileOutlined, SmileOutlined, UserOutlined } from '@ant-design/icons'
 import Header from '@/components/header/Header'
 import Footer from '@/components/footer/Footer'
 import { registerApi } from '@/api/user/user-api'
@@ -120,6 +111,8 @@ const RegisterHooks: any = (): any => {
                         }
                     }, 1000)
                 }
+            }).catch((err) => {
+                console.log(err)
             })
         }
     }
@@ -148,13 +141,11 @@ const RegisterHooks: any = (): any => {
             email: value.email,
             mobile: mobile
         }
-        registerApi(data)
-            .then(() => {
-                setCurrentStep(2)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+        registerApi(data).then(() => {
+            setCurrentStep(2)
+        }).catch((err) => {
+            console.log(err)
+        })
     }
 
     return {
