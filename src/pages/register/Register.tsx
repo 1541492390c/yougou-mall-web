@@ -132,6 +132,8 @@ const RegisterHooks: any = (): any => {
                 setMobile(value.mobile)
                 setCurrentStep(1)
             }
+        }).catch((err) => {
+            console.log(err)
         })
     }
 
