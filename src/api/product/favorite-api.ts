@@ -22,7 +22,7 @@ const saveFavoriteApi = (productId: number | undefined): Promise<AxiosResponse> 
 // 获取用户收藏分页信息
 const getFavoritePagesApi = (pageNum: number = 1, pageSize: number = 10): Promise<AxiosResponse> => {
     return request({
-        url: '/product/favorite/my_favorite',
+        url: '/product/favorite/pages',
         method: 'GET',
         params: {
             page_num: pageNum,

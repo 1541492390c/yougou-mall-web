@@ -40,7 +40,7 @@ const updateAuthAccountApi = (value: { username: string, email: string, mobile: 
 }
 
 // 修改密码
-const updatePasswordApi = (value: { mobile: string, newPassword: string }): Promise<AxiosResponse> => {
+const updatePasswordApi = (value: { updatePassType: number, mobile: string, newPassword: string }): Promise<AxiosResponse> => {
     return request({
         url: '/auth/update_password',
         method: 'PUT',

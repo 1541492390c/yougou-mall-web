@@ -239,7 +239,7 @@ const RegisterPage: React.FC = () => {
                 <Input.Password placeholder='请输入密码' prefix={<LockOutlined />} />
             </Form.Item>
             <Form.Item name='password2' rules={[{validator: validatePassword2}]}>
-                <Input.Password placeholder='请输入密码' prefix={<LockOutlined />} />
+                <Input.Password placeholder='请再次确认密码' prefix={<LockOutlined />} />
             </Form.Item>
             <Form.Item name='email' rules={[{validator: validateEmail}]}>
                 <Input placeholder='请输入邮箱(选填)' prefix={<MailOutlined />} addonAfter={emailInputSuffix}

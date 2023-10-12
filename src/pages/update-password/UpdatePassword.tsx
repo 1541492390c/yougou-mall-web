@@ -8,6 +8,7 @@ import Footer from '@/components/footer/Footer'
 import { StepProps } from 'antd/es/steps'
 import { updatePasswordApi } from '@/api/auth/auth-api'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { UpdatePassTypeEnum } from '@/enums'
 
 const UpdatePasswordHooks: any = (): any => {
     const navigate: NavigateFunction = useNavigate()
@@ -105,12 +106,8 @@ const UpdatePasswordHooks: any = (): any => {
     }
 
     // 修改密码
-    const updatePassword = (value: {newPassword: string}) => {
-        let data: any = {
-            mobile: mobile,
-            newPassword: value.newPassword
-        }
-        updatePasswordApi(data).then((res) => {
+    const updatePassword = (value: { newPassword: string }) => {
+        updatePasswordApi({updatePassType: UpdatePassTypeEnum.FORGET, mobile: mobile, newPassword: value.newPassword}).then((res) => {
             if (res) {
                 messageApi.success('修改成功').then()
                 setCurrentStep(2)
