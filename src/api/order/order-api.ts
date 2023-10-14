@@ -45,11 +45,8 @@ const confirmOrderApi = (id: number | undefined): Promise<AxiosResponse> => {
 // 删除订单
 const deleteOrderApi = (id: number | undefined): Promise<AxiosResponse> => {
     return request({
-        url: '/order/delete',
-        method: 'DELETE',
-        params: {
-            order_id: id
-        }
+        url: `/order/delete/${id}`,
+        method: 'DELETE'
     }, true)
 }
 

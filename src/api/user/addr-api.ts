@@ -29,11 +29,10 @@ const updateAddrApi = (addr: Addr): Promise<AxiosResponse> => {
 }
 
 // 删除收货地址
-const deleteAddrApi = (addrId: number): Promise<AxiosResponse> => {
+const deleteAddrApi = (id: number): Promise<AxiosResponse> => {
     return request({
-        url: '/user/addr/delete',
-        method: 'DELETE',
-        params: {addr_id: addrId}
+        url: `/user/addr/delete/${id}`,
+        method: 'DELETE'
     }, true)
 }
 

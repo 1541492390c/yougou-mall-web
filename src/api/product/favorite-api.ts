@@ -32,11 +32,10 @@ const getFavoritePagesApi = (pageNum: number = 1, pageSize: number = 10): Promis
 }
 
 // 删除收藏
-const deleteFavoriteApi = (favoriteId: number | undefined): Promise<AxiosResponse> => {
+const deleteFavoriteApi = (id: number | undefined): Promise<AxiosResponse> => {
     return request({
-        url: '/product/favorite/delete',
-        method: 'DELETE',
-        params: {favorite_id: favoriteId}
+        url: `/product/favorite/delete/${id}`,
+        method: 'DELETE'
     }, true)
 }
 
