@@ -15,11 +15,6 @@ yougou-mall-web
     ├─assets --静态资源
     │  ├─font --字体
     │  ├─img --图片
-    │  │  ├─common --通用图片
-    │  │  ├─empty --缺省图片
-    │  │  ├─index --首页图片
-    │  │  ├─login --登录页面图片
-    │  │  └─payment --支付页面图片
     │  └─style --公共样式
     ├─components --组件
     ├─enums --枚举
