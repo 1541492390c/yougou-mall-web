@@ -196,7 +196,8 @@ const ListPage: React.FC = (): JSX.Element => {
                 <div className={style.screenBarTitle}>
                     <span>分类</span>
                 </div>
-                {isEmpty(currentCategory) ? <span className={style.empty}>暂无相关分类</span> : <div className={style.screenBarContent}>{transformCategoryList}</div>}
+                {isEmpty(currentCategory) ? <span className={style.empty}>暂无相关分类</span> :
+                    <div className={style.screenBarContent}>{transformCategoryList}</div>}
             </div>
         </div>
     )
