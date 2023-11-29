@@ -93,3 +93,4 @@ npm run dev
 
 - Java后端链接：https://gitee.com/chi-congmin/yougou-mall
 - 商城Web端链接：https://gitee.com/chi-congmin/yougou-mall-web
+- 管理平台端链接：https://gitee.com/chi-congmin/yougou-mall-admin
